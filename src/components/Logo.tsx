@@ -5,7 +5,7 @@ export const Logo = ({ compact = false }: { compact?: boolean }) => (
     <img src="/logo.png" alt="The Global Doctrine Logo" className="h-8 w-8 object-contain" />
     {!compact && (
       <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-foreground">
-        The Global <span className="text-primary">Doctrine</span>
+        The Global <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
       </span>
     )}
   </Link>
