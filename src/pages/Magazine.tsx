@@ -1,18 +1,11 @@
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import mag1 from "@/assets/magazine-global-doctrine-1.jpg";
-import mag2 from "@/assets/magazine-2.jpg";
-import mag3 from "@/assets/magazine-3.jpg";
+
+// Only import the ONE image you are actually using in the array below
 import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
 
 const issues = [
-  { src: magGlobalDoctrine, title: "The Global Doctrine", issue: "1st Edition", date: "March 2026", pdf: "/magazine-global-doctrine-1.pdf" },
-  { src: magGlobalDoctrine, title: "The Cartographers", issue: "Issue 14", date: "Spring 2026", pdf: "/magazine-issue-14.pdf" },
-  { src: magGlobalDoctrine, title: "Capitals at Dusk", issue: "Issue 13", date: "Winter 2025", pdf: "/magazine-issue-13.pdf" },
-  { src: magGlobalDoctrine, title: "The Sea Lanes", issue: "Issue 12", date: "Autumn 2025", pdf: "/magazine-issue-12.pdf" },
-  { src: magGlobalDoctrine, title: "Borderlands", issue: "Issue 11", date: "Summer 2025", pdf: "/magazine-issue-11.pdf" },
-  { src: magGlobalDoctrine, title: "The Quiet Treaties", issue: "Issue 10", date: "Spring 2025", pdf: "/magazine-issue-10.pdf" },
-  { src: magGlobalDoctrine, title: "After the Doctrine", issue: "Issue 09", date: "Winter 2024", pdf: "/magazine-issue-09.pdf" },
+  { src: magGlobalDoctrine, title: "The Global Doctrine", issue: "1st Edition", date: "March 2026", pdf: "/magazine-global-doctrine-1.pdf" }
 ];
 
 const Magazine = () => {

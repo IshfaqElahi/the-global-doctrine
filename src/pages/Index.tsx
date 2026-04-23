@@ -7,10 +7,8 @@ import { articles } from "@/data/articles";
 import heroImg from "@/assets/hero-summit.jpg";
 import interview1 from "@/assets/interview-1.jpg";
 
-// Importing the actual magazine covers
+// Only importing the single magazine cover
 import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
-import mag2 from "@/assets/magazine-2.jpg";
-import mag3 from "@/assets/magazine-3.jpg";
 
 const Index = () => {
   const featured = articles[0];
@@ -131,9 +129,7 @@ const Index = () => {
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
             {[
-              { src: magGlobalDoctrine, title: "Issue 14 — The Cartographers", date: "Spring 2026" },
-              { src: mag2, title: "Issue 13 — Capitals at Dusk", date: "Winter 2025" },
-              { src: mag3, title: "Issue 12 — The Sea Lanes", date: "Autumn 2025" },
+              { src: magGlobalDoctrine, title: "1st Edition — The Global Doctrine", date: "March 2026" },
             ].map((m) => (
               <Link key={m.title} to="/magazine" className="group block">
                 <div className="overflow-hidden bg-background/10">
