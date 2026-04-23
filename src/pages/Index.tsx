@@ -6,7 +6,7 @@ import { Newsletter } from "@/components/Newsletter";
 import { articles } from "@/data/articles";
 import heroImg from "@/assets/hero-summit.jpg";
 import interview1 from "@/assets/interview-1.jpg";
-import mag1 from "@/assets/magazine-1.jpg";
+import mag1 from "@/assets/magazine-global-doctrine-1.jpg";
 import mag2 from "@/assets/magazine-2.jpg";
 import mag3 from "@/assets/magazine-3.jpg";
 

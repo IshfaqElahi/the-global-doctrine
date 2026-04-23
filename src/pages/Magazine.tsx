@@ -1,6 +1,6 @@
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import mag1 from "@/assets/magazine-1.jpg";
+import mag1 from "@/assets/magazine-global-doctrine-1.jpg";
 import mag2 from "@/assets/magazine-2.jpg";
 import mag3 from "@/assets/magazine-3.jpg";
 import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
