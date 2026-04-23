@@ -6,9 +6,10 @@ const content = {
     title: "Who We Are",
     kicker: "About",
     body: [
-      "The Global Doctrine is an independent geopolitical magazine covering world conflicts and global affairs through the lens of ordinary people. Run by International Relations students, our editorial mission is to translate the language of statecraft into stories that matter.",
-      "We were founded on a simple conviction: that rigorous reporting and careful argument are not luxuries reserved for institutional newsrooms. Our contributors write from capitals, conflict zones, and university libraries — wherever the questions are sharpest.",
-      "We do not chase the news cycle. We try to interpret it. Each piece is edited to a single standard: would a thoughtful reader, six months from now, still be glad they read this?",
+      "The Global Doctrine is an independent geopolitical magazine dedicated to uncovering the reality behind global headlines. While traditional media focuses on statecraft and high-level strategy, we look at conflict through the lens of ordinary people—those directly impacted by the politics that happen beyond borders.",
+      "Our Vision: We aim to provide a grounded, unfiltered look at the world as it really is. By stripping away political abstractions, we bring the human cost of global tensions to the forefront of the conversation.",
+      "An Ordinary Perspective: We believe the most important stories aren't found in diplomatic chambers, but in the lives of those living through the consequences of global decisions. Our team of International Relations students combines academic insight with a commitment to \"bottom-up\" storytelling, offering a fresh, independent perspective that prioritizes people over power.",
+      "The Global Doctrine. Informing the world through the eyes of its people.",
     ],
   },
   policy: {
