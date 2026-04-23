@@ -3,17 +3,29 @@ import { Button } from "@/components/ui/button";
 import mag1 from "@/assets/magazine-1.jpg";
 import mag2 from "@/assets/magazine-2.jpg";
 import mag3 from "@/assets/magazine-3.jpg";
+import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
 
 const issues = [
-  { src: mag1, title: "The Cartographers", issue: "Issue 14", date: "Spring 2026" },
-  { src: mag2, title: "Capitals at Dusk", issue: "Issue 13", date: "Winter 2025" },
-  { src: mag3, title: "The Sea Lanes", issue: "Issue 12", date: "Autumn 2025" },
-  { src: mag1, title: "Borderlands", issue: "Issue 11", date: "Summer 2025" },
-  { src: mag2, title: "The Quiet Treaties", issue: "Issue 10", date: "Spring 2025" },
-  { src: mag3, title: "After the Doctrine", issue: "Issue 09", date: "Winter 2024" },
+  { src: magGlobalDoctrine, title: "The Global Doctrine", issue: "1st Edition", date: "March 2026", pdf: "magazine-global-doctrine-1.pdf" },
+  { src: mag1, title: "The Cartographers", issue: "Issue 14", date: "Spring 2026", pdf: "magazine-issue-14.pdf" },
+  { src: mag2, title: "Capitals at Dusk", issue: "Issue 13", date: "Winter 2025", pdf: "magazine-issue-13.pdf" },
+  { src: mag3, title: "The Sea Lanes", issue: "Issue 12", date: "Autumn 2025", pdf: "magazine-issue-12.pdf" },
+  { src: mag1, title: "Borderlands", issue: "Issue 11", date: "Summer 2025", pdf: "magazine-issue-11.pdf" },
+  { src: mag2, title: "The Quiet Treaties", issue: "Issue 10", date: "Spring 2025", pdf: "magazine-issue-10.pdf" },
+  { src: mag3, title: "After the Doctrine", issue: "Issue 09", date: "Winter 2024", pdf: "magazine-issue-09.pdf" },
 ];
 
-const Magazine = () => (
+const Magazine = () => {
+  const handleDownloadPDF = (pdfFileName: string) => {
+    const link = document.createElement("a");
+    link.href = `/${pdfFileName}`;
+    link.download = pdfFileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
   <Layout>
     <section className="border-b border-border">
       <div className="container-editorial py-12 lg:py-16">
@@ -36,13 +48,13 @@ const Magazine = () => (
             <h3 className="mt-1 font-serif text-2xl font-bold leading-tight">{m.title}</h3>
             <div className="mt-4 flex gap-2">
               <Button variant="default" size="sm" className="bg-foreground text-background hover:bg-foreground/90">View Issue</Button>
-              <Button variant="outline" size="sm">Download PDF</Button>
+              <Button variant="outline" size="sm" onClick={() => handleDownloadPDF(m.pdf)}>Download PDF</Button>
             </div>
           </article>
         ))}
       </div>
     </section>
   </Layout>
-);
+)};
 
 export default Magazine;
