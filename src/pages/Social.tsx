@@ -1,11 +1,35 @@
-import { Facebook, Instagram, Mail, Twitter, ExternalLink } from "lucide-react";
+import { Facebook, Instagram, Linkedin, MessageCircle, ExternalLink } from "lucide-react";
 import { Layout } from "@/components/Layout";
 
 const channels = [
-  { Icon: Facebook, name: "Facebook", handle: "@globaldoctrine", href: "#", desc: "Daily article shares and live coverage threads." },
-  { Icon: Instagram, name: "Instagram", handle: "@global.doctrine", href: "#", desc: "Field photography, magazine covers, and visual essays." },
-  { Icon: Twitter, name: "X / Twitter", handle: "@GlblDoctrine", href: "#", desc: "Breaking analysis from our editors and contributors." },
-  { Icon: Mail, name: "Email", handle: "hello@globaldoctrine.org", href: "mailto:hello@globaldoctrine.org", desc: "Tips, pitches, and reader letters welcome." },
+  { 
+    Icon: Facebook, 
+    name: "Facebook", 
+    handle: "The Global Doctrine", 
+    href: "https://www.facebook.com/people/The-Global-Doctrine/61577469676531/", 
+    desc: "Daily article shares and live coverage threads." 
+  },
+  { 
+    Icon: Instagram, 
+    name: "Instagram", 
+    handle: "@the_global_doctrine", 
+    href: "https://www.instagram.com/the_global_doctrine/", 
+    desc: "Field photography, magazine covers, and visual essays." 
+  },
+  { 
+    Icon: Linkedin, 
+    name: "LinkedIn", 
+    handle: "The Global Doctrine", 
+    href: "https://www.linkedin.com/company/the-global-doctrine/", 
+    desc: "Professional network, recruitment, and organizational updates." 
+  },
+  { 
+    Icon: MessageCircle, 
+    name: "WhatsApp", 
+    handle: "01612970419", 
+    href: "https://wa.me/8801612970419", 
+    desc: "Direct line to our newsroom inbox." 
+  },
 ];
 
 const Social = () => (
@@ -23,7 +47,7 @@ const Social = () => (
     <section className="container-editorial py-14">
       <div className="grid gap-6 sm:grid-cols-2">
         {channels.map(({ Icon, name, handle, href, desc }) => (
-          <a key={name} href={href} className="group flex items-start gap-5 border border-border bg-background p-6 transition-all hover:border-foreground hover:shadow-md">
+          <a key={name} href={href} target="_blank" rel="noopener noreferrer" className="group flex items-start gap-5 border border-border bg-background p-6 transition-all hover:border-foreground hover:shadow-md">
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center bg-primary text-primary-foreground transition-colors group-hover:bg-[hsl(var(--brand-red))]">
               <Icon className="h-6 w-6" />
             </div>
