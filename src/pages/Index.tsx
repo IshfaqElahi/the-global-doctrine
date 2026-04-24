@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { ArticleCard } from "@/components/ArticleCard";
+import { CategoryCarousel } from "@/components/CategoryCarousel";
 import { Newsletter } from "@/components/Newsletter";
-import { articles } from "@/data/articles";
+import { articles, categories } from "@/data/articles";
 import heroImg from "@/assets/hero-summit.jpg";
 import interview1 from "@/assets/interview-1.jpg";
 
@@ -48,6 +49,27 @@ const Index = () => {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* TOPICS CAROUSEL */}
+      <section className="border-b border-border bg-secondary">
+        <div className="container-editorial py-12 lg:py-16">
+          <div className="mb-8">
+            <p className="kicker">Browse topics</p>
+            <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">All Categories</h2>
+          </div>
+          <CategoryCarousel
+            categories={categories}
+            onCategoryChange={(category) => {
+              // Navigate to the category page
+              const slug = category.toLowerCase().replace(/\s+/g, "-");
+              window.location.href = `/topics/${slug}`;
+            }}
+            defaultCategory="Cover Story"
+            showArrows={true}
+            pauseOnHover={true}
+          />
         </div>
       </section>
 

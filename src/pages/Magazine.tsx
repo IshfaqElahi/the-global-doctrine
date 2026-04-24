@@ -1,8 +1,5 @@
-import { useState } from "react";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
-import { CategoryCarousel } from "@/components/CategoryCarousel";
-import { categories } from "@/data/articles";
 
 // Only import the ONE image you are actually using in the array below
 import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
@@ -12,8 +9,6 @@ const issues = [
 ];
 
 const Magazine = () => {
-  const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]>("Cover Story");
-
   const handleDownloadPDF = (pdfUrl: string) => {
     const link = document.createElement("a");
     link.href = pdfUrl;
@@ -32,17 +27,6 @@ const Magazine = () => {
         <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
           A quarterly print edition and rolling digital archive. Browse past issues, download covers, or subscribe to receive future editions.
         </p>
-
-        {/* Category Carousel */}
-        <div className="mt-8 flex px-4 sm:px-0">
-          <CategoryCarousel
-            categories={categories}
-            onCategoryChange={setSelectedCategory}
-            defaultCategory="Cover Story"
-            showArrows={true}
-            pauseOnHover={true}
-          />
-        </div>
       </div>
     </section>
 
