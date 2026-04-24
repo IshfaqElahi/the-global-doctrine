@@ -1,270 +1,143 @@
-import { useState, useEffect, useRef } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useRef } from "react";
+import { Link } from "react-router-dom";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Autoplay, Navigation, FreeMode } from "swiper/modules";
+import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { Category } from "@/data/articles";
 
-interface CategoryCarouselProps {
-  categories: Category[];
-  onCategoryChange?: (category: Category) => void;
-  defaultCategory?: Category;
-  showArrows?: boolean;
-  autoScroll?: boolean;
-  pauseOnHover?: boolean;
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/free-mode";
+import "swiper/css/autoplay";
+
+
+// This interface defines the data we will pass from Index.tsx
+export interface TopicCardData {
+  id: string | number;
+  category: string;
+  slug: string; // The URL slug (e.g., "international", "cover-story")
+  title: string;
+  excerpt?: string;
+  author: string;
+  date: string;
+  image: string;
+  colorClass?: string; // Optional: to theme tags (e.g., bg-red-700)
 }
 
-export const CategoryCarousel = ({
-  categories,
-  onCategoryChange,
-  defaultCategory = "Cover Story",
-  showArrows = true,
-  autoScroll = false,
-  pauseOnHover = true,
-}: CategoryCarouselProps) => {
-  const [activeCategory, setActiveCategory] = useState<Category>(defaultCategory);
-  const [isScrolling, setIsScrolling] = useState(false);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-  const [isHovering, setIsHovering] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
+interface CategoryCarouselProps {
+  topics: TopicCardData[];
+  className?: string;
+}
 
-  // Check scroll position
-  const checkScroll = () => {
-    if (!containerRef.current) return;
-    const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
-    setCanScrollLeft(scrollLeft > 0);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-  };
+export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) => {
+  const prevRef = useRef<HTMLButtonElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
 
-  // Smooth scroll function
-  const scroll = (direction: "left" | "right") => {
-    if (!containerRef.current) return;
-    const scrollAmount = 300; // pixels to scroll
-    const targetScroll = containerRef.current.scrollLeft + (direction === "left" ? -scrollAmount : scrollAmount);
-
-    setIsScrolling(true);
-    containerRef.current.scrollTo({
-      left: targetScroll,
-      behavior: "smooth",
-    });
-
-    // Reset scrolling state after animation
-    setTimeout(() => {
-      setIsScrolling(false);
-      checkScroll();
-    }, 300);
-  };
-
-  // Touch/Swipe handlers
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.changedTouches[0].screenX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    touchEndX.current = e.changedTouches[0].screenX;
-    handleSwipe();
-  };
-
-  const handleSwipe = () => {
-    const swipeThreshold = 50; // minimum distance for swipe
-    const difference = touchStartX.current - touchEndX.current;
-
-    if (Math.abs(difference) > swipeThreshold) {
-      if (difference > 0) {
-        // Swiped left, scroll right
-        scroll("right");
-      } else {
-        // Swiped right, scroll left
-        scroll("left");
-      }
-    }
-  };
-
-  // Monitor scroll position
-  useEffect(() => {
-    checkScroll();
-    const handleScroll = () => checkScroll();
-    const handleResize = () => checkScroll();
-
-    const currentContainer = containerRef.current;
-    currentContainer?.addEventListener("scroll", handleScroll);
-    window.addEventListener("resize", handleResize);
-
-    return () => {
-      currentContainer?.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
-  // Auto-scroll functionality
-  useEffect(() => {
-    if (!autoScroll || isHovering) return;
-
-    const interval = setInterval(() => {
-      if (!containerRef.current) return;
-      const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
-
-      if (scrollLeft + clientWidth >= scrollWidth - 10) {
-        // Reset to start
-        containerRef.current.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        scroll("right");
-      }
-    }, 5000); // Auto-scroll every 5 seconds
-
-    return () => clearInterval(interval);
-  }, [autoScroll, isHovering]);
-
-  const handleCategoryClick = (category: Category) => {
-    setActiveCategory(category);
-    onCategoryChange?.(category);
-
-    // Scroll the clicked item into view
-    const element = document.getElementById(`category-${category}`);
-    if (element && containerRef.current) {
-      const elementOffset = element.offsetLeft;
-      const elementWidth = element.offsetWidth;
-      const containerWidth = containerRef.current.clientWidth;
-      const scrollPosition = elementOffset - (containerWidth - elementWidth) / 2;
-
-      containerRef.current.scrollTo({
-        left: scrollPosition,
-        behavior: "smooth",
-      });
-    }
-  };
+  if (!topics || topics.length === 0) return null;
 
   return (
-    <>
-      <style>{`
-        @keyframes slideIn {
-          from {
-            opacity: 0;
-            transform: translateX(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        @keyframes slideInRight {
-          from {
-            opacity: 0;
-            transform: translateX(10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
-        .carousel-item {
-          animation: slideIn 0.3s ease-out forwards;
-        }
-
-        .carousel-item:nth-child(odd) {
-          animation: slideInRight 0.3s ease-out forwards;
-        }
-
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
-        }
-
-        .category-btn {
-          transition: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
-          transform: translateZ(0);
-        }
-
-        .category-btn:not(:disabled):hover {
-          transform: translateY(-2px);
-        }
-
-        .category-btn.active {
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-      `}</style>
-
-      <div
-        className="relative flex w-full items-center gap-2 sm:gap-4"
-        onMouseEnter={() => pauseOnHover && setIsHovering(true)}
-        onMouseLeave={() => pauseOnHover && setIsHovering(false)}
-      >
-        {/* Left Arrow */}
-        {showArrows && canScrollLeft && (
-          <button
-            onClick={() => scroll("left")}
-            disabled={isScrolling}
-            className={cn(
-              "absolute -left-12 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center",
-              "rounded-full border border-border bg-background transition-all duration-200",
-              "hover:border-foreground hover:bg-foreground hover:text-background",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              "hidden sm:flex"
-            )}
-            aria-label="Scroll categories left"
-          >
-            <ChevronLeft className="h-4 w-4" />
-          </button>
-        )}
-
-        {/* Carousel Container */}
-        <div
-          ref={containerRef}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          className="w-full overflow-x-auto scrollbar-hide"
-          style={{ scrollBehavior: "smooth" }}
+    <div className={cn("relative w-full group", className)}>
+      {/* Custom Navigation Arrows */}
+      <div className="absolute right-0 -top-12 hidden gap-2 sm:flex">
+        <button
+          ref={prevRef}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground transition-all hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-background disabled:hover:text-foreground z-10"
+          aria-label="Previous topics"
         >
-          <div className="flex gap-2 sm:gap-3">
-            {categories.map((category, index) => (
-              <button
-                key={category}
-                id={`category-${category}`}
-                onClick={() => handleCategoryClick(category)}
-                className={cn(
-                  "carousel-item whitespace-nowrap px-3 sm:px-4 py-2 text-xs font-semibold uppercase tracking-wider",
-                  "border transition-all duration-300 ease-in-out",
-                  "flex-shrink-0",
-                  "category-btn",
-                  activeCategory === category
-                    ? "border-foreground bg-foreground text-background shadow-md active"
-                    : "border-border bg-background text-foreground hover:border-foreground hover:bg-secondary",
-                  "focus:outline-none focus:ring-2 focus:ring-foreground focus:ring-offset-2"
-                )}
-                style={{
-                  animationDelay: `${index * 30}ms`,
-                }}
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Right Arrow */}
-        {showArrows && canScrollRight && (
-          <button
-            onClick={() => scroll("right")}
-            disabled={isScrolling}
-            className={cn(
-              "absolute -right-12 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center",
-              "rounded-full border border-border bg-background transition-all duration-200",
-              "hover:border-foreground hover:bg-foreground hover:text-background",
-              "disabled:opacity-50 disabled:cursor-not-allowed",
-              "hidden sm:flex"
-            )}
-            aria-label="Scroll categories right"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
-        )}
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <button
+          ref={nextRef}
+          className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background text-foreground transition-all hover:bg-foreground hover:text-background disabled:opacity-30 disabled:hover:bg-background disabled:hover:text-foreground z-10"
+          aria-label="Next topics"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
-    </>
+
+      <Swiper
+        modules={[Autoplay, Navigation, FreeMode]}
+        spaceBetween={24}
+        slidesPerView={1.2}
+        freeMode={true}
+        loop={true}
+        autoplay={{
+          delay: 3500,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true, // Pauses scroll when mouse hovers over a card
+        }}
+        navigation={{
+          prevEl: prevRef.current,
+          nextEl: nextRef.current,
+        }}
+        onInit={(swiper) => {
+          // Re-bind custom navigation refs after init
+          if (swiper.params.navigation && typeof swiper.params.navigation !== 'boolean') {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+            swiper.navigation.init();
+            swiper.navigation.update();
+          }
+        }}
+        breakpoints={{
+          480: { slidesPerView: 1.5 },
+          768: { slidesPerView: 2.5 },
+          1024: { slidesPerView: 3.5 },
+        }}
+        className="w-full pb-8"
+      >
+        {topics.map((topic) => (
+          <SwiperSlide key={topic.id} className="h-auto">
+            <div className="group/card flex h-full flex-col overflow-hidden border border-border bg-background transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+              
+              {/* Thumbnail Image */}
+              <Link to={`/topics/${topic.slug}`} className="relative aspect-[16/10] w-full overflow-hidden block">
+                <img
+                  src={topic.image}
+                  alt={topic.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105"
+                />
+                <div className="absolute top-3 left-3 z-10">
+                  <span className={cn(
+                    "inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white",
+                    topic.colorClass || "bg-[#1974D1]" // Defaults to Global Doctrine Blue
+                  )}>
+                    {topic.category}
+                  </span>
+                </div>
+              </Link>
+
+              {/* Card Content */}
+              <div className="flex flex-1 flex-col p-5">
+                <Link to={`/topics/${topic.slug}`} className="mb-3 block">
+                  <h3 className="font-playfair text-lg font-bold leading-tight text-foreground transition-colors group-hover/card:text-[#1974D1] line-clamp-2">
+                    {topic.title}
+                  </h3>
+                </Link>
+                
+                <div className="mt-auto border-t border-border/50 pt-4 flex flex-col gap-3">
+                  {/* Meta Data */}
+                  <div className="flex items-center gap-2 text-[11px] text-muted-foreground tracking-wide">
+                    <span className="font-semibold text-foreground">{topic.author}</span>
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground/50"></span>
+                    <span>{topic.date}</span>
+                  </div>
+
+                  {/* Read More Link */}
+                  <Link 
+                    to={`/topics/${topic.slug}`}
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-[#1974D1] transition-all hover:gap-2.5 hover:text-[#AD1115]"
+                  >
+                    Read More <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    </div>
   );
 };

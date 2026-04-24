@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { ArticleCard } from "@/components/ArticleCard";
-import { CategoryCarousel } from "@/components/CategoryCarousel";
+import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { Newsletter } from "@/components/Newsletter";
 import { articles, categories } from "@/data/articles";
 import heroImg from "@/assets/hero-summit.jpg";
@@ -15,6 +15,28 @@ const Index = () => {
   const featured = articles[0];
   const latest = articles.slice(1, 5);
   const moreByCategory = ["Europe", "Asia", "Middle East"] as const;
+
+  // Map categories to full cards for the new Swiper Carousel
+  const topicCardsData: TopicCardData[] = categories.map((cat, idx) => {
+    // Find the most recent article for this category to feature on the card
+    const categoryArticle = articles.find((a) => a.category === cat) || articles[0];
+    
+    return {
+      id: `topic-${idx}`,
+      category: cat,
+      slug: cat.toLowerCase().replace(/\s+/g, "-"),
+      title: categoryArticle.title,
+      excerpt: categoryArticle.excerpt,
+      author: categoryArticle.author,
+      date: categoryArticle.date,
+      // Using type 'any' fallback just in case image isn't defined in articles.ts yet
+      image: categoryArticle.image || heroImg, 
+      // Apply the Global Doctrine Red to specific tags, Blue to others
+      colorClass: ["Cover Story", "Asia", "Middle East"].includes(cat) 
+        ? "bg-[hsl(var(--brand-red))]" 
+        : "bg-primary",
+    };
+  });
 
   return (
     <Layout>
@@ -52,24 +74,16 @@ const Index = () => {
         </div>
       </section>
 
-      {/* TOPICS CAROUSEL */}
-      <section className="border-b border-border bg-secondary">
-        <div className="container-editorial py-12 lg:py-16">
+      {/* TOPICS CAROUSEL (NEW SWIPER IMPLEMENTATION) */}
+      <section className="border-b border-border bg-secondary overflow-hidden">
+        <div className="container-editorial py-12 lg:py-16 relative">
           <div className="mb-8">
             <p className="kicker">Browse topics</p>
             <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">All Categories</h2>
           </div>
-          <CategoryCarousel
-            categories={categories}
-            onCategoryChange={(category) => {
-              // Navigate to the category page
-              const slug = category.toLowerCase().replace(/\s+/g, "-");
-              window.location.href = `/topics/${slug}`;
-            }}
-            defaultCategory="Cover Story"
-            showArrows={true}
-            pauseOnHover={true}
-          />
+          
+          <CategoryCarousel topics={topicCardsData} />
+          
         </div>
       </section>
 
