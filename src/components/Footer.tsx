@@ -51,9 +51,9 @@ export const Footer = () => (
         <div className="md:col-span-4">
           <h4 className="mb-4 font-sans text-xs font-bold uppercase tracking-[0.2em] text-foreground">Contact</h4>
           <p className="text-sm text-muted-foreground">Editorial enquiries</p>
-          <a href="mailto:editors@globaldoctrine.org" className="text-sm font-medium text-primary hover:underline">editors@globaldoctrine.org</a>
+          <a href="mailto:theglobaldoctrine.mag@gmail.com" className="text-sm font-medium text-primary hover:underline">theglobaldoctrine.mag@gmail.com</a>
           <p className="mt-4 text-sm text-muted-foreground">Press & syndication</p>
-          <a href="mailto:press@globaldoctrine.org" className="text-sm font-medium text-primary hover:underline">press@globaldoctrine.org</a>
+          <a href="mailto:theglobaldoctrine.mag@gmail.com" className="text-sm font-medium text-primary hover:underline">theglobaldoctrine.mag@gmail.com</a>
         </div>
       </div>
 
