@@ -1,4 +1,5 @@
-import { useParams, Navigate, useState } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Navigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ArticleCard } from "@/components/ArticleCard";
 import { TrendingSidebar } from "@/components/Sidebar";
