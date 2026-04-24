@@ -1,7 +1,8 @@
-import { useParams, Link, Navigate } from "react-router-dom";
+import { useParams, Navigate, useState } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { ArticleCard } from "@/components/ArticleCard";
 import { TrendingSidebar } from "@/components/Sidebar";
+import { CategoryCarousel } from "@/components/CategoryCarousel";
 import { articles, categories } from "@/data/articles";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
@@ -9,6 +10,8 @@ const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 const Topics = () => {
   const { category } = useParams();
   const cat = categories.find((c) => slugify(c) === category);
+  const [selectedCategory, setSelectedCategory] = useState<typeof categories[number]>(cat || "Cover Story");
+  
   if (!cat) return <Navigate to="/" replace />;
   const list = articles.filter((a) => a.category === cat);
   const display = list.length ? list : articles;
@@ -22,19 +25,21 @@ const Topics = () => {
           <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
             Reporting, analysis, and long-form commentary from across the {cat.toLowerCase()} desk.
           </p>
-          <nav className="mt-8 flex flex-wrap gap-2">
-            {categories.map((c) => (
-              <Link
-                key={c}
-                to={`/topics/${slugify(c)}`}
-                className={`border px-3 py-1.5 text-xs font-semibold uppercase tracking-wider transition-colors ${
-                  c === cat ? "border-foreground bg-foreground text-background" : "border-border bg-background hover:border-foreground"
-                }`}
-              >
-                {c}
-              </Link>
-            ))}
-          </nav>
+
+          {/* Category Carousel */}
+          <div className="mt-8 flex px-4 sm:px-0">
+            <CategoryCarousel
+              categories={categories}
+              onCategoryChange={(newCategory) => {
+                setSelectedCategory(newCategory);
+                // Navigate to the new category
+                window.location.href = `/topics/${slugify(newCategory)}`;
+              }}
+              defaultCategory={cat}
+              showArrows={true}
+              pauseOnHover={true}
+            />
+          </div>
         </div>
       </section>
 
