@@ -39,7 +39,7 @@ export const Navbar = () => {
         </div>
       </div>
 
-      <div className="container-editorial flex h-16 items-center justify-between gap-4">
+      <div className="container-editorial flex h-20 items-center justify-between gap-4">
         <Logo />
 
         <nav className="hidden items-center gap-7 lg:flex">
