@@ -84,7 +84,7 @@ export const Navbar = () => {
           <button onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="rounded p-2 transition-colors hover:bg-accent">
             <Search className="h-4 w-4" />
           </button>
-          <button onClick={() => setOpen((v) => !v)} aria-label="Menu" className="rounded p-2 transition-colors hover:bg-accent lg:hidden">
+          <button onClick={() => setOpen((v) => !v)} aria-label="Menu" className={cn("rounded p-2 transition-colors hover:bg-accent lg:hidden burger-menu", open ? "open" : "closed")}>
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
