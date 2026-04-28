@@ -15,7 +15,7 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
     return (
       <article className="group grid grid-cols-[1fr_2fr] gap-4">
         <Link to={`/article/${article.slug}`} className="overflow-hidden bg-muted">
-          <img src={article.image} alt={article.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={article.image} alt={article.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
         </Link>
         <div className="flex flex-col">
           <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5">{article.category}</Link>
@@ -32,7 +32,7 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
     return (
       <article className="group">
         <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
-          <img src={article.image} alt={article.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          <img src={article.image} alt={article.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
         </Link>
         <div className="pt-3">
           <span className={cn("inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>{article.category}</span>
@@ -48,7 +48,7 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
   return (
     <article className="group flex h-full flex-col">
       <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
-        <img src={article.image} alt={article.title} loading="lazy" className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <img src={article.image} alt={article.title} loading="lazy" className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
       </Link>
       <div className="flex flex-1 flex-col pt-4">
         <Link to={`/topics/${slug(article.category)}`} className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>

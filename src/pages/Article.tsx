@@ -34,7 +34,7 @@ const Article = () => {
 
         <div className="container-editorial">
           <div className="-mt-px overflow-hidden bg-muted">
-            <img src={article.image} alt={article.title} className="aspect-[16/9] w-full object-cover" />
+            <img src={article.image} alt={article.title} className="aspect-[16/9] w-full object-cover hover:shadow-lg transition-shadow duration-500" />
           </div>
         </div>
 

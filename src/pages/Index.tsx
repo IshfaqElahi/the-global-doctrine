@@ -46,7 +46,7 @@ const Index = () => {
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
             <Link to={`/article/${featured.slug}`} className="group block lg:col-span-7">
               <div className="overflow-hidden bg-muted">
-                <img src={heroImg} alt={featured.title} width={1600} height={1024} className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+                <img src={heroImg} alt={featured.title} width={1600} height={1024} className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02] group-hover:shadow-lg" />
               </div>
             </Link>
             <div className="flex flex-col justify-center lg:col-span-5">
@@ -130,7 +130,7 @@ const Index = () => {
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
             <div className="overflow-hidden bg-muted">
-              <img src={interview1} alt="Featured interview" loading="lazy" className="aspect-[4/5] w-full object-cover" />
+              <img src={interview1} alt="Featured interview" loading="lazy" className="aspect-[4/5] w-full object-cover hover:shadow-lg transition-shadow duration-500" />
             </div>
           </div>
           <div className="flex flex-col justify-center lg:col-span-7">
@@ -169,7 +169,7 @@ const Index = () => {
             ].map((m) => (
               <Link key={m.title} to="/magazine" className="group block">
                 <div className="overflow-hidden bg-background/10">
-                  <img src={m.src} alt={m.title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  <img src={m.src} alt={m.title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
                 </div>
                 <h3 className="mt-4 font-serif text-lg font-bold">{m.title}</h3>
                 <p className="text-sm text-background/60">{m.date}</p>

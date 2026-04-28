@@ -55,7 +55,7 @@ const Interview = () => (
         {interviews.map((i) => (
           <Link to="#" key={i.slug} className="group grid gap-5 sm:grid-cols-[1fr_1.4fr]">
             <div className="overflow-hidden bg-muted">
-              <img src={i.image} alt={i.person} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src={i.image} alt={i.person} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
             </div>
             <div className="flex flex-col justify-center">
               <p className="kicker">{i.date}</p>
