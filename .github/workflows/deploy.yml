@@ -35,7 +35,10 @@ jobs:
       - name: Build Project
         run: |
           npm run build
+          # Keep React routing functional on GitHub Pages
           cp dist/index.html dist/404.html
+          # Force the new domain into the build artifact
+          echo "theglobaldoctrine.online" > dist/CNAME
 
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v4
