@@ -1,3 +1,7 @@
-import { magazineIssue } from './magazineIssue'
+import {magazineIssue} from './magazineIssue'
+import coverStory from './coverStory'
 
-export const schemaTypes = [magazineIssue]
+export const schemaTypes = [
+  magazineIssue, 
+  coverStory
+]
