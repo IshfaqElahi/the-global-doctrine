@@ -90,6 +90,30 @@ const Index = () => {
         </div>
       </section>
 
+      {/* MAGAZINE PREVIEW */}
+      <section className="border-y border-border bg-foreground py-16 text-background">
+        <div className="container-editorial">
+          <div className="mb-10 flex items-end justify-between border-b border-background/30 pb-3">
+            <div>
+              <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
+              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">The Magazine</h2>
+            </div>
+            <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 px-3 py-1 rounded-md sm:inline">Releases</Link>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-3">
+            {[{ src: magGlobalDoctrine, title: "1st Edition — The Global Doctrine", date: "March 2026" }].map((m) => (
+              <Link key={m.title} to="/magazine" className="group block">
+                <div className="overflow-hidden bg-background/10">
+                  <img src={m.src} alt={m.title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
+                </div>
+                <h3 className="mt-4 font-serif text-lg font-bold">{m.title}</h3>
+                <p className="text-sm text-background/60">{m.date}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* TOPICS CAROUSEL */}
       <section className="border-b border-border bg-secondary overflow-hidden">
         <div className="container-editorial py-12 lg:py-16 relative">
@@ -148,30 +172,6 @@ const Index = () => {
             <Link to="/interview" className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))] hover:gap-3 hover:text-[hsl(var(--brand-red))]/80 transition-all duration-300">
               Read the interview <ArrowRight className="h-4 w-4" />
             </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* MAGAZINE PREVIEW */}
-      <section className="border-y border-border bg-foreground py-16 text-background">
-        <div className="container-editorial">
-          <div className="mb-10 flex items-end justify-between border-b border-background/30 pb-3">
-            <div>
-              <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">The Magazine</h2>
-            </div>
-            <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 px-3 py-1 rounded-md sm:inline">Releases</Link>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {[{ src: magGlobalDoctrine, title: "1st Edition — The Global Doctrine", date: "March 2026" }].map((m) => (
-              <Link key={m.title} to="/magazine" className="group block">
-                <div className="overflow-hidden bg-background/10">
-                  <img src={m.src} alt={m.title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
-                </div>
-                <h3 className="mt-4 font-serif text-lg font-bold">{m.title}</h3>
-                <p className="text-sm text-background/60">{m.date}</p>
-              </Link>
-            ))}
           </div>
         </div>
       </section>
