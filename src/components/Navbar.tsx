@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, Search, X, ChevronDown } from "lucide-react";
+import { Menu, Search, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Logo } from "./Logo";
 import { categories } from "@/data/articles";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/hooks/useTheme";
 
 const topicSlug = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
@@ -11,6 +12,7 @@ export const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
+  const { theme, toggle } = useTheme();
 
   useEffect(() => { setOpen(false); setSearchOpen(false); }, [location.pathname]);
 
@@ -81,6 +83,15 @@ export const Navbar = () => {
         </nav>
 
         <div className="flex items-center gap-2">
+          {/* Dark mode toggle */}
+          <button
+            onClick={toggle}
+            aria-label="Toggle dark mode"
+            className="rounded p-2 transition-colors hover:bg-accent"
+          >
+            {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
+
           <button onClick={() => setSearchOpen((v) => !v)} aria-label="Search" className="rounded p-2 transition-colors hover:bg-accent">
             <Search className="h-4 w-4" />
           </button>
