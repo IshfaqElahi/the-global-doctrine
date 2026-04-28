@@ -103,7 +103,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* INTERVIEW */}}
+      {/* INTERVIEW */}
       <section className="container-editorial py-16">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
