@@ -1,3 +1,11 @@
+interface CoverStory {
+  title: string;
+  slug: string;
+  excerpt: string;
+  author: string;
+  publishedAt: string;
+  imageUrl: string;
+}
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -8,19 +16,41 @@ import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { Newsletter } from "@/components/Newsletter";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
 import { articles, categories } from "@/data/articles";
+// IMPORT YOUR SANITY CLIENT HERE (update the path if needed)
+import { client } from "@/lib/sanity"; 
+
 import heroImg from "@/assets/hero-summit.jpg";
 import interview1 from "@/assets/interview-1.jpg";
 import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
+  const [coverStory, setCoverStory] = useState<CoverStory | null>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => setLoading(false), 1200);
-    return () => clearTimeout(t);
+    const fetchCoverStory = async () => {
+      try {
+        const data = await client.fetch(`
+          *[_type == "coverStory"] | order(publishedAt desc)[0]{
+            title, 
+            "slug": slug.current, 
+            excerpt, 
+            author, 
+            publishedAt, 
+            "imageUrl": mainImage.asset->url
+          }
+        `);
+        setCoverStory(data);
+      } catch (error) {
+        console.error("Error fetching cover story:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCoverStory();
   }, []);
 
-  const featured = articles[0];
   const latest = articles.slice(1, 5);
 
   const topicCardsData: TopicCardData[] = categories.map((cat, idx) => {
@@ -55,13 +85,13 @@ const Index = () => {
       {/* HERO */}
       <section className="border-b border-border">
         <div className="container-editorial py-10 lg:py-16">
-          {loading ? (
+          {loading || !coverStory ? (
             <SkeletonCardHero />
           ) : (
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-              <Link to={`/article/${featured.slug}`} className="group block lg:col-span-7">
+              <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
                 <div className="overflow-hidden bg-muted">
-                  <img src={heroImg} alt={featured.title} width={1600} height={1024} className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02] group-hover:shadow-lg" />
+                  <img src={coverStory.imageUrl} alt={coverStory.title} width={1600} height={1024} className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02] group-hover:shadow-lg" />
                 </div>
               </Link>
               <div className="flex flex-col justify-center lg:col-span-5">
@@ -69,19 +99,21 @@ const Index = () => {
                   Cover Story
                 </span>
                 <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-                  <Link to={`/article/${featured.slug}`} className="hover:text-primary transition-colors">
-                    {featured.title}
+                  <Link to={`/article/${coverStory.slug}`} className="hover:text-primary transition-colors">
+                    {coverStory.title}
                   </Link>
                 </h1>
                 <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  {featured.excerpt}
+                  {coverStory.excerpt}
                 </p>
                 <div className="mt-6 flex items-center gap-3 text-sm">
-                  <span className="font-semibold text-foreground">{featured.author}</span>
+                  <span className="font-semibold text-foreground">{coverStory.author}</span>
                   <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                  <span className="text-muted-foreground">{featured.date}</span>
+                  <span className="text-muted-foreground">
+                    {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+                  </span>
                 </div>
-                <Link to={`/article/${featured.slug}`} className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 hover:text-primary/80 transition-all duration-300">
+                <Link to={`/article/${coverStory.slug}`} className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 hover:text-primary/80 transition-all duration-300">
                   Read the cover story <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
