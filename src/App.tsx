@@ -5,7 +5,6 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PageTransition } from "@/components/PageTransition";
-import { ThemeProvider } from "@/context/ThemeContext";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Topics from "./pages/Topics.tsx";
@@ -19,6 +18,7 @@ const queryClient = new QueryClient();
 
 const AppRoutes = () => {
   const location = useLocation();
+
   return (
     <AnimatePresence mode="wait">
       <PageTransition key={location.pathname}>
@@ -30,6 +30,7 @@ const AppRoutes = () => {
           <Route path="/magazine" element={<Magazine />} />
           <Route path="/social" element={<Social />} />
           <Route path="/article/:slug" element={<Article />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </PageTransition>
@@ -38,17 +39,15 @@ const AppRoutes = () => {
 };
 
 const App = () => (
-  <ThemeProvider>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <AppRoutes />
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
-  </ThemeProvider>
+  <QueryClientProvider client={queryClient}>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </TooltipProvider>
+  </QueryClientProvider>
 );
 
 export default App;

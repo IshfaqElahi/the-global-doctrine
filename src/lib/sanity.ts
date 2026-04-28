@@ -1,5 +1,5 @@
 import { createClient } from '@sanity/client'
-import imageUrlBuilder from '@sanity/image-url'
+import { createImageUrlBuilder } from '@sanity/image-url'
 
 export const client = createClient({
   projectId: 'vk54bhae', 
@@ -8,7 +8,7 @@ export const client = createClient({
   apiVersion: '2026-04-28', 
 })
 
-const builder = imageUrlBuilder(client)
+const builder = createImageUrlBuilder(client) 
 
 // Tell TypeScript to stop worrying about the 'any' type here
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
