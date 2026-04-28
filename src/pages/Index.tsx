@@ -103,29 +103,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CATEGORY HIGHLIGHTS */}
-      <section className="border-y border-border bg-secondary py-16">
-        <div className="container-editorial">
-          <div className="mb-10">
-            <p className="kicker-blue">By region</p>
-            <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Category Highlights</h2>
-          </div>
-          <div className="grid gap-10 lg:grid-cols-3">
-            {moreByCategory.map((cat) => {
-              const a = articles.find((ar) => ar.category === cat);
-              if (!a) return null;
-              return (
-                <div key={cat} className="border-t-2 border-foreground pt-5">
-                  <Link to={`/topics/${cat.toLowerCase().replace(/\s+/g, "-")}`} className="kicker-blue">{cat}</Link>
-                  <ArticleCard article={a} variant="compact" />
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* INTERVIEW */}
+      {/* INTERVIEW */}}
       <section className="container-editorial py-16">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
@@ -135,7 +113,7 @@ const Index = () => {
           </div>
           <div className="flex flex-col justify-center lg:col-span-7">
             <p className="kicker">The Interview</p>
-            <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+            <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl hover:text-primary/80 transition-colors duration-300 cursor-pointer">
               "Diplomacy is the art of postponing certainty."
             </h2>
             <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
@@ -146,8 +124,8 @@ const Index = () => {
               <span className="h-1 w-1 rounded-full bg-muted-foreground" />
               <span>20 min read</span>
             </div>
-            <Link to="/interview" className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))]">
-              Read the interview <ArrowRight className="h-4 w-4" />
+            <Link to="/interview" className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))] hover:gap-3 hover:text-[hsl(var(--brand-red))]/80 transition-all duration-300">
+              Read the interview <ArrowRight className="h-4 w-4 transition-transform duration-300" />
             </Link>
           </div>
         </div>
