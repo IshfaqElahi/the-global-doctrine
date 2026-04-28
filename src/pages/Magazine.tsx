@@ -91,8 +91,8 @@ const Magazine = () => {
                 <div className="mt-4 flex gap-2">
                   {m.pdfUrl ? (
                     <>
-                      <Button variant="default" size="sm" className="bg-foreground text-background hover:bg-foreground/90" onClick={() => window.open(m.pdfUrl, '_blank')}>View Issue</Button>
-                      <Button variant="outline" size="sm" onClick={() => handleDownloadPDF(m.pdfUrl)}>Download PDF</Button>
+                      <Button variant="default" size="sm" className="bg-foreground text-background hover:bg-foreground/90" onClick={() => handleDownloadPDF(m.pdfUrl)}>Download PDF</Button>
+                      <Button variant="outline" size="sm" onClick={() => window.open('https://wa.me/8801612970419', '_blank')}>Buy Now</Button>
                     </>
                   ) : (
                     <p className="text-sm italic text-muted-foreground">PDF coming soon</p>
