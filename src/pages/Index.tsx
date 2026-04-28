@@ -66,8 +66,8 @@ const Index = () => {
                 <span className="h-1 w-1 rounded-full bg-muted-foreground" />
                 <span className="text-muted-foreground">{featured.date}</span>
               </div>
-              <Link to={`/article/${featured.slug}`} className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary">
-                Read the cover story <ArrowRight className="h-4 w-4" />
+              <Link to={`/article/${featured.slug}`} className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 hover:text-primary/80 transition-all duration-300">
+                Read the cover story <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </div>
           </div>
@@ -94,7 +94,7 @@ const Index = () => {
             <p className="kicker text-sm font-bold">Editor's picks</p>
             <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Latest Articles</h2>
           </div>
-          <Link to="/topics/international" className="hidden text-sm font-semibold text-primary hover:underline sm:inline">View all →</Link>
+          <Link to="/topics/international" className="hidden text-base font-bold text-primary hover:text-primary/80 hover:scale-110 transition-all duration-300 sm:inline px-4 py-2 rounded-md hover:bg-primary/10">View all →</Link>
         </div>
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
           {latest.map((a) => (
