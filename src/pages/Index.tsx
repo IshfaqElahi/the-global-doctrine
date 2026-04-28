@@ -78,7 +78,7 @@ const Index = () => {
       <section className="border-b border-border bg-secondary overflow-hidden">
         <div className="container-editorial py-12 lg:py-16 relative">
           <div className="mb-8">
-            <p className="kicker">Browse topics</p>
+            <p className="kicker text-sm font-bold">Browse topics</p>
             <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">All Categories</h2>
           </div>
           
@@ -91,7 +91,7 @@ const Index = () => {
       <section className="container-editorial py-16">
         <div className="mb-8 flex items-end justify-between border-b-2 border-foreground pb-3">
           <div>
-            <p className="kicker">Editor's picks</p>
+            <p className="kicker text-sm font-bold">Editor's picks</p>
             <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Latest Articles</h2>
           </div>
           <Link to="/topics/international" className="hidden text-sm font-semibold text-primary hover:underline sm:inline">View all →</Link>
@@ -158,10 +158,10 @@ const Index = () => {
         <div className="container-editorial">
           <div className="mb-10 flex items-end justify-between border-b border-background/30 pb-3">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
+              <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
               <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">The Magazine</h2>
             </div>
-            <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:underline sm:inline">All issues →</Link>
+            <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 px-3 py-1 rounded-md sm:inline">Releases</Link>
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
             {[

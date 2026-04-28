@@ -8,7 +8,7 @@ export const Newsletter = () => {
     <section className="border-y border-border bg-foreground text-background">
       <div className="container-editorial grid items-center gap-8 py-16 md:grid-cols-2">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">The Doctrine Brief</p>
+          <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">The Doctrine Brief</p>
           <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl">
             The week in geopolitics, delivered every Sunday.
           </h2>

@@ -88,7 +88,7 @@
 @layer components {
   .container-editorial { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
   .kicker {
-    @apply inline-block text-[11px] font-bold uppercase tracking-[0.18em] text-[hsl(var(--brand-red))];
+    @apply inline-block text-sm font-bold uppercase tracking-[0.18em] text-[hsl(var(--brand-red))];
   }
   .kicker-blue {
     @apply inline-block text-[11px] font-bold uppercase tracking-[0.18em] text-primary;
