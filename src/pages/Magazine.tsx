@@ -23,14 +23,15 @@ const Magazine = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const query = `*[_type == "magazineIssue"] | order(_createdAt desc) {
-          _id,
-          title,
-          issue,
-          publishDate,
-          coverImage,
-          "pdfUrl": pdfFile.asset->url
-        }`;
+        // Inside Magazine.tsx > useEffect > fetchIssues
+const query = `*[_type == "magazineIssue"] | order(publishedAt desc) {
+  _id,
+  title,
+  issue,
+  publishDate,
+  coverImage,
+  "pdfUrl": pdfFile.asset->url
+}`;
         
         const data = await client.fetch(query);
         setIssues(data);

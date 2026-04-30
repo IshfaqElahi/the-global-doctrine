@@ -58,15 +58,16 @@ const Index = () => {
         setCoverStory(coverData);
 
         // 4. Fetch the latest Magazine Issue simultaneously
-        const magData = await client.fetch(`
-          *[_type == "magazineIssue"] | order(_createdAt desc)[0]{
-            _id,
-            title,
-            issue,
-            publishDate,
-            coverImage
-          }
-        `);
+        // Inside Index.tsx > useEffect > fetchData
+const magData = await client.fetch(`
+  *[_type == "magazineIssue"] | order(publishedAt desc)[0]{
+    _id,
+    title,
+    issue,
+    publishDate,
+    coverImage
+  }
+`);
         setLatestMagazine(magData);
 
       } catch (error) {
