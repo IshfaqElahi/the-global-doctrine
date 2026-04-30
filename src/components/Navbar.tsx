@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, Search, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Logo } from "./Logo";
@@ -14,6 +15,16 @@ export const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const location = useLocation();
   const { theme, toggle } = useTheme();
+  const [searchQuery, setSearchQuery] = useState("");
+const navigate = useNavigate();
+
+const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  if (e.key === "Enter" && searchQuery.trim()) {
+    navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    setSearchOpen(false);
+    setSearchQuery("");
+  }
+};
 
   useEffect(() => { setOpen(false); setSearchOpen(false); }, [location.pathname]);
 
@@ -108,11 +119,14 @@ export const Navbar = () => {
             <div className="flex items-center gap-3 border-b-2 border-foreground py-2">
               <Search className="h-5 w-5 text-muted-foreground" />
               <input
-                autoFocus
-                type="search"
-                placeholder="Search articles, interviews, regions…"
-                className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
-              />
+  autoFocus
+  type="search"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  onKeyDown={handleSearch}
+  placeholder="Search articles, interviews, regions… (press Enter)"
+  className="w-full bg-transparent text-base outline-none placeholder:text-muted-foreground"
+/>
             </div>
           </div>
         </div>

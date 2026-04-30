@@ -1,4 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+// Add this import at the top with other page imports
+import Search from "./pages/Search.tsx";
+
+// Add this route inside <Routes> before the * catch-all
+<Route path="/search" element={<Search />} />
 import { BrowserRouter, Route, Routes, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import { Toaster as Sonner } from "@/components/ui/sonner";
