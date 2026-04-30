@@ -13,11 +13,11 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
 
   if (variant === "horizontal") {
     return (
-      <article className="group grid grid-cols-[1fr_2fr] gap-4">
+      <article className="group grid grid-cols-[1fr_2fr] gap-4 bg-background border border-foreground/20 p-3 shadow-sm transition-all hover:shadow-md">
         <Link to={`/article/${article.slug}`} className="overflow-hidden bg-muted">
           <img src={article.image} alt={article.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
         </Link>
-        <div className="flex flex-col">
+        <div className="flex flex-col justify-center">
           <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5">{article.category}</Link>
           <Link to={`/article/${article.slug}`}>
             <h3 className="article-title text-base sm:text-lg">{article.title}</h3>
@@ -30,27 +30,29 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
 
   if (variant === "compact") {
     return (
-      <article className="group">
+      <article className="group flex flex-col h-full overflow-hidden bg-background border border-foreground/20 shadow-sm transition-all hover:shadow-md">
         <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
           <img src={article.image} alt={article.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
         </Link>
-        <div className="pt-3">
-          <span className={cn("inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>{article.category}</span>
+        <div className="flex flex-1 flex-col p-4">
+          <span className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>{article.category}</span>
           <Link to={`/article/${article.slug}`}>
             <h3 className="article-title mt-2 text-lg">{article.title}</h3>
           </Link>
-          <p className="mt-1 text-xs text-muted-foreground">{article.author} · {article.date}</p>
+          <div className="mt-auto pt-4">
+            <p className="text-xs text-muted-foreground">{article.author} · {article.date}</p>
+          </div>
         </div>
       </article>
     );
   }
 
   return (
-    <article className="group flex h-full flex-col">
+    <article className="group flex h-full flex-col overflow-hidden bg-background border border-foreground/20 shadow-sm transition-all hover:shadow-md">
       <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
         <img src={article.image} alt={article.title} loading="lazy" className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
       </Link>
-      <div className="flex flex-1 flex-col pt-4">
+      <div className="flex flex-1 flex-col p-5">
         <Link to={`/topics/${slug(article.category)}`} className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>
           {article.category}
         </Link>
@@ -58,7 +60,7 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
           <h3 className="article-title mt-3 text-xl sm:text-2xl">{article.title}</h3>
         </Link>
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
-        <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-xs text-muted-foreground">
+        <div className="mt-auto flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
           <span>{article.author} · {article.date}</span>
           <Link to={`/article/${article.slug}`} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
             Read <ArrowUpRight className="h-3.5 w-3.5" />

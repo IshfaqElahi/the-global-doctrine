@@ -11,7 +11,6 @@ import "swiper/css/navigation";
 import "swiper/css/free-mode";
 import "swiper/css/autoplay";
 
-
 // This interface defines the data we will pass from Index.tsx
 export interface TopicCardData {
   id: string | number;
@@ -89,7 +88,7 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
       >
         {topics.map((topic) => (
           <SwiperSlide key={topic.id} className="h-auto">
-            <div className="group/card flex h-full flex-col overflow-hidden border border-border bg-background transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+            <div className="group/card flex h-full flex-col overflow-hidden border border-foreground/20 bg-background shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-md">
               
               {/* Thumbnail Image */}
               <Link to={`/topics/${topic.slug}`} className="relative aspect-[16/10] w-full overflow-hidden block">
