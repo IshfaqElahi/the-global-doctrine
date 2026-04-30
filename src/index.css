@@ -7,7 +7,7 @@
 /* The Global Doctrine — editorial design system. All colors HSL. */
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 210 17% 95%;
     --foreground: 0 0% 7%;
 
     --card: 0 0% 100%;

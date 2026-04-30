@@ -6,6 +6,17 @@ interface CoverStory {
   publishedAt: string;
   imageUrl: string;
 }
+
+// 1. Add the interface for the Magazine Issue based on your schema
+interface MagazineIssue {
+  _id: string;
+  title: string;
+  issue: string;
+  publishDate: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  coverImage: any;
+}
+
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -16,21 +27,25 @@ import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { Newsletter } from "@/components/Newsletter";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
 import { articles, categories } from "@/data/articles";
-// IMPORT YOUR SANITY CLIENT HERE (update the path if needed)
-import { client } from "@/lib/sanity"; 
+
+// 2. IMPORTANT: Import `urlFor` alongside `client` so we can render the image
+import { client, urlFor } from "@/lib/sanity"; 
 
 import heroImg from "@/assets/hero-summit.jpg";
 import interview1 from "@/assets/interview-1.jpg";
-import magGlobalDoctrine from "@/assets/magazine-global-doctrine-1.jpg";
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
   const [coverStory, setCoverStory] = useState<CoverStory | null>(null);
+  
+  // 3. Add state to hold the latest magazine
+  const [latestMagazine, setLatestMagazine] = useState<MagazineIssue | null>(null);
 
   useEffect(() => {
-    const fetchCoverStory = async () => {
+    const fetchData = async () => {
       try {
-        const data = await client.fetch(`
+        // Fetch Cover Story
+        const coverData = await client.fetch(`
           *[_type == "coverStory"] | order(publishedAt desc)[0]{
             title, 
             "slug": slug.current, 
@@ -40,15 +55,28 @@ const Index = () => {
             "imageUrl": mainImage.asset->url
           }
         `);
-        setCoverStory(data);
+        setCoverStory(coverData);
+
+        // 4. Fetch the latest Magazine Issue simultaneously
+        const magData = await client.fetch(`
+          *[_type == "magazineIssue"] | order(_createdAt desc)[0]{
+            _id,
+            title,
+            issue,
+            publishDate,
+            coverImage
+          }
+        `);
+        setLatestMagazine(magData);
+
       } catch (error) {
-        console.error("Error fetching cover story:", error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCoverStory();
+    fetchData();
   }, []);
 
   const latest = articles.slice(1, 5);
@@ -122,7 +150,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* MAGAZINE PREVIEW */}
+      {/* 5. DYNAMIC MAGAZINE PREVIEW */}
       <section className="border-y border-border bg-foreground py-16 text-background">
         <div className="container-editorial">
           <div className="mb-10 flex items-end justify-between border-b border-background/30 pb-3">
@@ -133,15 +161,28 @@ const Index = () => {
             <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 px-3 py-1 rounded-md sm:inline">Releases</Link>
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
-            {[{ src: magGlobalDoctrine, title: "1st Edition — The Global Doctrine", date: "March 2026" }].map((m) => (
-              <Link key={m.title} to="/magazine" className="group block">
+            {loading ? (
+              <div className="aspect-[4/5] w-full animate-pulse bg-background/20" />
+            ) : latestMagazine ? (
+              <Link key={latestMagazine._id} to="/magazine" className="group block">
                 <div className="overflow-hidden bg-background/10">
-                  <img src={m.src} alt={m.title} loading="lazy" className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
+                  {latestMagazine.coverImage && (
+                    <img 
+                      src={urlFor(latestMagazine.coverImage).url()} 
+                      alt={`${latestMagazine.issue} — ${latestMagazine.title}`} 
+                      loading="lazy" 
+                      className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" 
+                    />
+                  )}
                 </div>
-                <h3 className="mt-4 font-serif text-lg font-bold">{m.title}</h3>
-                <p className="text-sm text-background/60">{m.date}</p>
+                <h3 className="mt-4 font-serif text-lg font-bold">
+                  {latestMagazine.issue} — {latestMagazine.title}
+                </h3>
+                <p className="text-sm text-background/60">{latestMagazine.publishDate}</p>
               </Link>
-            ))}
+            ) : (
+              <p className="text-sm text-background/60">No magazines published yet.</p>
+            )}
           </div>
         </div>
       </section>
