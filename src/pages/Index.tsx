@@ -38,8 +38,8 @@ const Index = () => {
   const [loading, setLoading] = useState(true);
   const [coverStory, setCoverStory] = useState<CoverStory | null>(null);
   
-  // 3. Add state to hold the latest magazine
-  const [latestMagazine, setLatestMagazine] = useState<MagazineIssue | null>(null);
+  // 3. Add state to hold the array of latest magazines
+  const [magazines, setMagazines] = useState<MagazineIssue[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -57,18 +57,17 @@ const Index = () => {
         `);
         setCoverStory(coverData);
 
-        // 4. Fetch the latest Magazine Issue simultaneously
-        // Inside Index.tsx > useEffect > fetchData
-const magData = await client.fetch(`
-  *[_type == "magazineIssue"] | order(publishedAt desc)[0]{
-    _id,
-    title,
-    issue,
-    publishDate,
-    coverImage
-  }
-`);
-        setLatestMagazine(magData);
+        // 4. Fetch the latest 3 Magazine Issues
+        const magData = await client.fetch(`
+          *[_type == "magazineIssue"] | order(publishedAt desc)[0...3]{
+            _id,
+            title,
+            issue,
+            publishDate,
+            coverImage
+          }
+        `);
+        setMagazines(magData);
 
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -163,24 +162,30 @@ const magData = await client.fetch(`
           </div>
           <div className="grid gap-8 sm:grid-cols-3">
             {loading ? (
-              <div className="aspect-[4/5] w-full animate-pulse bg-background/20" />
-            ) : latestMagazine ? (
-              <Link key={latestMagazine._id} to="/magazine" className="group block">
-                <div className="overflow-hidden bg-background/10">
-                  {latestMagazine.coverImage && (
-                    <img 
-                      src={urlFor(latestMagazine.coverImage).url()} 
-                      alt={`${latestMagazine.issue} — ${latestMagazine.title}`} 
-                      loading="lazy" 
-                      className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" 
-                    />
-                  )}
-                </div>
-                <h3 className="mt-4 font-serif text-lg font-bold">
-                  {latestMagazine.issue} — {latestMagazine.title}
-                </h3>
-                <p className="text-sm text-background/60">{latestMagazine.publishDate}</p>
-              </Link>
+              // Map 3 skeletons while loading
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="aspect-[4/5] w-full animate-pulse bg-background/20 rounded-md" />
+              ))
+            ) : magazines.length > 0 ? (
+              // Map through the fetched magazines
+              magazines.map((mag) => (
+                <Link key={mag._id} to="/magazine" className="group block">
+                  <div className="overflow-hidden bg-background/10">
+                    {mag.coverImage && (
+                      <img 
+                        src={urlFor(mag.coverImage).url()} 
+                        alt={`${mag.issue} — ${mag.title}`} 
+                        loading="lazy" 
+                        className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" 
+                      />
+                    )}
+                  </div>
+                  <h3 className="mt-4 font-serif text-lg font-bold">
+                    {mag.issue} — {mag.title}
+                  </h3>
+                  <p className="text-sm text-background/60">{mag.publishDate}</p>
+                </Link>
+              ))
             ) : (
               <p className="text-sm text-background/60">No magazines published yet.</p>
             )}
