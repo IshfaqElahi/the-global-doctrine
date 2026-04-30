@@ -4,7 +4,8 @@ import { Menu, Search, X, ChevronDown, Sun, Moon } from "lucide-react";
 import { Logo } from "./Logo";
 import { categories } from "@/data/articles";
 import { cn } from "@/lib/utils";
-import { useTheme } from "@/hooks/useTheme";
+// FIX: Updated this import to point to the correct Context file we built
+import { useTheme } from "@/context/ThemeContext";
 
 const topicSlug = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
