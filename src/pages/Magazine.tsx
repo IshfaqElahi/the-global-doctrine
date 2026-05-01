@@ -89,12 +89,12 @@ const Magazine = () => {
                 <p className="kicker mt-5">{m.issue} {m.publishDate ? `· ${m.publishDate}` : ''}</p>
                 <h3 className="mt-1 font-serif text-2xl font-bold leading-tight">{m.title}</h3>
                 
-                {/* Updated Button Group */}
+                {/* Updated Button Group with Inverted Hover Effects */}
                 <div className="mt-4 flex flex-wrap items-center gap-2">
                   <Button 
                     variant="default" 
                     size="sm" 
-                    className="bg-[hsl(var(--brand-red))] text-white hover:bg-[hsl(var(--brand-red))/90] border-none transition-colors" 
+                    className="bg-[hsl(var(--brand-red))] text-white hover:bg-primary hover:text-white border-none transition-colors duration-300" 
                     onClick={() => window.open('https://wa.me/8801612970419', '_blank')}
                   >
                     Buy Print
@@ -105,7 +105,7 @@ const Magazine = () => {
                       <Button 
                         variant="outline" 
                         size="sm" 
-                        className="border-foreground/20 hover:bg-foreground/5 transition-colors"
+                        className="border-foreground/20 bg-transparent text-foreground hover:bg-foreground hover:text-background transition-colors duration-300"
                         onClick={() => window.open(m.pdfUrl, '_blank')}
                       >
                         View
@@ -113,7 +113,7 @@ const Magazine = () => {
                       <Button 
                         variant="default" 
                         size="sm" 
-                        className="bg-foreground text-background hover:bg-foreground/90 transition-colors" 
+                        className="border border-transparent bg-foreground text-background hover:bg-transparent hover:border-foreground hover:text-foreground transition-colors duration-300" 
                         onClick={() => handleDownloadPDF(m.pdfUrl)}
                       >
                         Download
