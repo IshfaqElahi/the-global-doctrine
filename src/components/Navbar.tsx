@@ -58,7 +58,7 @@ export const Navbar = () => {
         {/* Top strip */}
         <div className="hidden border-b border-background/10 md:block">
           <div className="container-editorial flex h-8 items-center justify-between text-xs text-[#f3f5f7]/60 dark:text-background/50">
-            <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2024</span>
+            <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2026</span>
             <span>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
           </div>
         </div>
