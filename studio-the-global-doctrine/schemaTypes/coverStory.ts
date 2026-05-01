@@ -42,16 +42,16 @@ export default defineType({
     defineField({
       name: 'mainImage',
       title: 'Hero Image',
-      description: '📐 Recommended size: 1600×900px (16:9) or 1600×1000px (16:10). Minimum width: 1200px. Use high-resolution JPG or WebP. This image appears as the large hero on the homepage.',
+      description: '📐 Recommended size: 1600×900px. Minimum width: 1200px. This image appears as the large hero on the homepage.',
       type: 'image',
       options: { hotspot: true },
       fields: [
-        {
+        defineField({
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-          description: 'Describe the image for SEO and screen readers.',
-        },
+          description: 'Important for SEO and accessibility.',
+        }),
       ],
       validation: (Rule) => Rule.required(),
     }),
