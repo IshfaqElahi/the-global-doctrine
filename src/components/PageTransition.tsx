@@ -1,41 +1,13 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 
-interface PageTransitionProps {
-  children: ReactNode;
-}
-
-export const PageTransition = ({ children }: PageTransitionProps) => {
-  const pageVariants = {
-    initial: {
-      opacity: 0,
-      y: 10,
-    },
-    in: {
-      opacity: 1,
-      y: 0,
-    },
-    out: {
-      opacity: 0,
-      y: -10,
-    },
-  };
-
-  const pageTransition = {
-    type: "tween",
-    ease: "easeInOut",
-    duration: 0.3,
-  };
-
-  return (
-    <motion.div
-      initial="initial"
-      animate="in"
-      exit="out"
-      variants={pageVariants}
-      transition={pageTransition}
-    >
-      {children}
-    </motion.div>
-  );
-};
+export const PageTransition = ({ children }: { children: ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.25, ease: "easeInOut" }}
+  >
+    {children}
+  </motion.div>
+);

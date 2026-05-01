@@ -133,8 +133,21 @@ const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
       )}
 
       {open && (
-        <div className="border-t border-border bg-background lg:hidden">
-          <nav className="container-editorial flex flex-col py-4">
+  <div
+    className="fixed inset-0 z-40 lg:hidden"
+    style={{ animation: "fadeIn 0.2s ease" }}
+  >
+    {/* Backdrop */}
+    <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />
+
+    {/* Slide-in panel from right */}
+    <nav
+      className="absolute right-0 top-0 bottom-0 w-80 bg-background border-l border-border flex flex-col py-6 px-6 overflow-y-auto"
+      style={{ animation: "slideInRight 0.25s ease" }}
+    >
+      <button onClick={() => setOpen(false)} className="self-end mb-6 rounded p-2 hover:bg-accent">
+        <X className="h-5 w-5" />
+      </button>
             {[
               ["/", "Home"],
               ["/interview", "Interview"],
