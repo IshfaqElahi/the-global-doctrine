@@ -54,7 +54,8 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/90 backdrop-blur-md transition-colors duration-400">
+      {/* Increased transparency to 70 and blur to lg */}
+      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/70 backdrop-blur-lg transition-colors duration-400">
 
         {/* Top strip */}
         <div className="hidden border-b border-background/10 md:block">
@@ -158,7 +159,7 @@ export const Navbar = () => {
 
         {/* Search bar */}
         {searchOpen && (
-          <div className="border-t border-background/10 bg-foreground">
+          <div className="border-t border-background/10 bg-foreground/70 backdrop-blur-lg">
             <div className="container-editorial py-4">
               <div className="flex items-center gap-3 border-b-2 border-background/30 py-2 transition-all focus-within:border-primary focus-within:[box-shadow:0_2px_10px_-2px_hsl(var(--primary)/0.4)]">
                 <Search className="h-5 w-5 text-background/50" />
