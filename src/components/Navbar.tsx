@@ -41,8 +41,10 @@ export const Navbar = () => {
       <Link
         to={to}
         className={cn(
-          "text-sm font-medium uppercase tracking-wide transition-colors hover:text-primary",
-          active ? "text-primary" : "text-[#f3f5f7] dark:text-background"
+          "text-sm font-medium uppercase tracking-wide transition-all duration-300",
+          active 
+            ? "text-primary [text-shadow:0_0_12px_hsl(var(--primary)/0.6)]" 
+            : "text-[#f3f5f7] dark:text-background hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
         )}
       >
         {label}
@@ -52,13 +54,12 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* 1 & 2. Added bg opacity (/90) and backdrop-blur-md for transparency */}
       <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/90 backdrop-blur-md transition-colors duration-400">
 
         {/* Top strip */}
         <div className="hidden border-b border-background/10 md:block">
           <div className="container-editorial flex h-8 items-center justify-between text-xs text-[#f3f5f7]/60 dark:text-background/50">
-            <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2026</span>
+            <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2024</span>
             <span>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
           </div>
         </div>
@@ -67,10 +68,9 @@ export const Navbar = () => {
 
           {/* Logo */}
           <Link to="/" className="group inline-flex items-center gap-2" aria-label="The Global Doctrine — Home">
-            {/* 3. Removed brightness-0 invert so the real logo appears! */}
             <img src="/logo.svg" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
-            <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight">
-              <span className="text-[#f3f5f7] dark:text-background">The Global </span>
+            <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight transition-all duration-300 group-hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.3)]">
+              <span className="text-[#f3f5f7] dark:text-background transition-colors group-hover:text-primary">The Global </span>
               <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
             </span>
           </Link>
@@ -81,7 +81,7 @@ export const Navbar = () => {
 
             {/* Topics dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-colors hover:text-primary">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
                 Topics <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-56 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
@@ -91,7 +91,7 @@ export const Navbar = () => {
                     <li key={c}>
                       <Link
                         to={`/topics/${topicSlug(c)}`}
-                        className="block px-4 py-2 text-sm text-popover-foreground transition-colors hover:bg-accent hover:text-primary"
+                        className="block px-4 py-2 text-sm text-popover-foreground transition-all duration-300 hover:bg-accent hover:text-primary hover:[text-shadow:0_0_8px_hsl(var(--primary)/0.4)]"
                       >
                         {c}
                       </Link>
@@ -105,14 +105,14 @@ export const Navbar = () => {
 
             {/* About dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-colors hover:text-primary">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
                 About Us <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-48 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
                 <div className="h-1 w-full bg-[hsl(var(--brand-red))]" />
                 <ul className="py-2">
-                  <li><Link to="/about/who-we-are" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-primary">Who We Are</Link></li>
-                  <li><Link to="/about/policy" className="block px-4 py-2 text-sm text-popover-foreground hover:bg-accent hover:text-primary">Policy</Link></li>
+                  <li><Link to="/about/who-we-are" className="block px-4 py-2 text-sm text-popover-foreground transition-all duration-300 hover:bg-accent hover:text-primary hover:[text-shadow:0_0_8px_hsl(var(--primary)/0.4)]">Who We Are</Link></li>
+                  <li><Link to="/about/policy" className="block px-4 py-2 text-sm text-popover-foreground transition-all duration-300 hover:bg-accent hover:text-primary hover:[text-shadow:0_0_8px_hsl(var(--primary)/0.4)]">Policy</Link></li>
                 </ul>
               </div>
             </div>
@@ -126,7 +126,7 @@ export const Navbar = () => {
             <button
               onClick={toggle}
               aria-label="Toggle dark mode"
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
@@ -135,7 +135,7 @@ export const Navbar = () => {
             <button
               onClick={() => setSearchOpen((v) => !v)}
               aria-label="Search"
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
             >
               <Search className="h-4 w-4" />
             </button>
@@ -144,7 +144,7 @@ export const Navbar = () => {
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10 lg:hidden"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary lg:hidden"
             >
               <span
                 className="block transition-transform duration-300"
@@ -160,7 +160,7 @@ export const Navbar = () => {
         {searchOpen && (
           <div className="border-t border-background/10 bg-foreground">
             <div className="container-editorial py-4">
-              <div className="flex items-center gap-3 border-b-2 border-background/30 py-2">
+              <div className="flex items-center gap-3 border-b-2 border-background/30 py-2 transition-all focus-within:border-primary focus-within:[box-shadow:0_2px_10px_-2px_hsl(var(--primary)/0.4)]">
                 <Search className="h-5 w-5 text-background/50" />
                 <input
                   autoFocus
@@ -220,8 +220,10 @@ export const Navbar = () => {
                   key={to}
                   to={to}
                   className={cn(
-                    "border-b border-border py-3.5 text-sm font-semibold uppercase tracking-wide transition-colors hover:text-primary",
-                    location.pathname === to ? "text-primary" : "text-foreground"
+                    "border-b border-border py-3.5 text-sm font-semibold uppercase tracking-wide transition-all duration-300",
+                    location.pathname === to 
+                      ? "text-primary [text-shadow:0_0_12px_hsl(var(--primary)/0.6)]" 
+                      : "text-foreground hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
                   )}
                 >
                   {label}
@@ -237,7 +239,7 @@ export const Navbar = () => {
                   <Link
                     key={c}
                     to={`/topics/${topicSlug(c)}`}
-                    className="text-sm text-foreground hover:text-primary transition-colors"
+                    className="text-sm text-foreground transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_8px_hsl(var(--primary)/0.4)]"
                   >
                     {c}
                   </Link>
@@ -249,7 +251,7 @@ export const Navbar = () => {
             <div className="mt-auto border-t border-border px-6 py-5">
               <button
                 onClick={toggle}
-                className="flex w-full items-center justify-between rounded border border-border px-4 py-3 text-sm font-medium text-foreground hover:bg-accent transition-colors"
+                className="flex w-full items-center justify-between rounded border border-border px-4 py-3 text-sm font-medium text-foreground transition-all duration-300 hover:bg-accent hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
               >
                 <span>{theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode"}</span>
                 {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
