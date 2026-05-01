@@ -19,7 +19,9 @@ export const Footer = () => (
 
         {/* Brand column */}
         <div className="md:col-span-4">
-          <Logo />
+          <div className="footer-logo">
+  <Logo />
+</div>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-background/60">
             An independent geopolitical magazine covering world conflicts, diplomacy, and global affairs through the lens of ordinary people. Founded and run by International Relations students.
           </p>

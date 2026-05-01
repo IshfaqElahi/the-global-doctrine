@@ -130,10 +130,16 @@ const Index = () => {
     ) : (
       <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
         <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
-          <div className="overflow-hidden bg-muted">
-            <img src={coverStory.imageUrl} alt={coverStory.title} width={1600} height={1024}
-              className="aspect-[10/16] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
-          </div>
+       <div className="overflow-hidden bg-muted w-full" style={{ maxHeight: "560px", minHeight: "380px" }}>
+  <img
+    src={coverStory.imageUrl}
+    alt={coverStory.title}
+    width={1600}
+    height={1024}
+    className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-[1.02]"
+    style={{ minHeight: "380px", maxHeight: "560px" }}
+  />
+</div>
         </Link>
         <div className="flex flex-col justify-center lg:col-span-5">
           <span className="inline-block self-start bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
