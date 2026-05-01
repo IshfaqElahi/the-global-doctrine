@@ -13,16 +13,16 @@ const socials = [
 ];
 
 export const Footer = () => (
-  <footer className="mt-20 border-t-4 border-[hsl(var(--brand-red))] bg-foreground text-background">
+  <footer className="mt-20 border-t-4 border-[hsl(var(--brand-red))] bg-background text-foreground">
     <div className="container-editorial py-16">
       <div className="grid gap-12 md:grid-cols-12">
 
         {/* Brand column */}
         <div className="md:col-span-4">
           <div className="footer-logo">
-  <Logo />
-</div>
-          <p className="mt-5 max-w-xs text-sm leading-relaxed text-background/60">
+            <Logo />
+          </div>
+          <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted-foreground">
             An independent geopolitical magazine covering world conflicts, diplomacy, and global affairs through the lens of ordinary people. Founded and run by International Relations students.
           </p>
           <p className="mt-3 text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">
@@ -32,7 +32,7 @@ export const Footer = () => (
             {socials.map(({ Icon, label, href }) => (
               <a key={label} href={href} target="_blank" rel="noopener noreferrer"
                 aria-label={label}
-                className="flex h-9 w-9 items-center justify-center border border-background/20 text-background/70 transition-all hover:border-[hsl(var(--brand-red))] hover:bg-[hsl(var(--brand-red))] hover:text-white">
+                className="flex h-9 w-9 items-center justify-center border border-border text-foreground/70 transition-all hover:border-[hsl(var(--brand-red))] hover:bg-[hsl(var(--brand-red))] hover:text-white">
                 <Icon className="h-4 w-4" />
               </a>
             ))}
@@ -41,12 +41,12 @@ export const Footer = () => (
 
         {/* Topics */}
         <div className="md:col-span-2">
-          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-background/40">Topics</h4>
+          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Topics</h4>
           <ul className="space-y-3 text-sm">
             {categories.map((c) => (
               <li key={c}>
                 <Link to={`/topics/${slug(c)}`}
-                  className="text-background/70 transition-colors hover:text-[hsl(var(--brand-red))]">
+                  className="text-foreground/80 transition-colors hover:text-[hsl(var(--brand-red))]">
                   {c}
                 </Link>
               </li>
@@ -56,7 +56,7 @@ export const Footer = () => (
 
         {/* Sections */}
         <div className="md:col-span-2">
-          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-background/40">Sections</h4>
+          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Sections</h4>
           <ul className="space-y-3 text-sm">
             {[
               ["/", "Home"],
@@ -68,7 +68,7 @@ export const Footer = () => (
               ["/about/policy", "Policy"],
             ].map(([to, label]) => (
               <li key={to}>
-                <Link to={to} className="text-background/70 transition-colors hover:text-[hsl(var(--brand-red))]">
+                <Link to={to} className="text-foreground/80 transition-colors hover:text-[hsl(var(--brand-red))]">
                   {label}
                 </Link>
               </li>
@@ -78,24 +78,24 @@ export const Footer = () => (
 
         {/* Contact */}
         <div className="md:col-span-4">
-          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-background/40">Contact</h4>
+          <h4 className="mb-5 text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">Contact</h4>
           <div className="space-y-4 text-sm">
             <div>
-              <p className="text-background/40 text-xs uppercase tracking-wider mb-1">Editorial</p>
+              <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Editorial</p>
               <a href="mailto:theglobaldoctrine.mag@gmail.com"
-                className="text-background/80 hover:text-[hsl(var(--brand-red))] transition-colors">
+                className="text-foreground/90 hover:text-[hsl(var(--brand-red))] transition-colors">
                 theglobaldoctrine.mag@gmail.com
               </a>
             </div>
             <div>
-              <p className="text-background/40 text-xs uppercase tracking-wider mb-1">Press & Syndication</p>
+              <p className="text-muted-foreground text-xs uppercase tracking-wider mb-1">Press & Syndication</p>
               <a href="mailto:theglobaldoctrine.mag@gmail.com"
-                className="text-background/80 hover:text-[hsl(var(--brand-red))] transition-colors">
+                className="text-foreground/90 hover:text-[hsl(var(--brand-red))] transition-colors">
                 theglobaldoctrine.mag@gmail.com
               </a>
             </div>
-            <div className="pt-4 border-t border-background/10">
-              <p className="text-xs text-background/40 leading-relaxed">
+            <div className="pt-4 border-t border-border">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 We publish independent analysis on geopolitics, international relations, and global security. Our editorial team is committed to accuracy, depth, and accessibility.
               </p>
             </div>
@@ -104,11 +104,25 @@ export const Footer = () => (
       </div>
 
       {/* Bottom bar */}
-      <div className="mt-12 flex flex-col items-start justify-between gap-3 border-t border-background/10 pt-6 text-xs text-background/40 sm:flex-row sm:items-center">
+      <div className="mt-12 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center">
         <p>© {new Date().getFullYear()} The Global Doctrine. All rights reserved.</p>
+        
+        {/* Developer Credit */}
+        <p className="sm:text-center">
+          Developed By{" "}
+          <a 
+            href="https://www.facebook.com/IshfaqElahi19" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="font-semibold text-foreground transition-colors hover:text-[hsl(var(--brand-red))]"
+          >
+            Ishfaq Elahi
+          </a>
+        </p>
+
         <div className="flex gap-6">
-          <Link to="/about/policy" className="hover:text-background/70 transition-colors">Editorial Policy</Link>
-          <Link to="/about/who-we-are" className="hover:text-background/70 transition-colors">About Us</Link>
+          <Link to="/about/policy" className="hover:text-foreground transition-colors">Editorial Policy</Link>
+          <Link to="/about/who-we-are" className="hover:text-foreground transition-colors">About Us</Link>
         </div>
       </div>
     </div>
