@@ -54,8 +54,8 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* Inverted Logic: bg-foreground makes it Dark in Light Mode, White in Dark Mode */}
-      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/70 backdrop-blur-lg transition-colors duration-400">
+      {/* Added dark:bg-foreground/95 to make dark mode less transparent (95% solid) */}
+      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/70 dark:bg-foreground/95 backdrop-blur-lg transition-colors duration-400">
 
         {/* Top strip */}
         <div className="hidden border-b border-background/20 md:block">
@@ -71,7 +71,6 @@ export const Navbar = () => {
           <Link to="/" className="group inline-flex items-center gap-2" aria-label="The Global Doctrine — Home">
             <img src="/logo.svg" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
             <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight transition-all duration-300 group-hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.3)]">
-              {/* Text is text-background to contrast the inverted navbar */}
               <span className="text-background transition-colors group-hover:text-primary">The Global </span>
               <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
             </span>
@@ -158,9 +157,9 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Search bar - Also added dark:bg-foreground/95 here to match */}
         {searchOpen && (
-          <div className="border-t border-background/20 bg-foreground/70 backdrop-blur-lg">
+          <div className="border-t border-background/20 bg-foreground/70 dark:bg-foreground/95 backdrop-blur-lg">
             <div className="container-editorial py-4">
               <div className="flex items-center gap-3 border-b-2 border-background/30 py-2 transition-all focus-within:border-primary focus-within:[box-shadow:0_2px_10px_-2px_hsl(var(--primary)/0.4)]">
                 <Search className="h-5 w-5 text-background/50" />
