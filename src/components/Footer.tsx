@@ -27,7 +27,7 @@ export const Footer = () => (
             An independent geopolitical magazine covering world conflicts, diplomacy, and global affairs through the lens of ordinary people. Founded and run by International Relations students.
           </p>
           <p className="mt-3 text-xs font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">
-            Independent · Student-run · Since 2024
+            Independent · Student-run · Since 2026
           </p>
           <div className="mt-5 flex gap-2">
             {socials.map(({ Icon, label, href }) => (

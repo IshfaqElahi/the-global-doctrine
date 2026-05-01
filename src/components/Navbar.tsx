@@ -48,7 +48,7 @@ const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
       {/* Top strip */}
       <div className="hidden border-b border-border bg-secondary md:block">
         <div className="container-editorial flex h-8 items-center justify-between text-xs text-muted-foreground">
-          <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2024</span>
+          <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2026</span>
           <span>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
         </div>
       </div>
