@@ -53,28 +53,24 @@ const Index = () => {
     const fetchData = async () => {
       try {
         const [coverData, articlesData, magData] = await Promise.all([
-          // Cover story
           client.fetch(`
             *[_type == "coverStory"] | order(publishedAt desc)[0]{
               title, "slug": slug.current, excerpt, author, publishedAt,
               "imageUrl": mainImage.asset->url
             }
           `),
-          // Latest articles for Editor's picks + carousel
           client.fetch(`
             *[_type == "article"] | order(publishedAt desc)[0...8]{
               _id, title, "slug": slug.current, excerpt, category,
               author, publishedAt, "imageUrl": mainImage.asset->url
             }
           `),
-          // Magazines
           client.fetch(`
             *[_type == "magazineIssue"] | order(publishedAt desc)[0...3]{
               _id, title, issue, publishDate, coverImage
             }
           `),
         ]);
-
         setCoverStory(coverData);
         setLatestArticles(articlesData || []);
         setMagazines(magData || []);
@@ -87,7 +83,6 @@ const Index = () => {
     fetchData();
   }, []);
 
-  // Build carousel data from Sanity articles, fallback to static
   const topicCardsData: TopicCardData[] = categories.map((cat, idx) => {
     const sanityMatch = latestArticles.find((a) => a.category === cat);
     return {
@@ -106,13 +101,12 @@ const Index = () => {
     };
   });
 
-  // Latest 4 articles for Editor's picks
   const editorsPicks = latestArticles.slice(0, 4);
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
       navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery("");
     }
   };
 
@@ -168,6 +162,44 @@ const Index = () => {
         </div>
       </section>
 
+      {/* MAGAZINE — right after hero */}
+      <section className="border-b border-border bg-foreground py-14 text-background">
+        <div className="container-editorial">
+          <div className="mb-10 flex items-end justify-between border-b border-background/20 pb-3">
+            <div>
+              <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
+              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">The Magazine</h2>
+            </div>
+            <Link to="/magazine"
+              className="hidden text-sm font-semibold text-background border border-background/30 px-4 py-2 hover:bg-white hover:text-black transition-all duration-300 sm:inline">
+              All Releases →
+            </Link>
+          </div>
+          <div className="grid gap-8 sm:grid-cols-3">
+            {loading ? (
+              [...Array(3)].map((_, i) => (
+                <div key={i} className="aspect-[4/5] w-full animate-pulse bg-background/20 rounded-sm" />
+              ))
+            ) : magazines.length > 0 ? (
+              magazines.map((mag) => (
+                <Link key={mag._id} to="/magazine" className="group block">
+                  <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
+                    {mag.coverImage && (
+                      <img src={urlFor(mag.coverImage).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
+                        className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    )}
+                  </div>
+                  <h3 className="mt-4 font-serif text-lg font-bold">{mag.issue} — {mag.title}</h3>
+                  <p className="text-sm text-background/60">{mag.publishDate}</p>
+                </Link>
+              ))
+            ) : (
+              <p className="text-sm text-background/60 col-span-3">No magazines published yet.</p>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* TOPICS CAROUSEL */}
       <section className="border-b border-border bg-secondary overflow-hidden">
         <div className="container-editorial py-12 lg:py-16 relative">
@@ -185,113 +217,87 @@ const Index = () => {
         </div>
       </section>
 
-      {/* EDITOR'S PICKS — from Sanity */}
-      <section className="container-editorial py-16">
-        <div className="mb-8 flex items-end justify-between border-b-2 border-foreground pb-3">
-          <div>
-            <p className="kicker text-sm font-bold">Editor's picks</p>
-            <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Latest Articles</h2>
+      {/* EDITOR'S PICKS */}
+      <section className="py-16 bg-background">
+        <div className="container-editorial">
+          <div className="mb-8 flex items-end justify-between border-b-2 border-foreground pb-3">
+            <div>
+              <p className="kicker text-sm font-bold">Editor's picks</p>
+              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Latest Articles</h2>
+            </div>
+            {/* ✅ Now links to /all-articles instead of /topics/international */}
+            <Link to="/all-articles"
+              className="hidden text-sm font-bold text-primary border border-primary px-4 py-2 hover:bg-primary hover:text-white transition-all duration-300 sm:inline">
+              View all →
+            </Link>
           </div>
-          <Link to="/topics/international"
-            className="hidden text-base font-bold text-primary hover:text-primary/80 transition-all duration-300 sm:inline px-4 py-2 rounded-md hover:bg-primary/10">
-            View all →
-          </Link>
-        </div>
-        <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-          {loading
-            ? [...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)
-            : editorsPicks.length > 0
-              ? editorsPicks.map((a) => (
-                <article key={a._id} className="group">
-                  <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
-                    <img src={a.imageUrl} alt={a.title} loading="lazy"
-                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                  </Link>
-                  <div className="pt-3">
-                    <Link to={`/topics/${slugify(a.category)}`}
-                      className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
-                      {a.category}
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {loading
+              ? [...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)
+              : editorsPicks.length > 0
+                ? editorsPicks.map((a) => (
+                  <article key={a._id} className="group bg-background border border-border hover:border-primary/40 hover:shadow-lg transition-all duration-300">
+                    <Link to={`/article/${a.slug}`} className="block overflow-hidden">
+                      <img src={a.imageUrl} alt={a.title} loading="lazy"
+                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </Link>
-                    <Link to={`/article/${a.slug}`}>
-                      <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground hover:text-primary transition-colors line-clamp-2">
-                        {a.title}
-                      </h3>
-                    </Link>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {a.author} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                    </p>
-                  </div>
-                </article>
-              ))
-              : <p className="text-muted-foreground col-span-4">No articles published yet.</p>
-          }
+                    <div className="p-4">
+                      <Link to={`/topics/${slugify(a.category)}`}
+                        className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
+                        {a.category}
+                      </Link>
+                      <Link to={`/article/${a.slug}`}>
+                        <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                          {a.title}
+                        </h3>
+                      </Link>
+                      <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{a.excerpt}</p>
+                      <div className="mt-3 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border pt-3">
+                        <span className="font-semibold text-foreground">{a.author}</span>
+                        <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                        <span>{new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                      </div>
+                    </div>
+                  </article>
+                ))
+                : <p className="text-muted-foreground col-span-4">No articles published yet.</p>
+            }
+          </div>
         </div>
       </section>
 
       {/* INTERVIEW */}
-      <section className="container-editorial py-16">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <div className="overflow-hidden bg-muted">
-              <img src={interview1} alt="Featured interview" loading="lazy"
-                className="aspect-[4/5] w-full object-cover hover:shadow-lg transition-shadow duration-500" />
+      <section className="border-t border-border bg-secondary">
+        <div className="container-editorial py-16">
+          <div className="grid gap-10 lg:grid-cols-12">
+            <div className="lg:col-span-5">
+              <div className="overflow-hidden bg-muted ring-1 ring-border">
+                <img src={interview1} alt="Featured interview" loading="lazy"
+                  className="aspect-[4/5] w-full object-cover hover:scale-105 transition-transform duration-500" />
+              </div>
             </div>
-          </div>
-          <div className="flex flex-col justify-center lg:col-span-7">
-            <p className="kicker">The Interview</p>
-            <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-              "Diplomacy is the art of postponing certainty."
-            </h2>
-            <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-              Ambassador Henrik Aaland on three decades at the negotiating table, the disappearance of the back channel, and what young diplomats should be reading.
-            </p>
-            <div className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">
-              <span className="font-semibold text-foreground">Interview by Layla Haddad</span>
-              <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-              <span>20 min read</span>
+            <div className="flex flex-col justify-center lg:col-span-7">
+              <p className="kicker">The Interview</p>
+              <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
+                "Diplomacy is the art of postponing certainty."
+              </h2>
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
+                Ambassador Henrik Aaland on three decades at the negotiating table, the disappearance of the back channel, and what young diplomats should be reading.
+              </p>
+              <div className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">
+                <span className="font-semibold text-foreground">Interview by Layla Haddad</span>
+                <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                <span>20 min read</span>
+              </div>
+              <Link to="/interview"
+                className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))] hover:gap-3 transition-all duration-300">
+                Read the interview <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
-            <Link to="/interview"
-              className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))] hover:gap-3 transition-all duration-300">
-              Read the interview <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* MAGAZINE */}
-      <section className="border-y border-border bg-foreground py-16 text-background">
-        <div className="container-editorial">
-          <div className="mb-10 flex items-end justify-between border-b border-background/30 pb-3">
-            <div>
-              <p className="text-base font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">Print & digital</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">The Magazine</h2>
-            </div>
-            <Link to="/magazine" className="hidden text-sm font-semibold text-background hover:bg-white hover:text-black hover:-translate-y-1 transition-all duration-300 px-3 py-1 rounded-md sm:inline">Releases</Link>
-          </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {loading ? (
-              [...Array(3)].map((_, i) => <div key={i} className="aspect-[4/5] w-full animate-pulse bg-background/20 rounded-md" />)
-            ) : magazines.length > 0 ? (
-              magazines.map((mag) => (
-                <Link key={mag._id} to="/magazine" className="group block">
-                  <div className="overflow-hidden bg-background/10">
-                    {mag.coverImage && (
-                      <img src={urlFor(mag.coverImage).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
-                        className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    )}
-                  </div>
-                  <h3 className="mt-4 font-serif text-lg font-bold">{mag.issue} — {mag.title}</h3>
-                  <p className="text-sm text-background/60">{mag.publishDate}</p>
-                </Link>
-              ))
-            ) : (
-              <p className="text-sm text-background/60">No magazines published yet.</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      
     </Layout>
   );
 };

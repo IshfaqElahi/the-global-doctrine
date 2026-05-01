@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { PageTransition } from "@/components/PageTransition";
 import { ThemeProvider } from "@/context/ThemeContext";
-
+import AllArticles from "./pages/AllArticles.tsx";
 import Index from "./pages/Index.tsx";
 import NotFound from "./pages/NotFound.tsx";
 import Topics from "./pages/Topics.tsx";
@@ -27,6 +27,7 @@ const AppRoutes = () => {
         <Routes location={location}>
           <Route path="/" element={<Index />} />
           <Route path="/topics/:category" element={<Topics />} />
+          <Route path="/all-articles" element={<AllArticles />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/about/:section" element={<About />} />
           <Route path="/magazine" element={<Magazine />} />
