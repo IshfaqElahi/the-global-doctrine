@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity'
 
 export const magazineIssue = defineType({
   name: 'magazineIssue',
@@ -9,7 +9,7 @@ export const magazineIssue = defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      description: 'The main title of the issue (e.g., The Global Doctrine)',
+      description: 'Main title of the issue (e.g., The Global Doctrine)',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
@@ -28,16 +28,27 @@ export const magazineIssue = defineType({
     defineField({
       name: 'coverImage',
       title: 'Cover Image',
+      description: '📐 Recommended size: 800×1067px (3:4 portrait — standard magazine cover). Minimum width: 600px. Use high-resolution JPG or WebP. This appears in the Magazine section on the homepage.',
       type: 'image',
-      description: 'Upload the JPG or PNG cover',
-      options: { hotspot: true }, 
+      options: { hotspot: true },
+      fields: [
+        {
+          name: 'alt',
+          type: 'string',
+          title: 'Alternative Text',
+          description: 'Describe the cover for accessibility.',
+        },
+      ],
     }),
     defineField({
       name: 'pdfFile',
       title: 'Magazine PDF',
+      description: 'Upload the full PDF version of this issue.',
       type: 'file',
-      description: 'Upload the PDF version here',
       options: { accept: '.pdf' },
     }),
   ],
+  preview: {
+    select: { title: 'title', subtitle: 'issue', media: 'coverImage' },
+  },
 })

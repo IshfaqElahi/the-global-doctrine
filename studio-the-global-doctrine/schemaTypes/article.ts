@@ -23,15 +23,7 @@ export default defineType({
       title: "Category",
       type: "string",
       options: {
-        list: [
-          "Cover Story",
-          "International",
-          "Europe",
-          "Asia",
-          "Africa",
-          "Middle East",
-          "Diplomacy",
-        ],
+        list: ["Cover Story", "International", "Europe", "Asia", "Africa", "Middle East", "Diplomacy"],
         layout: "radio",
       },
       validation: (R) => R.required(),
@@ -53,7 +45,7 @@ export default defineType({
     defineField({
       name: "excerpt",
       title: "Excerpt",
-      description: "Short summary shown on cards and in search results.",
+      description: "Short summary shown on article cards and search results. Max 300 characters.",
       type: "text",
       rows: 3,
       validation: (R) => R.required().max(300),
@@ -61,6 +53,7 @@ export default defineType({
     defineField({
       name: "mainImage",
       title: "Main Image",
+      description: "📐 Recommended size: 1200×800px (4:3) or 1600×900px (16:9). Minimum width: 800px. Used on article cards, carousels, and the article header. Use JPG or WebP.",
       type: "image",
       options: { hotspot: true },
       fields: [
@@ -68,7 +61,7 @@ export default defineType({
           name: "alt",
           type: "string",
           title: "Alternative Text",
-          description: "Important for SEO and accessibility.",
+          description: "Describe the image for SEO and screen readers.",
         },
       ],
       validation: (R) => R.required(),
@@ -82,16 +75,19 @@ export default defineType({
         {
           type: "image",
           options: { hotspot: true },
-          fields: [{ name: "alt", type: "string", title: "Alt Text" }],
+          fields: [
+            {
+              name: "alt",
+              type: "string",
+              title: "Alt Text",
+              description: "📐 Inline images: recommended 1200×675px (16:9). Use JPG or WebP.",
+            },
+          ],
         },
       ],
     }),
   ],
   preview: {
-    select: {
-      title: "title",
-      subtitle: "category",
-      media: "mainImage",
-    },
+    select: { title: "title", subtitle: "category", media: "mainImage" },
   },
 });

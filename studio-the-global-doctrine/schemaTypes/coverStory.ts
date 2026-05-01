@@ -14,18 +14,15 @@ export default defineType({
     defineField({
       name: 'slug',
       title: 'Article Slug',
-      description: 'This is the URL path for the article (e.g., rising-tensions-south-china-sea)',
+      description: 'URL path for the article (e.g., rising-tensions-south-china-sea)',
       type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+      options: { source: 'title', maxLength: 96 },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'excerpt',
       title: 'Short Excerpt',
-      description: 'The short paragraph that appears below the headline on the homepage.',
+      description: 'Short paragraph shown below the headline on the homepage.',
       type: 'text',
       validation: (Rule) => Rule.required(),
     }),
@@ -39,36 +36,28 @@ export default defineType({
       name: 'publishedAt',
       title: 'Published Date',
       type: 'date',
-      options: {
-        dateFormat: 'MMMM D, YYYY',
-      },
+      options: { dateFormat: 'MMMM D, YYYY' },
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'mainImage',
       title: 'Hero Image',
-      description: 'Upload a high-quality, wide aspect-ratio image (16:10 or 16:9 works best).',
+      description: '📐 Recommended size: 1600×900px (16:9) or 1600×1000px (16:10). Minimum width: 1200px. Use high-resolution JPG or WebP. This image appears as the large hero on the homepage.',
       type: 'image',
-      options: {
-        hotspot: true, // Allows you to crop and focus the image in Sanity
-      },
+      options: { hotspot: true },
       fields: [
         {
           name: 'alt',
           type: 'string',
           title: 'Alternative Text',
-          description: 'Important for SEO and accessibility.',
-        }
+          description: 'Describe the image for SEO and screen readers.',
+        },
       ],
       validation: (Rule) => Rule.required(),
     }),
   ],
   preview: {
-    select: {
-      title: 'title',
-      author: 'author',
-      media: 'mainImage',
-    },
+    select: { title: 'title', author: 'author', media: 'mainImage' },
     prepare(selection) {
       const { author } = selection
       return { ...selection, subtitle: author && `by ${author}` }

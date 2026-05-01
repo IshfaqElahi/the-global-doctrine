@@ -132,7 +132,7 @@ const Index = () => {
               <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
                 <div className="overflow-hidden bg-muted">
                   <img src={coverStory.imageUrl} alt={coverStory.title} width={1600} height={1024}
-                    className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+                    className="aspect-[10/16] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
                 </div>
               </Link>
               <div className="flex flex-col justify-center lg:col-span-5">
@@ -236,7 +236,7 @@ const Index = () => {
               ? [...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)
               : editorsPicks.length > 0
                 ? editorsPicks.map((a) => (
-                  <article key={a._id} className="group bg-background border border-border hover:border-primary/40 hover:shadow-lg transition-all duration-300">
+                  <article key={a._id} className="group bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}>
                     <Link to={`/article/${a.slug}`} className="block overflow-hidden">
                       <img src={a.imageUrl} alt={a.title} loading="lazy"
                         className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
