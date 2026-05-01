@@ -33,7 +33,6 @@ import { ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { Layout } from "@/components/Layout";
 import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
-import { Newsletter } from "@/components/Newsletter";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
 import { categories } from "@/data/articles";
 import { client, urlFor } from "@/lib/sanity";
@@ -292,7 +291,7 @@ const Index = () => {
         </div>
       </section>
 
-      <div id="newsletter"><Newsletter /></div>
+      
     </Layout>
   );
 };

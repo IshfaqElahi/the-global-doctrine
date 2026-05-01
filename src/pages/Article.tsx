@@ -50,7 +50,7 @@ const Article = () => {
       })
       .catch(() => { if (!staticArticle) setNotFound(true); })
       .finally(() => setLoading(false));
-  }, [slug]);
+  }, [slug, staticArticle]);
 
   if (notFound) return <Navigate to="/" replace />;
 
