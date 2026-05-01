@@ -42,7 +42,7 @@ export const Navbar = () => {
         to={to}
         className={cn(
           "text-sm font-medium uppercase tracking-wide transition-colors hover:text-primary",
-          active ? "text-primary" : "text-background"
+          active ? "text-primary" : "text-[#f3f5f7] dark:text-background"
         )}
       >
         {label}
@@ -52,11 +52,12 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground transition-colors duration-400">
+      {/* 1 & 2. Added bg opacity (/90) and backdrop-blur-md for transparency */}
+      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/90 backdrop-blur-md transition-colors duration-400">
 
         {/* Top strip */}
         <div className="hidden border-b border-background/10 md:block">
-          <div className="container-editorial flex h-8 items-center justify-between text-xs text-background/50">
+          <div className="container-editorial flex h-8 items-center justify-between text-xs text-[#f3f5f7]/60 dark:text-background/50">
             <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2024</span>
             <span>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
           </div>
@@ -64,11 +65,12 @@ export const Navbar = () => {
 
         <div className="container-editorial flex h-20 items-center justify-between gap-4">
 
-          {/* Logo — needs to appear light on dark navbar */}
+          {/* Logo */}
           <Link to="/" className="group inline-flex items-center gap-2" aria-label="The Global Doctrine — Home">
-            <img src="/logo.png" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain brightness-0 invert" />
+            {/* 3. Removed brightness-0 invert so the real logo appears! */}
+            <img src="/logo.png" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
             <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight">
-              <span className="text-background">The Global </span>
+              <span className="text-[#f3f5f7] dark:text-background">The Global </span>
               <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
             </span>
           </Link>
@@ -79,7 +81,7 @@ export const Navbar = () => {
 
             {/* Topics dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-background transition-colors hover:text-primary">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-colors hover:text-primary">
                 Topics <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-56 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
@@ -103,7 +105,7 @@ export const Navbar = () => {
 
             {/* About dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-background transition-colors hover:text-primary">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-colors hover:text-primary">
                 About Us <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-48 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
@@ -124,7 +126,7 @@ export const Navbar = () => {
             <button
               onClick={toggle}
               aria-label="Toggle dark mode"
-              className="rounded p-2 text-background transition-colors hover:bg-background/10"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
@@ -133,7 +135,7 @@ export const Navbar = () => {
             <button
               onClick={() => setSearchOpen((v) => !v)}
               aria-label="Search"
-              className="rounded p-2 text-background transition-colors hover:bg-background/10"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10"
             >
               <Search className="h-4 w-4" />
             </button>
@@ -142,7 +144,7 @@ export const Navbar = () => {
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}
-              className="rounded p-2 text-background transition-colors hover:bg-background/10 lg:hidden"
+              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-colors hover:bg-background/10 lg:hidden"
             >
               <span
                 className="block transition-transform duration-300"
