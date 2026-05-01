@@ -281,8 +281,12 @@ const Article = () => {
         {/* Hero image */}
         {image && (
           <div className="container-editorial">
-            <div className="-mt-px overflow-hidden bg-muted">
-              <img src={image} alt={title} className="aspect-[16/9] w-full object-cover" />
+            <div className="-mt-px overflow-hidden bg-muted/50 flex justify-center py-4 sm:py-8">
+              <img 
+                src={image} 
+                alt={title} 
+                className="w-full h-auto max-h-[75vh] object-contain" 
+              />
             </div>
           </div>
         )}
