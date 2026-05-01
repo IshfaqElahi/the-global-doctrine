@@ -44,7 +44,7 @@ export const Navbar = () => {
           "text-sm font-medium uppercase tracking-wide transition-all duration-300",
           active 
             ? "text-primary [text-shadow:0_0_12px_hsl(var(--primary)/0.6)]" 
-            : "text-[#f3f5f7] dark:text-background hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
+            : "text-foreground hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
         )}
       >
         {label}
@@ -54,12 +54,12 @@ export const Navbar = () => {
 
   return (
     <>
-      {/* Increased transparency to 70 and blur to lg */}
-      <header className="sticky top-0 z-50 border-b border-background/10 bg-foreground/70 backdrop-blur-lg transition-colors duration-400">
+      {/* Changed to bg-background/70 for a light, transparent glassy look */}
+      <header className="sticky top-0 z-50 border-b border-border bg-background/70 backdrop-blur-lg transition-colors duration-400">
 
         {/* Top strip */}
-        <div className="hidden border-b border-background/10 md:block">
-          <div className="container-editorial flex h-8 items-center justify-between text-xs text-[#f3f5f7]/60 dark:text-background/50">
+        <div className="hidden border-b border-border md:block">
+          <div className="container-editorial flex h-8 items-center justify-between text-xs text-foreground/60">
             <span className="uppercase tracking-[0.2em]">Independent · Geopolitical · Since 2024</span>
             <span>{new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" })}</span>
           </div>
@@ -71,7 +71,7 @@ export const Navbar = () => {
           <Link to="/" className="group inline-flex items-center gap-2" aria-label="The Global Doctrine — Home">
             <img src="/logo.svg" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
             <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight transition-all duration-300 group-hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.3)]">
-              <span className="text-[#f3f5f7] dark:text-background transition-colors group-hover:text-primary">The Global </span>
+              <span className="text-foreground transition-colors group-hover:text-primary">The Global </span>
               <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
             </span>
           </Link>
@@ -82,7 +82,7 @@ export const Navbar = () => {
 
             {/* Topics dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-foreground transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
                 Topics <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-56 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
@@ -106,7 +106,7 @@ export const Navbar = () => {
 
             {/* About dropdown */}
             <div className="group relative">
-              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-[#f3f5f7] dark:text-background transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
+              <button className="inline-flex items-center gap-1 text-sm font-medium uppercase tracking-wide text-foreground transition-all duration-300 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]">
                 About Us <ChevronDown className="h-3.5 w-3.5" />
               </button>
               <div className="invisible absolute left-1/2 top-full z-50 mt-0 w-48 -translate-x-1/2 border border-border bg-popover opacity-0 shadow-lg transition-all group-hover:visible group-hover:opacity-100">
@@ -127,7 +127,7 @@ export const Navbar = () => {
             <button
               onClick={toggle}
               aria-label="Toggle dark mode"
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
+              className="rounded p-2 text-foreground transition-all duration-300 hover:bg-foreground/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
             >
               {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
@@ -136,7 +136,7 @@ export const Navbar = () => {
             <button
               onClick={() => setSearchOpen((v) => !v)}
               aria-label="Search"
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
+              className="rounded p-2 text-foreground transition-all duration-300 hover:bg-foreground/10 hover:text-primary hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.6)]"
             >
               <Search className="h-4 w-4" />
             </button>
@@ -145,7 +145,7 @@ export const Navbar = () => {
             <button
               onClick={() => setOpen((v) => !v)}
               aria-label={open ? "Close menu" : "Open menu"}
-              className="rounded p-2 text-[#f3f5f7] dark:text-background transition-all duration-300 hover:bg-background/10 hover:text-primary lg:hidden"
+              className="rounded p-2 text-foreground transition-all duration-300 hover:bg-foreground/10 hover:text-primary lg:hidden"
             >
               <span
                 className="block transition-transform duration-300"
@@ -157,12 +157,12 @@ export const Navbar = () => {
           </div>
         </div>
 
-        {/* Search bar */}
+        {/* Search bar dropdown */}
         {searchOpen && (
-          <div className="border-t border-background/10 bg-foreground/70 backdrop-blur-lg">
+          <div className="border-t border-border bg-background/70 backdrop-blur-lg">
             <div className="container-editorial py-4">
-              <div className="flex items-center gap-3 border-b-2 border-background/30 py-2 transition-all focus-within:border-primary focus-within:[box-shadow:0_2px_10px_-2px_hsl(var(--primary)/0.4)]">
-                <Search className="h-5 w-5 text-background/50" />
+              <div className="flex items-center gap-3 border-b-2 border-foreground/30 py-2 transition-all focus-within:border-primary focus-within:[box-shadow:0_2px_10px_-2px_hsl(var(--primary)/0.4)]">
+                <Search className="h-5 w-5 text-foreground/50" />
                 <input
                   autoFocus
                   type="search"
@@ -170,7 +170,7 @@ export const Navbar = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={handleSearch}
                   placeholder="Search articles, interviews, regions… (press Enter)"
-                  className="w-full bg-transparent text-base text-background outline-none placeholder:text-background/40"
+                  className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-foreground/40"
                 />
               </div>
             </div>
