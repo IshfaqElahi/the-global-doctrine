@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
-import { Instagram, Mail, Twitter, Youtube } from "lucide-react";
+import { Facebook, Instagram, Linkedin, Mail, MessageCircle } from "lucide-react";
 import { Logo } from "./Logo";
 import { categories } from "@/data/articles";
 
 const slug = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
 const socials = [
-  { Icon: Twitter, label: "X / Twitter", href: "https://twitter.com/theglobaldoctrine" },
-  { Icon: Instagram, label: "Instagram", href: "https://instagram.com/theglobaldoctrine" },
-  { Icon: Youtube, label: "YouTube", href: "https://youtube.com/@theglobaldoctrine" },
+  { Icon: Facebook, label: "Facebook", href: "https://facebook.com/theglobaldoctrine" },
+  { Icon: Instagram, label: "Instagram", href: "https://instagram.com/the_global_doctrine" },
+  { Icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/company/theglobaldoctrine" },
+  { Icon: MessageCircle, label: "WhatsApp", href: "https://wa.me/8801612970419" }, // Uses Bangladesh +880 country code
   { Icon: Mail, label: "Email", href: "mailto:theglobaldoctrine.mag@gmail.com" },
 ];
 
