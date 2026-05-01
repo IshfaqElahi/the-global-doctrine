@@ -23,15 +23,14 @@ const Magazine = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        // Inside Magazine.tsx > useEffect > fetchIssues
-const query = `*[_type == "magazineIssue"] | order(publishedAt desc) {
-  _id,
-  title,
-  issue,
-  publishDate,
-  coverImage,
-  "pdfUrl": pdfFile.asset->url
-}`;
+        const query = `*[_type == "magazineIssue"] | order(publishedAt desc) {
+          _id,
+          title,
+          issue,
+          publishDate,
+          coverImage,
+          "pdfUrl": pdfFile.asset->url
+        }`;
         
         const data = await client.fetch(query);
         setIssues(data);
@@ -89,14 +88,39 @@ const query = `*[_type == "magazineIssue"] | order(publishedAt desc) {
                 </div>
                 <p className="kicker mt-5">{m.issue} {m.publishDate ? `· ${m.publishDate}` : ''}</p>
                 <h3 className="mt-1 font-serif text-2xl font-bold leading-tight">{m.title}</h3>
-                <div className="mt-4 flex gap-2">
+                
+                {/* Updated Button Group */}
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="bg-[hsl(var(--brand-red))] text-white hover:bg-[hsl(var(--brand-red))/90] border-none transition-colors" 
+                    onClick={() => window.open('https://wa.me/8801612970419', '_blank')}
+                  >
+                    Buy Print
+                  </Button>
+
                   {m.pdfUrl ? (
                     <>
-                      <Button variant="default" size="sm" className="bg-foreground text-background hover:bg-foreground/90" onClick={() => handleDownloadPDF(m.pdfUrl)}>Download PDF</Button>
-                      <Button variant="outline" size="sm" onClick={() => window.open('https://wa.me/8801612970419', '_blank')}>Buy Now</Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm" 
+                        className="border-foreground/20 hover:bg-foreground/5 transition-colors"
+                        onClick={() => window.open(m.pdfUrl, '_blank')}
+                      >
+                        View
+                      </Button>
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="bg-foreground text-background hover:bg-foreground/90 transition-colors" 
+                        onClick={() => handleDownloadPDF(m.pdfUrl)}
+                      >
+                        Download
+                      </Button>
                     </>
                   ) : (
-                    <p className="text-sm italic text-muted-foreground">PDF coming soon</p>
+                    <span className="text-sm italic text-muted-foreground ml-1">Digital copy coming soon</span>
                   )}
                 </div>
               </article>
