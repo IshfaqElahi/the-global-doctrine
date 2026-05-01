@@ -6,14 +6,14 @@
 
 /* The Global Doctrine — editorial design system. All colors HSL. */
 @layer base {
-@keyframes slideInRight {
-  from { transform: translateX(100%); opacity: 0; }
-  to   { transform: translateX(0);    opacity: 1; }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
 
   :root {
     --background: 210 17% 95%;
@@ -85,15 +85,15 @@
   }
 }
 
-/* Smooth dark/light mode transition */
-html {
-  transition: background-color 0.4s ease;
+/* Smooth, highly performant dark/light mode layout transition */
+html, body {
+  transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
 }
 
 @layer base {
   * { 
     @apply border-border;
-    transition: background-color 0.4s ease, color 0.3s ease, border-color 0.3s ease;
+    /* Removed the global transition from here to stop lag */
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
@@ -115,6 +115,6 @@ html {
     @apply relative inline-block after:absolute after:left-0 after:-bottom-0.5 after:h-px after:w-0 after:bg-current after:transition-all hover:after:w-full;
   }
   .article-title {
-    @apply font-serif font-bold leading-[1.1] text-foreground hover:text-primary transition-colors;
+    @apply font-serif font-bold leading-[1.1] text-foreground hover:text-primary transition-colors duration-300;
   }
 }
