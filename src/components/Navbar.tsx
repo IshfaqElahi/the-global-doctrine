@@ -68,7 +68,7 @@ export const Navbar = () => {
           {/* Logo */}
           <Link to="/" className="group inline-flex items-center gap-2" aria-label="The Global Doctrine — Home">
             {/* 3. Removed brightness-0 invert so the real logo appears! */}
-            <img src="/logo.png" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
+            <img src="/logo.svg" alt="The Global Doctrine Logo" className="h-10 w-10 object-contain" />
             <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight">
               <span className="text-[#f3f5f7] dark:text-background">The Global </span>
               <span className="text-[hsl(var(--brand-red))]">Doctrine</span>
