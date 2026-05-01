@@ -16,6 +16,11 @@ import Magazine from "./pages/Magazine.tsx";
 import Social from "./pages/Social.tsx";
 import Article from "./pages/Article.tsx";
 import Search from "./pages/Search.tsx";
+// import at top with other pages
+import InterviewArticle from "./pages/InterviewArticle.tsx";
+
+// inside <Routes> before the * catch-all
+<Route path="/interview/:slug" element={<InterviewArticle />} />
 
 const queryClient = new QueryClient();
 

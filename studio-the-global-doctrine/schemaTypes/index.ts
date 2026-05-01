@@ -1,9 +1,11 @@
-import {magazineIssue} from './magazineIssue'
+import { magazineIssue } from './magazineIssue'
 import coverStory from './coverStory'
-import article from "./article";
+import article from './article'
+import interview from './interview'
 
 export const schemaTypes = [
   magazineIssue,
   coverStory,
-  article, // <-- Add it right here!
+  article,
+  interview,
 ]
