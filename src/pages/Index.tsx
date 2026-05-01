@@ -113,9 +113,9 @@ const Index = () => {
   return (
     <Layout>
       <Helmet>
-        <title>The Global Doctrine — Independent Geopolitical Magazine</title>
+        <title>The Global Doctrine</title>
         <meta name="description" content="Independent reporting on world conflicts, diplomacy, and global affairs through the lens of ordinary people." />
-        <meta property="og:title" content="The Global Doctrine — Independent Geopolitical Magazine" />
+        <meta property="og:title" content="The Global Doctrine" />
         <meta property="og:description" content="Independent reporting on world conflicts, diplomacy, and global affairs." />
         <meta property="og:url" content="https://theglobaldoctrine.online/" />
         <meta property="og:image" content="https://theglobaldoctrine.online/tgd-cover-final.jpg" />
