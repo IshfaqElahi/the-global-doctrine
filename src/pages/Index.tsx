@@ -132,7 +132,7 @@ const Index = () => {
         <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
           <div className="overflow-hidden bg-muted">
             <img src={coverStory.imageUrl} alt={coverStory.title} width={1600} height={1024}
-              className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+              className="aspect-[10/16] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
           </div>
         </Link>
         <div className="flex flex-col justify-center lg:col-span-5">
