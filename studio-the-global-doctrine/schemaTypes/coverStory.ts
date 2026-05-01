@@ -2,7 +2,7 @@ import { defineField, defineType } from 'sanity'
 
 export default defineType({
   name: 'coverStory',
-  title: 'Cover Story (Hero Section)',
+  title: 'Cover Story',
   type: 'document',
   fields: [
     defineField({
@@ -42,7 +42,7 @@ export default defineType({
     defineField({
       name: 'mainImage',
       title: 'Hero Image',
-      description: '📐 Recommended size: 1600×900px. Minimum width: 1200px. This image appears as the large hero on the homepage.',
+      description: '📐 Recommended size: 1600×900px. Minimum width: 1200px.',
       type: 'image',
       options: { hotspot: true },
       fields: [
@@ -51,9 +51,45 @@ export default defineType({
           type: 'string',
           title: 'Alternative Text',
           description: 'Important for SEO and accessibility.',
+          validation: (Rule) => Rule.required(),
         }),
       ],
       validation: (Rule) => Rule.required(),
+    }),
+    
+    // --- NEW: THE FULL ARTICLE BODY ---
+    defineField({
+      name: 'body',
+      title: 'Article Body',
+      description: 'Write the full cover story here. This content is shown when readers click "Read the cover story".',
+      type: 'array',
+      of: [
+        { type: 'block' },
+        { 
+          type: 'image', 
+          options: { hotspot: true },
+          fields: [
+            { name: 'alt', type: 'string', title: 'Alternative Text', description: 'Important for SEO.' },
+            { name: 'caption', type: 'string', title: 'Image Caption' }
+          ]
+        }
+      ],
+      validation: (Rule) => Rule.required(),
+    }),
+
+    // --- NEW: SEO SETTINGS ---
+    defineField({
+      name: 'seoTitle',
+      title: 'SEO Title (Optional)',
+      description: 'Custom title for Google search results. If left blank, the main Headline Title is used.',
+      type: 'string',
+    }),
+    defineField({
+      name: 'seoDescription',
+      title: 'SEO Meta Description',
+      description: 'A 150-160 character summary that appears under the blue link in Google search results.',
+      type: 'text',
+      validation: (Rule) => Rule.max(160).warning('Keep under 160 characters for best Google ranking.'),
     }),
   ],
   preview: {

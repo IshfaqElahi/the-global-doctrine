@@ -17,12 +17,14 @@ interface SanityArticle {
   title: string;
   slug: string;
   excerpt: string;
-  category: string;
+  category?: string; // Optional because Cover Story doesn't have a category
   author: string;
   publishedAt: string;
   imageUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 // Portable text component map — editorial styled
@@ -127,8 +129,9 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
   const [related, setRelated] = useState<SanityArticle[]>([]);
 
   useEffect(() => {
+    // Also updated this query to look for both types just in case
     client.fetch(`
-      *[_type == "article" && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
+      *[_type in ["article", "coverStory"] && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
         title, "slug": slug.current, category, author, publishedAt, "imageUrl": mainImage.asset->url
       }
     `, { category, slug: currentSlug })
@@ -155,9 +158,9 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
                 className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
             </Link>
             <div className="p-4">
-              <Link to={`/topics/${slugify(a.category)}`}
+              <Link to={`/topics/${slugify(a.category || "cover-story")}`}
                 className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
-                {a.category}
+                {a.category || "Cover Story"}
               </Link>
               <Link to={`/article/${a.slug}`}>
                 <h4 className="mt-2 font-serif text-base font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
@@ -186,10 +189,11 @@ const Article = () => {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
+    // CRITICAL FIX: The query now searches BOTH "article" and "coverStory" document types
     client.fetch(`
-      *[_type == "article" && slug.current == $slug][0]{
+      *[_type in ["article", "coverStory"] && slug.current == $slug][0]{
         title, "slug": slug.current, excerpt, category, author, publishedAt,
-        "imageUrl": mainImage.asset->url, body
+        "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription
       }
     `, { slug })
       .then((data) => {
@@ -204,7 +208,8 @@ const Article = () => {
 
   const title = sanityArticle?.title ?? staticArticle?.title ?? "";
   const excerpt = sanityArticle?.excerpt ?? staticArticle?.excerpt ?? "";
-  const category = sanityArticle?.category ?? staticArticle?.category ?? "";
+  // Fallback to "Cover Story" if the category is undefined
+  const category = sanityArticle?.category ?? staticArticle?.category ?? "Cover Story";
   const author = sanityArticle?.author ?? staticArticle?.author ?? "";
   const image = sanityArticle?.imageUrl ?? (staticArticle?.image as string) ?? "";
   const date = sanityArticle
@@ -212,6 +217,10 @@ const Article = () => {
     : staticArticle?.date ?? "";
   const readTime = calcReadTime(sanityArticle?.body ?? []);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+
+  // Apply SEO logic
+  const metaTitle = sanityArticle?.seoTitle ? `${sanityArticle.seoTitle} — The Global Doctrine` : `${title} — The Global Doctrine`;
+  const metaDescription = sanityArticle?.seoDescription || excerpt;
 
   if (loading) {
     return (
@@ -226,10 +235,10 @@ const Article = () => {
       <ReadingProgressBar />
 
       <Helmet>
-        <title>{title} — The Global Doctrine</title>
-        <meta name="description" content={excerpt} />
-        <meta property="og:title" content={title} />
-        <meta property="og:description" content={excerpt} />
+        <title>{metaTitle}</title>
+        <meta name="description" content={metaDescription} />
+        <meta property="og:title" content={metaTitle} />
+        <meta property="og:description" content={metaDescription} />
         <meta property="og:type" content="article" />
         {image && <meta property="og:image" content={image} />}
         <meta property="og:url" content={pageUrl} />
