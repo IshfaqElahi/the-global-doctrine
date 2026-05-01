@@ -122,114 +122,44 @@ const Index = () => {
         <link rel="canonical" href="https://theglobaldoctrine.online/" />
       </Helmet>
 
-      {/* HERO — Magazine Cover Style */}
-<section className="border-b border-border bg-background">
-  {loading || !coverStory ? (
-    <div className="container-editorial py-10 lg:py-16">
+{/* HERO */}
+<section className="border-b border-border">
+  <div className="container-editorial py-10 lg:py-16">
+    {loading || !coverStory ? (
       <SkeletonCardHero />
-    </div>
-  ) : (
-    <div className="grid lg:grid-cols-12 min-h-[85vh]">
-
-      {/* LEFT — Full bleed magazine cover image */}
-      <Link
-        to={`/article/${coverStory.slug}`}
-        className="group relative block overflow-hidden bg-muted lg:col-span-7 min-h-[55vw] lg:min-h-0"
-      >
-        <img
-          src={coverStory.imageUrl}
-          alt={coverStory.title}
-          width={1600}
-          height={2133}
-          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-[1.03]"
-        />
-        {/* Bottom gradient for readability on mobile */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent lg:hidden" />
-
-        {/* Mobile-only text overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-6 lg:hidden">
-          <span className="inline-block bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+    ) : (
+      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
+          <div className="overflow-hidden bg-muted">
+            <img src={coverStory.imageUrl} alt={coverStory.title} width={1600} height={1024}
+              className="aspect-[16/10] w-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
+          </div>
+        </Link>
+        <div className="flex flex-col justify-center lg:col-span-5">
+          <span className="inline-block self-start bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
             Cover Story
           </span>
-          <h1 className="mt-3 font-serif text-2xl font-bold leading-tight text-white">
-            {coverStory.title}
-          </h1>
-        </div>
-
-        {/* Thin red rule on right edge — magazine spine feel */}
-        <div className="absolute right-0 top-0 bottom-0 w-[3px] bg-[hsl(var(--brand-red))] hidden lg:block" />
-      </Link>
-
-      {/* RIGHT — Editorial content panel */}
-      <div className="flex flex-col justify-between lg:col-span-5 px-6 py-10 lg:px-12 lg:py-16 border-l border-border bg-background">
-
-        {/* Top meta bar */}
-        <div className="flex items-center justify-between border-b border-border pb-4 mb-8">
-          <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-muted-foreground">
-            The Global Doctrine
-          </span>
-          <span className="text-[11px] text-muted-foreground">
-            {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
-          </span>
-        </div>
-
-        {/* Main editorial content */}
-        <div className="flex-1 flex flex-col justify-center">
-          <div className="mb-6">
-            <span className="inline-flex items-center gap-2">
-              <span className="h-[2px] w-6 bg-[hsl(var(--brand-red))]" />
-              <span className="text-[11px] font-bold uppercase tracking-[0.25em] text-[hsl(var(--brand-red))]">
-                Cover Story
-              </span>
-            </span>
-          </div>
-
-          <h1 className="hidden lg:block font-serif text-4xl font-bold leading-[1.05] tracking-tight xl:text-5xl 2xl:text-6xl">
-            <Link to={`/article/${coverStory.slug}`} className="hover:text-primary transition-colors duration-300">
+          <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+            <Link to={`/article/${coverStory.slug}`} className="hover:text-primary transition-colors">
               {coverStory.title}
             </Link>
           </h1>
-
-          {/* Decorative rule */}
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-[1px] w-12 bg-[hsl(var(--brand-red))]" />
-            <div className="h-[1px] flex-1 bg-border" />
+          <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{coverStory.excerpt}</p>
+          <div className="mt-6 flex items-center gap-3 text-sm">
+            <span className="font-semibold text-foreground">{coverStory.author}</span>
+            <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+            <span className="text-muted-foreground">
+              {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+            </span>
           </div>
-
-          <p className="text-base leading-relaxed text-muted-foreground lg:text-lg">
-            {coverStory.excerpt}
-          </p>
-
-          <div className="mt-8 flex items-center gap-3 text-sm">
-            <div className="h-8 w-[2px] bg-[hsl(var(--brand-red))]" />
-            <div>
-              <p className="font-semibold text-foreground">{coverStory.author}</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom CTA */}
-        <div className="mt-10 pt-8 border-t border-border">
-          <Link
-            to={`/article/${coverStory.slug}`}
-            className="group/btn inline-flex w-full items-center justify-between bg-foreground px-6 py-4 text-background transition-all duration-300 hover:bg-[hsl(var(--brand-red))]"
-          >
-            <span className="text-sm font-bold uppercase tracking-widest">Read the Cover Story</span>
-            <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover/btn:translate-x-1" />
+          <Link to={`/article/${coverStory.slug}`}
+            className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 transition-all duration-300">
+            Read the cover story <ArrowRight className="h-4 w-4" />
           </Link>
-
-          <div className="mt-4 flex items-center gap-2 text-[11px] text-muted-foreground">
-            <span className="h-1 w-1 rounded-full bg-[hsl(var(--brand-red))]" />
-            <span className="uppercase tracking-wider">Independent · Geopolitical · Since 2024</span>
-          </div>
         </div>
       </div>
-
-    </div>
-  )}
+    )}
+  </div>
 </section>
 
       {/* MAGAZINE — right after hero */}
