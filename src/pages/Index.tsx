@@ -43,6 +43,7 @@ import { Helmet } from "react-helmet-async";
 import { Layout } from "@/components/Layout";
 import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
+import { DoctrineBrief } from "@/components/DoctrineBrief";
 import { categories } from "@/data/articles";
 import { client, urlFor } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.jpg";
@@ -286,7 +287,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* INTERVIEW — synced from Sanity */}
+      {/* INTERVIEW */}
       {!loading && latestInterview && (
         <section className="border-t border-border bg-secondary">
           <div className="container-editorial py-16">
@@ -349,6 +350,9 @@ const Index = () => {
           </div>
         </section>
       )}
+
+      {/* THE DOCTRINE BRIEF FORM */}
+      <DoctrineBrief />
 
     </Layout>
   );
