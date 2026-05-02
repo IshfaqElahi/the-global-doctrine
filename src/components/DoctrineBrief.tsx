@@ -146,7 +146,7 @@ export const DoctrineBrief = () => {
               disabled={isSubmitting}
               className="mt-4 w-full flex items-center justify-center gap-2 bg-[hsl(var(--brand-red))] py-4 text-sm font-bold uppercase tracking-[0.2em] text-white transition-all hover:bg-[hsl(var(--brand-red))/90] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--brand-red))] focus:ring-offset-2 focus:ring-offset-background disabled:opacity-70 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? "Transmitting..." : "Send"}
+              {isSubmitting ? "Sending..." : "Send"}
               {!isSubmitting && <Send className="h-4 w-4" />}
             </button>
           </form>
