@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import type { Article } from "@/data/articles";
 import { cn } from "@/lib/utils";
 
 const slug = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
-export const ArticleCard = ({ article, variant = "default" }: { article: Article; variant?: "default" | "compact" | "horizontal" }) => {
+export const ArticleCard = ({
+  article,
+  variant = "default",
+}: {
+  article: Article;
+  variant?: "default" | "compact" | "horizontal";
+}) => {
   const isUrgent = article.category === "Cover Story" || article.category === "Middle East";
   const tagClass = isUrgent
     ? "bg-[hsl(var(--brand-red))] text-brand-red-foreground"
@@ -13,29 +20,54 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
 
   if (variant === "horizontal") {
     return (
-      <article className="group grid grid-cols-[1fr_2fr] gap-4 bg-background border border-foreground/20 p-3 shadow-sm transition-all hover:shadow-md">
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -3, boxShadow: "0 12px 28px -8px rgba(0,0,0,0.12)" }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="group grid grid-cols-[1fr_2fr] gap-4 bg-background border border-border p-3 shadow-sm cursor-pointer"
+        style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+      >
         <Link to={`/article/${article.slug}`} className="overflow-hidden bg-muted">
-          <img src={article.image} alt={article.title} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
+          <img src={article.image} alt={article.title} loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         </Link>
         <div className="flex flex-col justify-center">
-          <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5">{article.category}</Link>
+          <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5">
+            {article.category}
+          </Link>
           <Link to={`/article/${article.slug}`}>
             <h3 className="article-title text-base sm:text-lg">{article.title}</h3>
           </Link>
           <p className="mt-1 text-xs text-muted-foreground">{article.author} · {article.date}</p>
         </div>
-      </article>
+      </motion.article>
     );
   }
 
   if (variant === "compact") {
     return (
-      <article className="group flex flex-col h-full overflow-hidden bg-background border border-foreground/20 shadow-sm transition-all hover:shadow-md">
+      <motion.article
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        whileHover={{ y: -5, boxShadow: "0 16px 32px -8px rgba(0,0,0,0.13)" }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        className="group flex flex-col h-full overflow-hidden bg-background border border-border shadow-sm cursor-pointer"
+        style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+      >
         <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
-          <img src={article.image} alt={article.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
+          <img src={article.image} alt={article.title} loading="lazy"
+            className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
         </Link>
         <div className="flex flex-1 flex-col p-4">
-          <span className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>{article.category}</span>
+          <span className={cn(
+            "inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+            tagClass
+          )}>
+            {article.category}
+          </span>
           <Link to={`/article/${article.slug}`}>
             <h3 className="article-title mt-2 text-lg">{article.title}</h3>
           </Link>
@@ -43,17 +75,27 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
             <p className="text-xs text-muted-foreground">{article.author} · {article.date}</p>
           </div>
         </div>
-      </article>
+      </motion.article>
     );
   }
 
   return (
-    <article className="group flex h-full flex-col overflow-hidden bg-background border border-foreground/20 shadow-sm transition-all hover:shadow-md">
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -5, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.14)" }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      className="group flex h-full flex-col overflow-hidden bg-background border border-border shadow-sm cursor-pointer"
+      style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+    >
       <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
-        <img src={article.image} alt={article.title} loading="lazy" className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105 group-hover:shadow-lg" />
+        <img src={article.image} alt={article.title} loading="lazy"
+          className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
       </Link>
       <div className="flex flex-1 flex-col p-5">
-        <Link to={`/topics/${slug(article.category)}`} className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>
+        <Link to={`/topics/${slug(article.category)}`}
+          className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>
           {article.category}
         </Link>
         <Link to={`/article/${article.slug}`}>
@@ -62,11 +104,12 @@ export const ArticleCard = ({ article, variant = "default" }: { article: Article
         <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{article.excerpt}</p>
         <div className="mt-auto flex items-center justify-between border-t border-border pt-4 text-xs text-muted-foreground">
           <span>{article.author} · {article.date}</span>
-          <Link to={`/article/${article.slug}`} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+          <Link to={`/article/${article.slug}`}
+            className="inline-flex items-center gap-1 font-semibold text-primary transition-all duration-200 hover:gap-2 hover:text-[hsl(var(--brand-red))]">
             Read <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
         </div>
       </div>
-    </article>
+    </motion.article>
   );
 };

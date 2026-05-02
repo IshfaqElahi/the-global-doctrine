@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
+import { motion, useSpring, useTransform } from "framer-motion";
 
 export const ReadingProgressBar = () => {
   const [progress, setProgress] = useState(0);
+  const smoothProgress = useSpring(progress, { stiffness: 200, damping: 30 });
+  const width = useTransform(smoothProgress, [0, 100], ["0%", "100%"]);
 
   useEffect(() => {
     const update = () => {
@@ -15,9 +18,9 @@ export const ReadingProgressBar = () => {
 
   return (
     <div className="fixed top-0 left-0 right-0 z-[9999] h-[3px] bg-transparent">
-      <div
-        className="h-full bg-[hsl(var(--brand-red))] transition-none"
-        style={{ width: `${progress}%` }}
+      <motion.div
+        className="h-full bg-[hsl(var(--brand-red))] origin-left"
+        style={{ width }}
       />
     </div>
   );
