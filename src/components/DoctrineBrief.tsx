@@ -74,7 +74,7 @@ export const DoctrineBrief = () => {
   };
 
   return (
-    <section className="border-t border-border bg-background py-16 lg:py-24 transition-colors duration-300 overflow-hidden">
+    <section className="border-t-4 border-primary bg-background py-16 lg:py-24 transition-colors duration-300 overflow-hidden">
       <div className="container-editorial">
         {/* INVERTED FORM WRAPPER with Entrance Animation */}
         <div 
@@ -89,7 +89,7 @@ export const DoctrineBrief = () => {
               The Doctrine Brief
             </h2>
             <p className="font-serif text-[1.15rem] sm:text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight whitespace-nowrap text-background mb-4">
-              GEOPOLITICS WITHOUT GATEKEEPING.
+              GEOPOLITICS WITHOUT GATEKEEPING
             </p>
             <p className="text-background/70 text-base sm:text-lg">
               Your voice matters. Send us your best thinking.
