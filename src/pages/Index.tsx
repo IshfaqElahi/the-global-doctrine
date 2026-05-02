@@ -27,6 +27,15 @@ interface MagazineIssue {
   coverImage: any;
 }
 
+interface LatestInterview {
+  title: string;
+  slug: string;
+  personName: string;
+  personRole: string;
+  excerpt: string;
+  photoUrl: string;
+}
+
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -36,7 +45,6 @@ import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
 import { categories } from "@/data/articles";
 import { client, urlFor } from "@/lib/sanity";
-import interview1 from "@/assets/interview-1.jpg";
 import heroImg from "@/assets/hero-summit.jpg";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
@@ -46,13 +54,14 @@ const Index = () => {
   const [coverStory, setCoverStory] = useState<CoverStory | null>(null);
   const [latestArticles, setLatestArticles] = useState<SanityArticle[]>([]);
   const [magazines, setMagazines] = useState<MagazineIssue[]>([]);
+  const [latestInterview, setLatestInterview] = useState<LatestInterview | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [coverData, articlesData, magData] = await Promise.all([
+        const [coverData, articlesData, magData, interviewData] = await Promise.all([
           client.fetch(`
             *[_type == "coverStory"] | order(publishedAt desc)[0]{
               title, "slug": slug.current, excerpt, author, publishedAt,
@@ -70,10 +79,17 @@ const Index = () => {
               _id, title, issue, publishDate, coverImage
             }
           `),
+          client.fetch(`
+            *[_type == "interview"] | order(publishedAt desc)[0]{
+              title, "slug": slug.current, personName, personRole,
+              excerpt, "photoUrl": photo.asset->url
+            }
+          `),
         ]);
         setCoverStory(coverData);
         setLatestArticles(articlesData || []);
         setMagazines(magData || []);
+        setLatestInterview(interviewData || null);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -122,52 +138,52 @@ const Index = () => {
         <link rel="canonical" href="https://theglobaldoctrine.online/" />
       </Helmet>
 
-{/* HERO */}
-<section className="border-b border-border">
-  <div className="container-editorial py-10 lg:py-16">
-    {loading || !coverStory ? (
-      <SkeletonCardHero />
-    ) : (
-      <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
-        <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
-<div className="overflow-hidden bg-muted w-full">
-  <img
-    src={coverStory.imageUrl}
-    alt={coverStory.title}
-    width={1600}
-    height={1024}
-    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
-  />
-</div>
-        </Link>
-        <div className="flex flex-col justify-center lg:col-span-5">
-          <span className="inline-block self-start bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
-            Cover Story
-          </span>
-          <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
-            <Link to={`/article/${coverStory.slug}`} className="hover:text-primary transition-colors">
-              {coverStory.title}
-            </Link>
-          </h1>
-          <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{coverStory.excerpt}</p>
-          <div className="mt-6 flex items-center gap-3 text-sm">
-            <span className="font-semibold text-foreground">{coverStory.author}</span>
-            <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-            <span className="text-muted-foreground">
-              {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
-            </span>
-          </div>
-          <Link to={`/article/${coverStory.slug}`}
-            className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 transition-all duration-300">
-            Read the cover story <ArrowRight className="h-4 w-4" />
-          </Link>
+      {/* HERO */}
+      <section className="border-b border-border">
+        <div className="container-editorial py-10 lg:py-16">
+          {loading || !coverStory ? (
+            <SkeletonCardHero />
+          ) : (
+            <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
+              <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
+                <div className="overflow-hidden bg-muted w-full">
+                  <img
+                    src={coverStory.imageUrl}
+                    alt={coverStory.title}
+                    width={1600}
+                    height={1024}
+                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                  />
+                </div>
+              </Link>
+              <div className="flex flex-col justify-center lg:col-span-5">
+                <span className="inline-block self-start bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white">
+                  Cover Story
+                </span>
+                <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+                  <Link to={`/article/${coverStory.slug}`} className="hover:text-primary transition-colors">
+                    {coverStory.title}
+                  </Link>
+                </h1>
+                <p className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg">{coverStory.excerpt}</p>
+                <div className="mt-6 flex items-center gap-3 text-sm">
+                  <span className="font-semibold text-foreground">{coverStory.author}</span>
+                  <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                  <span className="text-muted-foreground">
+                    {new Date(coverStory.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                  </span>
+                </div>
+                <Link to={`/article/${coverStory.slug}`}
+                  className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary hover:gap-3 transition-all duration-300">
+                  Read the cover story <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
-    )}
-  </div>
-</section>
+      </section>
 
-      {/* MAGAZINE — right after hero */}
+      {/* MAGAZINE */}
       <section className="border-b border-border bg-foreground py-14 text-background">
         <div className="container-editorial">
           <div className="mb-10 flex items-end justify-between border-b border-background/20 pb-3">
@@ -230,7 +246,6 @@ const Index = () => {
               <p className="kicker text-sm font-bold">Editor's picks</p>
               <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Latest Articles</h2>
             </div>
-            {/* ✅ Now links to /all-articles instead of /topics/international */}
             <Link to="/all-articles"
               className="hidden text-sm font-bold text-primary border border-primary px-4 py-2 hover:bg-primary hover:text-white transition-all duration-300 sm:inline">
               View all →
@@ -271,37 +286,69 @@ const Index = () => {
         </div>
       </section>
 
-      {/* INTERVIEW */}
-      <section className="border-t border-border bg-secondary">
-        <div className="container-editorial py-16">
-          <div className="grid gap-10 lg:grid-cols-12">
-            <div className="lg:col-span-5">
-              <div className="overflow-hidden bg-muted ring-1 ring-border">
-                <img src={interview1} alt="Featured interview" loading="lazy"
-                  className="aspect-[4/5] w-full object-cover hover:scale-105 transition-transform duration-500" />
+      {/* INTERVIEW — synced from Sanity */}
+      {!loading && latestInterview && (
+        <section className="border-t border-border bg-secondary">
+          <div className="container-editorial py-16">
+            <div className="grid gap-10 lg:grid-cols-12">
+
+              {/* Photo */}
+              <div className="lg:col-span-5">
+                <Link to={`/interview/${latestInterview.slug}`} className="group block overflow-hidden bg-muted ring-1 ring-border">
+                  <img
+                    src={latestInterview.photoUrl}
+                    alt={latestInterview.personName}
+                    loading="lazy"
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                </Link>
               </div>
-            </div>
-            <div className="flex flex-col justify-center lg:col-span-7">
-              <p className="kicker">The Interview</p>
-              <h2 className="mt-3 font-serif text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">
-                "Diplomacy is the art of postponing certainty."
-              </h2>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">
-                Ambassador Henrik Aaland on three decades at the negotiating table, the disappearance of the back channel, and what young diplomats should be reading.
-              </p>
-              <div className="mt-6 flex items-center gap-3 text-sm text-muted-foreground">
-                <span className="font-semibold text-foreground">Interview by Layla Haddad</span>
-                <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                <span>20 min read</span>
+
+              {/* Content */}
+              <div className="flex flex-col justify-center lg:col-span-7">
+
+                {/* Blue filled kicker */}
+                <span className="inline-block self-start bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
+                  The Interview
+                </span>
+
+                <Link to={`/interview/${latestInterview.slug}`} className="group mt-4 block">
+                  <h2 className="font-serif text-3xl font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-4xl lg:text-5xl">
+                    "{latestInterview.title}"
+                  </h2>
+                </Link>
+
+                {latestInterview.excerpt && (
+                  <Link to={`/interview/${latestInterview.slug}`} className="group mt-5 block">
+                    <p className="text-lg leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-primary/80">
+                      {latestInterview.excerpt}
+                    </p>
+                  </Link>
+                )}
+
+                <div className="mt-6 flex items-center gap-3 text-sm">
+                  <Link
+                    to={`/interview/${latestInterview.slug}`}
+                    className="font-semibold text-foreground transition-colors duration-300 hover:text-primary"
+                  >
+                    {latestInterview.personName}
+                  </Link>
+                  <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                  <span className="text-muted-foreground">{latestInterview.personRole}</span>
+                </div>
+
+                <Link
+                  to={`/interview/${latestInterview.slug}`}
+                  className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-sm font-bold uppercase tracking-wider text-primary transition-all duration-300 hover:gap-3 hover:border-[hsl(var(--brand-red))] hover:text-[hsl(var(--brand-red))]"
+                >
+                  Read the interview <ArrowRight className="h-4 w-4" />
+                </Link>
               </div>
-              <Link to="/interview"
-                className="mt-6 inline-flex items-center gap-2 self-start border-b-2 border-[hsl(var(--brand-red))] pb-1 text-sm font-bold uppercase tracking-wider text-[hsl(var(--brand-red))] hover:gap-3 transition-all duration-300">
-                Read the interview <ArrowRight className="h-4 w-4" />
-              </Link>
+
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
     </Layout>
   );
