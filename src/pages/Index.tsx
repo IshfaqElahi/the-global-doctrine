@@ -239,8 +239,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* EDITOR'S PICKS */}
-      <section className="py-16 bg-background">
+      {/* EDITOR'S PICKS (ADDED BLUE DIVIDER) */}
+      <section className="border-t-4 border-primary py-16 bg-background">
         <div className="container-editorial">
           <div className="mb-8 flex items-end justify-between border-b-2 border-foreground pb-3">
             <div>
@@ -287,9 +287,9 @@ const Index = () => {
         </div>
       </section>
 
-      {/* INTERVIEW */}
+      {/* INTERVIEW (ADDED BLUE DIVIDER) */}
       {!loading && latestInterview && (
-        <section className="border-t border-border bg-secondary">
+        <section className="border-t-4 border-primary bg-secondary">
           <div className="container-editorial py-16">
             <div className="grid gap-10 lg:grid-cols-12">
 
