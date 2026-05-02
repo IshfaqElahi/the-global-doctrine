@@ -12,8 +12,8 @@ export const DoctrineBrief = () => {
     brief: "",
   });
 
-  // Your live Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw3rxjtjpNfbtX7UTOg2QpkG53zMKPMHQz8GJq61B40towd7jkAJ1iqB7nrDKqfnoQm/exec"; 
+  // Your NEW live Google Apps Script Web App URL
+  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9VqnrQSHdrRnp6-otqEpLjjonP2rUWY9arwJ2iH8F00R6JRNHj2umpiaYbbEBr6OT/exec"; 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +25,7 @@ export const DoctrineBrief = () => {
         method: "POST",
         mode: "no-cors", // Required to bypass Google's strict CORS policies
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type": "text/plain;charset=utf-8", // Crucial: tricks the browser into sending the payload
         },
         body: JSON.stringify(formData),
       });
