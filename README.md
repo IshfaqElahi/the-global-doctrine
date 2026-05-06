@@ -1,4 +1,4 @@
-# 🌍 The Global Doctrine
+# The Global Doctrine
 
 > **Geopolitics without gatekeeping.**  
 > The official web platform for independent reporting on world conflicts, diplomacy, and global affairs through the lens of ordinary people.
