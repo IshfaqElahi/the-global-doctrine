@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation } from "swiper/modules";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 import "swiper/css";
@@ -34,18 +35,28 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
 
   return (
     <div className={cn("relative w-full", className)}>
-      {/* Navigation Arrows */}
+      {/* Navigation */}
       <div className="absolute right-0 -top-12 hidden gap-2 sm:flex z-10">
-        <button ref={prevRef}
-          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-primary transition-all hover:bg-primary hover:text-white shadow-sm"
-          aria-label="Previous">
+        <motion.button
+          ref={prevRef}
+          whileHover={{ scale: 1.1, backgroundColor: "hsl(var(--primary))", color: "#fff" }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: "spring", stiffness: 400, damping: 18 }}
+          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-primary shadow-sm"
+          aria-label="Previous"
+        >
           <ChevronLeft className="h-4 w-4" />
-        </button>
-        <button ref={nextRef}
-          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-primary transition-all hover:bg-primary hover:text-white shadow-sm"
-          aria-label="Next">
+        </motion.button>
+        <motion.button
+          ref={nextRef}
+          whileHover={{ scale: 1.1, backgroundColor: "hsl(var(--primary))", color: "#fff" }}
+          whileTap={{ scale: 0.92 }}
+          transition={{ type: "spring", stiffness: 400, damping: 18 }}
+          className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background text-primary shadow-sm"
+          aria-label="Next"
+        >
           <ChevronRight className="h-4 w-4" />
-        </button>
+        </motion.button>
       </div>
 
       <Swiper
@@ -73,29 +84,36 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
       >
         {topics.map((topic) => (
           <SwiperSlide key={topic.id} style={{ height: "auto", display: "flex" }}>
-            <div className="group/card flex w-full flex-col overflow-hidden bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300"
-              style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}>
-
+            <motion.div
+              className="group/card flex w-full flex-col overflow-hidden bg-background border border-border shadow-md cursor-pointer"
+              style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+              whileHover={{ y: -6, boxShadow: "0 24px 48px -12px rgba(0,0,0,0.16)", borderColor: "hsl(var(--primary))" }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               {/* Image */}
-              <Link to={`/topics/${topic.slug}`} className="relative block w-full overflow-hidden" style={{ paddingBottom: "62.5%" }}>
+              <Link to={`/topics/${topic.slug}`}
+                className="relative block w-full overflow-hidden img-zoom"
+                style={{ paddingBottom: "62.5%" }}>
                 <img src={topic.image} alt={topic.title}
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover/card:scale-105" />
-                {/* Dark gradient overlay */}
+                  className="absolute inset-0 h-full w-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
                 <div className="absolute top-3 left-3 z-10">
-                  <span className={cn(
-                    "inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm",
-                    topic.colorClass || "bg-[#1974D1]"
-                  )}>
+                  <motion.span
+                    whileHover={{ scale: 1.05 }}
+                    className={cn(
+                      "inline-block px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-sm",
+                      topic.colorClass || "bg-[#1974D1]"
+                    )}
+                  >
                     {topic.category}
-                  </span>
+                  </motion.span>
                 </div>
               </Link>
 
-              {/* Card body */}
+              {/* Body */}
               <div className="flex flex-1 flex-col p-5 bg-background">
                 <Link to={`/topics/${topic.slug}`} className="mb-3 block flex-1">
-                  <h3 className="font-serif text-lg font-bold leading-snug text-foreground transition-colors group-hover/card:text-primary line-clamp-3">
+                  <h3 className="article-title text-lg leading-snug line-clamp-3">
                     {topic.title}
                   </h3>
                 </Link>
@@ -106,12 +124,12 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
                     <span className="truncate">{topic.date}</span>
                   </div>
                   <Link to={`/topics/${topic.slug}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary transition-all hover:gap-2.5 hover:text-[hsl(var(--brand-red))]">
+                    className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-primary transition-all duration-200 hover:gap-2.5 hover:text-[hsl(var(--brand-red))]">
                     Read More <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </SwiperSlide>
         ))}
       </Swiper>

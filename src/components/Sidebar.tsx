@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import { client } from "@/lib/sanity";
 
 interface TrendingArticle {
@@ -33,45 +34,52 @@ export const TrendingSidebar = () => {
   return (
     <aside className="space-y-8 lg:sticky lg:top-28 lg:self-start">
       <div>
-        <div className="mb-4 flex items-center justify-between border-b-2 border-foreground pb-2">
+        <div className="mb-5 flex items-center justify-between border-b-2 border-foreground pb-2">
           <h3 className="font-serif text-xl font-bold">Trending</h3>
           <span className="kicker">Now</span>
         </div>
         <ol className="space-y-5">
           {loading ? (
             [...Array(5)].map((_, i) => (
-              <li key={i} className="flex gap-4 animate-pulse">
-                <span className="font-serif text-3xl font-bold leading-none text-[hsl(var(--brand-red))] opacity-30">
+              <li key={i} className="flex gap-4">
+                <span className="font-serif text-3xl font-bold leading-none text-[hsl(var(--brand-red))] opacity-20">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="flex flex-1 gap-3">
-                  <div className="h-16 w-16 shrink-0 rounded bg-muted" />
+                  <div className="skeleton h-16 w-16 shrink-0 rounded-none" />
                   <div className="flex-1 space-y-2 pt-1">
-                    <div className="h-3 w-16 rounded bg-muted" />
-                    <div className="h-4 w-full rounded bg-muted" />
-                    <div className="h-4 w-3/4 rounded bg-muted" />
+                    <div className="skeleton h-3 w-16" />
+                    <div className="skeleton h-4 w-full" />
+                    <div className="skeleton h-4 w-3/4" />
                   </div>
                 </div>
               </li>
             ))
           ) : trending.length > 0 ? (
             trending.map((a, i) => (
-              <li key={a._id} className="flex gap-4">
-                <span className="font-serif text-3xl font-bold leading-none text-[hsl(var(--brand-red))]">
+              <motion.li
+                key={a._id}
+                initial={{ opacity: 0, x: -10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1], delay: i * 0.06 }}
+                className="flex gap-4 group"
+              >
+                <span className="font-serif text-3xl font-bold leading-none text-[hsl(var(--brand-red))] transition-transform duration-200 group-hover:scale-110">
                   {String(i + 1).padStart(2, "0")}
                 </span>
                 <div className="flex flex-1 gap-3">
-                  <Link to={`/article/${a.slug}`} className="shrink-0">
+                  <Link to={`/article/${a.slug}`} className="shrink-0 img-zoom">
                     <img src={a.imageUrl} alt={a.title}
-                      className="h-16 w-16 object-cover transition-opacity hover:opacity-80" />
+                      className="h-16 w-16 object-cover" />
                   </Link>
                   <div>
                     <Link to={`/topics/${slugify(a.category)}`}
-                      className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                      className="text-[10px] font-bold uppercase tracking-wider text-primary transition-colors hover:text-[hsl(var(--brand-red))]">
                       {a.category}
                     </Link>
                     <Link to={`/article/${a.slug}`}>
-                      <h4 className="mt-0.5 font-serif text-sm font-bold leading-snug text-foreground hover:text-primary transition-colors line-clamp-2">
+                      <h4 className="mt-0.5 font-serif text-sm font-bold leading-snug text-foreground hover:text-primary transition-colors duration-200 line-clamp-2">
                         {a.title}
                       </h4>
                     </Link>
@@ -80,10 +88,10 @@ export const TrendingSidebar = () => {
                     </p>
                   </div>
                 </div>
-              </li>
+              </motion.li>
             ))
           ) : (
-            <li className="text-sm text-muted-foreground">No articles yet.</li>
+            <li className="text-sm text-muted-foreground italic">No articles yet.</li>
           )}
         </ol>
       </div>

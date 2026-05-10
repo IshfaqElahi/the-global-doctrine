@@ -21,20 +21,20 @@ export const ArticleCard = ({
   if (variant === "horizontal") {
     return (
       <motion.article
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -3, boxShadow: "0 12px 28px -8px rgba(0,0,0,0.12)" }}
+        whileHover={{ y: -3, boxShadow: "0 14px 32px -8px rgba(0,0,0,0.13)" }}
         viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
         className="group grid grid-cols-[1fr_2fr] gap-4 bg-background border border-border p-3 shadow-sm cursor-pointer"
         style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
       >
-        <Link to={`/article/${article.slug}`} className="overflow-hidden bg-muted">
+        <Link to={`/article/${article.slug}`} className="overflow-hidden bg-muted img-zoom">
           <img src={article.image} alt={article.title} loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            className="h-full w-full object-cover" />
         </Link>
         <div className="flex flex-col justify-center">
-          <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5">
+          <Link to={`/topics/${slug(article.category)}`} className="kicker mb-1.5 link-underline">
             {article.category}
           </Link>
           <Link to={`/article/${article.slug}`}>
@@ -49,21 +49,21 @@ export const ArticleCard = ({
   if (variant === "compact") {
     return (
       <motion.article
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
-        whileHover={{ y: -5, boxShadow: "0 16px 32px -8px rgba(0,0,0,0.13)" }}
+        whileHover={{ y: -6, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.14)" }}
         viewport={{ once: true, margin: "-40px" }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
         className="group flex flex-col h-full overflow-hidden bg-background border border-border shadow-sm cursor-pointer"
         style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
       >
-        <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
+        <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted img-zoom">
           <img src={article.image} alt={article.title} loading="lazy"
-            className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+            className="aspect-[4/3] w-full object-cover" />
         </Link>
         <div className="flex flex-1 flex-col p-4">
           <span className={cn(
-            "inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+            "inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-opacity duration-200 hover:opacity-80",
             tagClass
           )}>
             {article.category}
@@ -81,21 +81,21 @@ export const ArticleCard = ({
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
-      whileHover={{ y: -5, boxShadow: "0 20px 40px -10px rgba(0,0,0,0.14)" }}
+      whileHover={{ y: -6, boxShadow: "0 24px 48px -12px rgba(0,0,0,0.15)" }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
       className="group flex h-full flex-col overflow-hidden bg-background border border-border shadow-sm cursor-pointer"
       style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
     >
-      <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted">
+      <Link to={`/article/${article.slug}`} className="block overflow-hidden bg-muted img-zoom">
         <img src={article.image} alt={article.title} loading="lazy"
-          className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          className="aspect-[16/10] w-full object-cover" />
       </Link>
       <div className="flex flex-1 flex-col p-5">
         <Link to={`/topics/${slug(article.category)}`}
-          className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider", tagClass)}>
+          className={cn("inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider transition-opacity hover:opacity-80", tagClass)}>
           {article.category}
         </Link>
         <Link to={`/article/${article.slug}`}>
@@ -106,7 +106,7 @@ export const ArticleCard = ({
           <span>{article.author} · {article.date}</span>
           <Link to={`/article/${article.slug}`}
             className="inline-flex items-center gap-1 font-semibold text-primary transition-all duration-200 hover:gap-2 hover:text-[hsl(var(--brand-red))]">
-            Read <ArrowUpRight className="h-3.5 w-3.5" />
+            Read <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </Link>
         </div>
       </div>
