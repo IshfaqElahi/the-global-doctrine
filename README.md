@@ -32,12 +32,6 @@ The Global Doctrine is a fully custom, full-stack web platform built for a stude
 - **Google Apps Script** (Serverless API endpoints)
 - **Google Sheets** (Database for user submissions)
 
-📬 Google Apps Script Integration
-The "Doctrine Brief" form relies on a deployed Google Apps Script to function as a serverless backend.
-The script processes POST requests and appends the JSON payload to a connected Google Sheet.
-
-The live deployment URL is hardcoded in src/components/DoctrineBrief.tsx. If you fork this project, you will need to deploy your own Google Apps Script and update the GOOGLE_SCRIPT_URL variable.
-
 🤝 Acknowledgements
 Founded and run by International Relations students committed to independent, people-first geopolitical reporting.
 
