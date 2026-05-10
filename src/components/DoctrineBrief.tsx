@@ -7,6 +7,7 @@ const TOPICS = [
   "Asia & Indo-Pacific",
   "Europe & NATO",
   "The Americas",
+  "Africa",
   "Global Economy",
   "Free Writing"
 ];

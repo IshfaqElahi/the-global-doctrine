@@ -6,8 +6,15 @@ import { Clock, ArrowRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
+import { ReferencesSection } from "@/components/ReferencesSection";
 import { client, urlFor } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
+
+interface Reference {
+  text: string;
+  url?: string;
+  credit?: string;
+}
 
 interface SanityInterview {
   title: string;
@@ -19,6 +26,8 @@ interface SanityInterview {
   photoUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   body: any[];
+  showReferences?: boolean;
+  references?: Reference[];
 }
 
 const ptComponents: PortableTextComponents = {
@@ -51,8 +60,13 @@ const ptComponents: PortableTextComponents = {
   types: {
     image: ({ value }) => (
       <figure className="my-10">
-        <img src={urlFor(value).width(1200).url()} alt={value.alt || ""} className="w-full object-cover" loading="lazy" />
-        {value.alt && <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">{value.alt}</figcaption>}
+        <img src={urlFor(value).width(1200).url()} alt={value.alt || ""}
+          className="w-full object-cover" loading="lazy" />
+        {value.alt && (
+          <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+            {value.alt}
+          </figcaption>
+        )}
       </figure>
     ),
   },
@@ -69,7 +83,9 @@ const InterviewArticle = () => {
     client.fetch(`
       *[_type == "interview" && slug.current == $slug][0]{
         title, "slug": slug.current, personName, personRole,
-        publishedAt, excerpt, "photoUrl": photo.asset->url, body
+        publishedAt, excerpt, "photoUrl": photo.asset->url, body,
+        showReferences,
+        references[]{ text, url, credit }
       }
     `, { slug })
       .then((data) => { if (data) setInterview(data); else setNotFound(true); })
@@ -161,6 +177,11 @@ const InterviewArticle = () => {
             </div>
           ) : (
             <p className="text-muted-foreground italic">Full interview content coming soon.</p>
+          )}
+
+          {/* References */}
+          {interview.showReferences && interview.references && (
+            <ReferencesSection references={interview.references} />
           )}
 
           <div className="mt-12 border-t border-border pt-8">

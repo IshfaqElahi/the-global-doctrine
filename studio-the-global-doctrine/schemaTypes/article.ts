@@ -23,7 +23,17 @@ export default defineType({
       title: "Category",
       type: "string",
       options: {
-        list: ["Cover Story", "International", "Europe", "Asia", "Africa", "Middle East", "Diplomacy"],
+        list: [
+          "Cover Story",
+          "International",
+          "Europe",
+          "Asia",
+          "Africa",
+          "Middle East",
+          "Diplomacy",
+          "America",
+          "Economics",
+        ],
         layout: "radio",
       },
       validation: (R) => R.required(),
@@ -53,7 +63,7 @@ export default defineType({
     defineField({
       name: "mainImage",
       title: "Main Image",
-      description: "📐 Recommended size: 1200×800px (4:3) or 1600×900px (16:9). Minimum width: 800px. Used on article cards, carousels, and the article header. Use JPG or WebP.",
+      description: "📐 Recommended size: 1200×800px (4:3) or 1600×900px (16:9). Minimum width: 800px. Use JPG or WebP.",
       type: "image",
       options: { hotspot: true },
       fields: [
@@ -83,6 +93,52 @@ export default defineType({
               description: "📐 Inline images: recommended 1200×675px (16:9). Use JPG or WebP.",
             },
           ],
+        },
+      ],
+    }),
+
+    // ── References / Credits ──────────────────────────
+    defineField({
+      name: "showReferences",
+      title: "Show References / Credits Section",
+      description: "Toggle ON to display a references section at the bottom of this article.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "references",
+      title: "References & Credits",
+      description: "Add source links, citations, and image credits. Only shown if the toggle above is ON.",
+      type: "array",
+      hidden: ({ document }) => !document?.showReferences,
+      of: [
+        {
+          type: "object",
+          title: "Reference",
+          fields: [
+            {
+              name: "text",
+              title: "Reference Text / Title",
+              type: "string",
+              description: "The name or title of the source (e.g. 'Reuters — Cuba Energy Report 2026')",
+              validation: (R: any) => R.required(),
+            },
+            {
+              name: "url",
+              title: "URL / Link",
+              type: "url",
+              description: "The full URL of the source (must start with https://)",
+            },
+            {
+              name: "credit",
+              title: "Image / Source Credit (optional)",
+              type: "string",
+              description: "e.g. 'Photo: AP Images' or 'Data: World Bank 2025'",
+            },
+          ],
+          preview: {
+            select: { title: "text", subtitle: "url" },
+          },
         },
       ],
     }),

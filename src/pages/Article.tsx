@@ -7,17 +7,24 @@ import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
+import { ReferencesSection } from "@/components/ReferencesSection";
 import { client, urlFor } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
 import { articles } from "@/data/articles";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
+interface Reference {
+  text: string;
+  url?: string;
+  credit?: string;
+}
+
 interface SanityArticle {
   title: string;
   slug: string;
   excerpt: string;
-  category?: string; // Optional because Cover Story doesn't have a category
+  category?: string;
   author: string;
   publishedAt: string;
   imageUrl: string;
@@ -25,9 +32,10 @@ interface SanityArticle {
   body: any[];
   seoTitle?: string;
   seoDescription?: string;
+  showReferences?: boolean;
+  references?: Reference[];
 }
 
-// Portable text component map — editorial styled
 const ptComponents: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
@@ -82,7 +90,6 @@ const ptComponents: PortableTextComponents = {
   },
 };
 
-// Social share buttons
 const ShareButtons = ({ url, title }: { url: string; title: string }) => {
   const [copied, setCopied] = useState(false);
   const encoded = encodeURIComponent(url);
@@ -124,12 +131,10 @@ const ShareButtons = ({ url, title }: { url: string; title: string }) => {
   );
 };
 
-// Related articles
 const RelatedArticles = ({ category, currentSlug }: { category: string; currentSlug: string }) => {
   const [related, setRelated] = useState<SanityArticle[]>([]);
 
   useEffect(() => {
-    // Also updated this query to look for both types just in case
     client.fetch(`
       *[_type in ["article", "coverStory"] && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
         title, "slug": slug.current, category, author, publishedAt, "imageUrl": mainImage.asset->url
@@ -189,11 +194,12 @@ const Article = () => {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-    // CRITICAL FIX: The query now searches BOTH "article" and "coverStory" document types
     client.fetch(`
       *[_type in ["article", "coverStory"] && slug.current == $slug][0]{
         title, "slug": slug.current, excerpt, category, author, publishedAt,
-        "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription
+        "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription,
+        showReferences,
+        references[]{ text, url, credit }
       }
     `, { slug })
       .then((data) => {
@@ -208,7 +214,6 @@ const Article = () => {
 
   const title = sanityArticle?.title ?? staticArticle?.title ?? "";
   const excerpt = sanityArticle?.excerpt ?? staticArticle?.excerpt ?? "";
-  // Fallback to "Cover Story" if the category is undefined
   const category = sanityArticle?.category ?? staticArticle?.category ?? "Cover Story";
   const author = sanityArticle?.author ?? staticArticle?.author ?? "";
   const image = sanityArticle?.imageUrl ?? (staticArticle?.image as string) ?? "";
@@ -217,8 +222,6 @@ const Article = () => {
     : staticArticle?.date ?? "";
   const readTime = calcReadTime(sanityArticle?.body ?? []);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
-
-  // Apply SEO logic
   const metaTitle = sanityArticle?.seoTitle ? `${sanityArticle.seoTitle} — The Global Doctrine` : `${title} — The Global Doctrine`;
   const metaDescription = sanityArticle?.seoDescription || excerpt;
 
@@ -246,7 +249,7 @@ const Article = () => {
       </Helmet>
 
       <article>
-        {/* Article header */}
+        {/* Header */}
         <div className="border-b border-border bg-background">
           <div className="container-editorial py-10 lg:py-14">
             <div className="mx-auto max-w-3xl">
@@ -255,8 +258,6 @@ const Article = () => {
                 {title}
               </h1>
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl">{excerpt}</p>
-
-              {/* Meta row */}
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3 text-sm">
                   <span className="font-semibold text-foreground">By {author}</span>
@@ -282,11 +283,8 @@ const Article = () => {
         {image && (
           <div className="container-editorial">
             <div className="-mt-px overflow-hidden bg-muted/50 flex justify-center py-4 sm:py-8">
-              <img 
-                src={image} 
-                alt={title} 
-                className="w-full h-auto max-h-[75vh] object-contain" 
-              />
+              <img src={image} alt={title}
+                className="w-full h-auto max-h-[75vh] object-contain" />
             </div>
           </div>
         )}
@@ -297,7 +295,6 @@ const Article = () => {
             <div className="lg:col-span-8">
               <div className="mx-auto max-w-2xl">
                 {sanityArticle?.body?.length ? (
-                  // First paragraph gets drop cap via wrapper
                   <div className="[&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:font-serif [&>p:first-child]:first-letter:text-7xl [&>p:first-child]:first-letter:font-bold [&>p:first-child]:first-letter:leading-[0.85] [&>p:first-child]:first-letter:text-[hsl(var(--brand-red))]">
                     <PortableText value={sanityArticle.body} components={ptComponents} />
                   </div>
@@ -316,6 +313,11 @@ const Article = () => {
                 <div className="mt-12 border-t border-border pt-6">
                   <ShareButtons url={pageUrl} title={title} />
                 </div>
+
+                {/* References */}
+                {sanityArticle?.showReferences && sanityArticle?.references && (
+                  <ReferencesSection references={sanityArticle.references} />
+                )}
 
                 {/* Related articles */}
                 {category && slug && (

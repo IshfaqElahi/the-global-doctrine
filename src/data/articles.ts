@@ -12,7 +12,9 @@ export type Category =
   | "Asia"
   | "Africa"
   | "Middle East"
-  | "Diplomacy";
+  | "Diplomacy"
+  | "America"
+  | "Economics";
 
 export interface Article {
   slug: string;
@@ -33,6 +35,8 @@ export const categories: Category[] = [
   "Africa",
   "Middle East",
   "Diplomacy",
+  "America",
+  "Economics",
 ];
 
 export const articles: Article[] = [

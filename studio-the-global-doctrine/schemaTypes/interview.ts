@@ -79,6 +79,52 @@ export default defineType({
         },
       ],
     }),
+
+    // ── References / Credits ──────────────────────────
+    defineField({
+      name: "showReferences",
+      title: "Show References / Credits Section",
+      description: "Toggle ON to display a references section at the bottom of this interview.",
+      type: "boolean",
+      initialValue: false,
+    }),
+    defineField({
+      name: "references",
+      title: "References & Credits",
+      description: "Add source links, citations, and image credits. Only shown if the toggle above is ON.",
+      type: "array",
+      hidden: ({ document }) => !document?.showReferences,
+      of: [
+        {
+          type: "object",
+          title: "Reference",
+          fields: [
+            {
+              name: "text",
+              title: "Reference Text / Title",
+              type: "string",
+              description: "The name or title of the source.",
+              validation: (R: any) => R.required(),
+            },
+            {
+              name: "url",
+              title: "URL / Link",
+              type: "url",
+              description: "The full URL of the source.",
+            },
+            {
+              name: "credit",
+              title: "Image / Source Credit (optional)",
+              type: "string",
+              description: "e.g. 'Photo: AP Images' or 'Data: World Bank 2025'",
+            },
+          ],
+          preview: {
+            select: { title: "text", subtitle: "url" },
+          },
+        },
+      ],
+    }),
   ],
   preview: {
     select: {
