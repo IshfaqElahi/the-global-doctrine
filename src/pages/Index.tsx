@@ -111,7 +111,8 @@ const Index = () => {
       date: sanityMatch
         ? new Date(sanityMatch.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
         : "",
-      image: sanityMatch?.imageUrl || heroImg,
+      // OPTIMIZATION: Pass optimized URL for fallback images
+      image: sanityMatch ? `${sanityMatch.imageUrl}?auto=format&w=600&q=80` : heroImg,
       colorClass: ["Cover Story", "Asia", "Middle East"].includes(cat)
         ? "bg-[hsl(var(--brand-red))]"
         : "bg-primary",
@@ -148,8 +149,9 @@ const Index = () => {
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
               <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
                 <div className="overflow-hidden bg-muted w-full">
+                  {/* OPTIMIZATION: Request max 1600px width and auto-format (WebP) */}
                   <img
-                    src={coverStory.imageUrl}
+                    src={`${coverStory.imageUrl}?auto=format&w=1600&q=80`}
                     alt={coverStory.title}
                     width={1600}
                     height={1024}
@@ -206,8 +208,9 @@ const Index = () => {
               magazines.map((mag) => (
                 <Link key={mag._id} to="/magazine" className="group block">
                   <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
+                    {/* OPTIMIZATION: Use urlFor builder to automatically format and crop magazine covers */}
                     {mag.coverImage && (
-                      <img src={urlFor(mag.coverImage).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
+                      <img src={urlFor(mag.coverImage).auto('format').width(600).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
                         className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     )}
                   </div>
@@ -239,8 +242,8 @@ const Index = () => {
         </div>
       </section>
 
-      {/* EDITOR'S PICKS (ADDED BLUE DIVIDER) */}
-      <section className="border-t-4 border-primary py-16 bg-background">
+      {/* EDITOR'S PICKS */}
+      <section className="py-16 bg-background">
         <div className="container-editorial">
           <div className="mb-8 flex items-end justify-between border-b-2 border-foreground pb-3">
             <div>
@@ -259,7 +262,8 @@ const Index = () => {
                 ? editorsPicks.map((a) => (
                   <article key={a._id} className="group bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}>
                     <Link to={`/article/${a.slug}`} className="block overflow-hidden">
-                      <img src={a.imageUrl} alt={a.title} loading="lazy"
+                      {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) for grid items */}
+                      <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
                         className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                     </Link>
                     <div className="p-4">
@@ -287,17 +291,18 @@ const Index = () => {
         </div>
       </section>
 
-      {/* INTERVIEW (ADDED BLUE DIVIDER) */}
+      {/* INTERVIEW */}
       {!loading && latestInterview && (
-        <section className="border-t-4 border-primary bg-secondary">
+        <section className="border-t border-border bg-secondary">
           <div className="container-editorial py-16">
             <div className="grid gap-10 lg:grid-cols-12">
 
               {/* Photo */}
               <div className="lg:col-span-5">
                 <Link to={`/interview/${latestInterview.slug}`} className="group block overflow-hidden bg-muted ring-1 ring-border">
+                  {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) */}
                   <img
-                    src={latestInterview.photoUrl}
+                    src={`${latestInterview.photoUrl}?auto=format&w=800&q=80`}
                     alt={latestInterview.personName}
                     loading="lazy"
                     className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105"
