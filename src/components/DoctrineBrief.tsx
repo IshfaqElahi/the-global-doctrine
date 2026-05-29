@@ -42,8 +42,13 @@ export const DoctrineBrief = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Your live Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL; 
+  // Auto-dismiss success message after 5 seconds
+  useEffect(() => {
+    if (status === "success") {
+      const timer = setTimeout(() => setStatus("idle"), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [status]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -51,6 +56,12 @@ export const DoctrineBrief = () => {
     setStatus("idle");
 
     try {
+      const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL; 
+      
+      if (!GOOGLE_SCRIPT_URL) {
+        throw new Error("Missing Google Script URL environment variable.");
+      }
+
       await fetch(GOOGLE_SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
@@ -77,7 +88,7 @@ export const DoctrineBrief = () => {
   return (
     <section className="border-t-4 border-primary bg-background py-16 lg:py-24 transition-colors duration-300 overflow-hidden">
       <div className="container-editorial">
-        {/* INVERTED FORM WRAPPER - Added rounded-2xl for a smooth card look */}
+        {/* INVERTED FORM WRAPPER */}
         <div 
           className={`mx-auto max-w-3xl rounded-2xl bg-foreground text-background p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.07)] border border-foreground/10 transition-all duration-1000 ease-out transform ${
             isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
@@ -97,7 +108,7 @@ export const DoctrineBrief = () => {
             </p>
           </div>
 
-          {/* Animated Status Messages - Added rounded-lg */}
+          {/* Animated Status Messages */}
           <div 
             className={`transition-all duration-500 ease-in-out overflow-hidden ${
               status !== "idle" ? "max-h-24 opacity-100 mb-8" : "max-h-0 opacity-0 mb-0"
@@ -122,30 +133,31 @@ export const DoctrineBrief = () => {
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="space-y-1.5 group">
                 <label htmlFor="name" className="text-xs font-bold uppercase tracking-wider text-background/70 transition-colors group-focus-within:text-primary">Name</label>
-                {/* Added rounded-md */}
                 <input
                   type="text"
                   id="name"
                   name="name"
+                  required
+                  disabled={isSubmitting}
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="How should we credit you?"
-                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
               <div className="space-y-1.5 group">
                 <label htmlFor="email" className="text-xs font-bold uppercase tracking-wider text-background/70 transition-colors group-focus-within:text-primary">Email</label>
-                {/* Added rounded-md */}
                 <input
                   type="email"
                   id="email"
                   name="email"
                   required
+                  disabled={isSubmitting}
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@email.com"
-                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300"
+                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -156,11 +168,13 @@ export const DoctrineBrief = () => {
                 Subject Region / Topic
               </label>
               <div className="relative">
-                {/* Added rounded-md */}
                 <button
                   type="button"
+                  disabled={isSubmitting}
+                  aria-haspopup="listbox"
+                  aria-expanded={isDropdownOpen}
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className={`w-full rounded-md bg-transparent border px-4 py-3 text-left text-background focus:outline-none transition-all duration-300 flex justify-between items-center ${
+                  className={`w-full rounded-md bg-transparent border px-4 py-3 text-left text-background focus:outline-none transition-all duration-300 flex justify-between items-center disabled:opacity-50 disabled:cursor-not-allowed ${
                     isDropdownOpen ? "border-primary bg-background/5 ring-2 ring-primary/20" : "border-background/20 hover:border-background/40"
                   }`}
                 >
@@ -168,8 +182,8 @@ export const DoctrineBrief = () => {
                   <ChevronDown className={`h-4 w-4 text-background/70 transition-transform duration-500 ease-in-out ${isDropdownOpen ? "rotate-180 text-primary" : ""}`} />
                 </button>
 
-                {/* Dropdown Menu - Added rounded-md and slight margin adjustment (mt-2) */}
                 <div 
+                  role="listbox"
                   className={`absolute z-10 w-full mt-2 rounded-md bg-foreground border border-background/10 shadow-2xl transition-all duration-300 origin-top overflow-hidden ${
                     isDropdownOpen ? "opacity-100 scale-y-100 pointer-events-auto" : "opacity-0 scale-y-95 pointer-events-none"
                   }`}
@@ -178,6 +192,8 @@ export const DoctrineBrief = () => {
                     {TOPICS.map((topic) => (
                       <div
                         key={topic}
+                        role="option"
+                        aria-selected={formData.topic === topic}
                         onClick={() => {
                           setFormData({ ...formData, topic });
                           setIsDropdownOpen(false);
@@ -196,20 +212,19 @@ export const DoctrineBrief = () => {
 
             <div className="space-y-1.5 group">
               <label htmlFor="brief" className="text-xs font-bold uppercase tracking-wider text-background/70 transition-colors group-focus-within:text-primary">Your Brief</label>
-              {/* Added rounded-md */}
               <textarea
                 id="brief"
                 name="brief"
                 required
+                disabled={isSubmitting}
                 rows={5}
                 value={formData.brief}
                 onChange={handleChange}
                 placeholder="Share your analysis, intelligence, or opinion..."
-                className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-y"
+                className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-y disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 
-            {/* Red to Blue Hover Effect - Added rounded-md */}
             <button
               type="submit"
               disabled={isSubmitting}
