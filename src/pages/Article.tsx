@@ -106,9 +106,13 @@ const ptComponents: PortableTextComponents = {
 // ── Drop cap component ────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DropCapPortableText = ({ body }: { body: any[] }) => {
-  const firstParaIndex = body.findIndex(
-    (b) => b._type === "block" && (!b.style || b.style === "normal")
-  );
+  // BUGFIX: Skip empty blocks/paragraphs created in Sanity and find the first real text
+  const firstParaIndex = body.findIndex((b) => {
+    if (b._type !== "block" || (b.style && b.style !== "normal")) return false;
+    // REPLACED `any` WITH `{ text?: string }` TO FIX ESLINT ERROR
+    const textContent = b.children?.map((c: { text?: string }) => c.text || "").join("").trim();
+    return textContent && textContent.length > 0;
+  });
 
   const dropCapComponents: PortableTextComponents = {
     ...ptComponents,
@@ -120,25 +124,34 @@ const DropCapPortableText = ({ body }: { body: any[] }) => {
           value?._key === body[firstParaIndex]?._key;
 
         if (isFirst) {
-          const rawText: string = value?.children?.[0]?.text ?? "";
-          const firstChar = rawText.charAt(0);
-          const patchedChildren = (value?.children ?? []).map(
-             
-            (span: Record<string, unknown>, i: number) =>
-              i === 0 ? { ...span, text: rawText.slice(1) } : span
-          );
+          // REPLACED `any` WITH `{ text?: string }` TO FIX ESLINT ERROR
+          const firstSpanIdx = value?.children?.findIndex((c: { text?: string }) => c.text && c.text.trim().length > 0);
 
-          return (
-            <p className="mb-6 text-lg leading-[1.85] text-foreground/90">
-              <span className="float-left mr-1.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
-                {firstChar}
-              </span>
-              <PortableText
-                value={[{ ...value, children: patchedChildren }]}
-                components={ptComponents}
-              />
-            </p>
-          );
+          if (firstSpanIdx >= 0) {
+            const rawText: string = value.children[firstSpanIdx].text;
+            // Find the index of the first actual non-whitespace letter
+            const charIdx = rawText.search(/\S/); 
+            const firstChar = rawText[charIdx];
+
+            // Reconstruct the text block minus that first character
+            const patchedChildren = [...value.children];
+            patchedChildren[firstSpanIdx] = {
+              ...patchedChildren[firstSpanIdx],
+              text: rawText.slice(0, charIdx) + rawText.slice(charIdx + 1)
+            };
+
+            return (
+              <p className="mb-6 text-lg leading-[1.85] text-foreground/90">
+                <span className="float-left mr-1.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
+                  {firstChar}
+                </span>
+                <PortableText
+                  value={[{ ...value, children: patchedChildren }]}
+                  components={ptComponents}
+                />
+              </p>
+            );
+          }
         }
 
         return (
