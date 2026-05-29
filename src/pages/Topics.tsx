@@ -56,9 +56,13 @@ const Topics = () => {
             slug: slugify(c),
             title: match?.title || `Latest from ${c}`,
             author: match?.author || "The Global Doctrine",
-            date: match ? new Date(match.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }) : "",
+            date: match
+              ? new Date(match.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+              : "",
             image: match?.imageUrl || heroImg,
-            colorClass: ["Cover Story", "Asia", "Middle East"].includes(c) ? "bg-[hsl(var(--brand-red))]" : "bg-primary",
+            colorClass: ["Cover Story", "Asia", "Middle East"].includes(c)
+              ? "bg-[hsl(var(--brand-red))]"
+              : "bg-primary",
           };
         });
         setCarouselData(carousel);
@@ -67,11 +71,12 @@ const Topics = () => {
       .finally(() => setLoading(false));
   }, [cat]);
 
-  // ✅ Redirect check AFTER all hooks
+  // Redirect check AFTER all hooks
   if (!cat) return <Navigate to="/" replace />;
 
   return (
     <Layout>
+      {/* Topic header + carousel */}
       <section className="border-b border-border bg-secondary">
         <div className="container-editorial py-12 lg:py-16">
           <p className="kicker">Topic</p>
@@ -85,6 +90,7 @@ const Topics = () => {
         </div>
       </section>
 
+      {/* Articles grid + sidebar */}
       <section className="container-editorial py-12">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-8">
@@ -93,24 +99,51 @@ const Topics = () => {
                 {[...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)}
               </div>
             ) : articles.length > 0 ? (
-              <div className="grid gap-10 sm:grid-cols-2">
+              <div className="grid gap-8 sm:grid-cols-2">
                 {articles.map((a) => (
-                  <article key={a._id} className="group">
+                  <article
+                    key={a._id}
+                    className="group border border-border bg-background shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden"
+                    style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+                  >
+                    {/* Thumbnail */}
                     <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
-                      <img src={a.imageUrl} alt={a.title} loading="lazy"
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      <img
+                        src={a.imageUrl}
+                        alt={a.title}
+                        loading="lazy"
+                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
                     </Link>
-                    <div className="pt-3">
-                      <Link to={`/topics/${slugify(a.category)}`}
-                        className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
+
+                    <div className="p-4">
+                      {/* Category tag */}
+                      <Link
+                        to={`/topics/${slugify(a.category)}`}
+                        className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white"
+                      >
                         {a.category}
                       </Link>
+
+                      {/* Title */}
                       <Link to={`/article/${a.slug}`}>
                         <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground hover:text-primary transition-colors line-clamp-2">
                           {a.title}
                         </h3>
                       </Link>
-                      <p className="mt-1 text-xs text-muted-foreground">
+
+                      {/* Excerpt with red drop cap on first letter */}
+                      {a.excerpt && (
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                          <span className="float-left mr-1.5 font-serif text-4xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
+                            {a.excerpt.charAt(0)}
+                          </span>
+                          {a.excerpt.slice(1)}
+                        </p>
+                      )}
+
+                      {/* Meta */}
+                      <p className="mt-3 text-xs text-muted-foreground clear-both">
                         {a.author} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                       </p>
                     </div>
@@ -120,11 +153,16 @@ const Topics = () => {
             ) : (
               <div className="py-20 text-center">
                 <p className="font-serif text-2xl font-bold">No articles yet</p>
-                <p className="mt-2 text-muted-foreground">Check back soon for coverage from the {cat} desk.</p>
-                <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">← Back to home</Link>
+                <p className="mt-2 text-muted-foreground">
+                  Check back soon for coverage from the {cat} desk.
+                </p>
+                <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
+                  ← Back to home
+                </Link>
               </div>
             )}
           </div>
+
           <div className="lg:col-span-4">
             <TrendingSidebar />
           </div>

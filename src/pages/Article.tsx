@@ -36,6 +36,7 @@ interface SanityArticle {
   references?: Reference[];
 }
 
+// ── Portable text components ─────────────────────────────
 const ptComponents: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
@@ -90,6 +91,49 @@ const ptComponents: PortableTextComponents = {
   },
 };
 
+// ── Drop cap helper ───────────────────────────────────────
+// Finds the FIRST normal paragraph block regardless of position
+// (fixes the bug where images before text prevent drop cap from appearing)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const DropCapPortableText = ({ body }: { body: any[] }) => {
+  const firstParaIndex = body.findIndex(
+    (b) => b._type === "block" && (!b.style || b.style === "normal")
+  );
+
+  const modifiedBody = body.map((block, i) =>
+    i === firstParaIndex ? { ...block, _dropCap: true } : block
+  );
+
+  const dropCapComponents: PortableTextComponents = {
+    ...ptComponents,
+    block: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      normal: ({ children, value }: any) =>
+        value?._dropCap ? (
+          <p className="mb-6 text-lg leading-[1.85] text-foreground/90 first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-7xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[hsl(var(--brand-red))]">
+            {children}
+          </p>
+        ) : (
+          <p className="mb-6 text-lg leading-[1.85] text-foreground/90">{children}</p>
+        ),
+      h2: ({ children }) => (
+        <h2 className="mb-4 mt-12 font-serif text-3xl font-bold text-foreground">{children}</h2>
+      ),
+      h3: ({ children }) => (
+        <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
+      ),
+      blockquote: ({ children }) => (
+        <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] pl-6 font-serif text-2xl italic leading-snug text-foreground">
+          {children}
+        </blockquote>
+      ),
+    },
+  };
+
+  return <PortableText value={modifiedBody} components={dropCapComponents} />;
+};
+
+// ── Share buttons ─────────────────────────────────────────
 const ShareButtons = ({ url, title }: { url: string; title: string }) => {
   const [copied, setCopied] = useState(false);
   const encoded = encodeURIComponent(url);
@@ -131,6 +175,7 @@ const ShareButtons = ({ url, title }: { url: string; title: string }) => {
   );
 };
 
+// ── Related articles carousel ─────────────────────────────
 const RelatedArticles = ({ category, currentSlug }: { category: string; currentSlug: string }) => {
   const [related, setRelated] = useState<SanityArticle[]>([]);
 
@@ -183,6 +228,7 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
   );
 };
 
+// ── Main Article component ────────────────────────────────
 const Article = () => {
   const { slug } = useParams();
   const [sanityArticle, setSanityArticle] = useState<SanityArticle | null>(null);
@@ -222,7 +268,9 @@ const Article = () => {
     : staticArticle?.date ?? "";
   const readTime = calcReadTime(sanityArticle?.body ?? []);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
-  const metaTitle = sanityArticle?.seoTitle ? `${sanityArticle.seoTitle} — The Global Doctrine` : `${title} — The Global Doctrine`;
+  const metaTitle = sanityArticle?.seoTitle
+    ? `${sanityArticle.seoTitle} — The Global Doctrine`
+    : `${title} — The Global Doctrine`;
   const metaDescription = sanityArticle?.seoDescription || excerpt;
 
   if (loading) {
@@ -294,10 +342,10 @@ const Article = () => {
           <div className="grid gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">
               <div className="mx-auto max-w-2xl">
+
+                {/* Article body with smart drop cap */}
                 {sanityArticle?.body?.length ? (
-                  <div className="[&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:font-serif [&>p:first-child]:first-letter:text-7xl [&>p:first-child]:first-letter:font-bold [&>p:first-child]:first-letter:leading-[0.85] [&>p:first-child]:first-letter:text-[hsl(var(--brand-red))]">
-                    <PortableText value={sanityArticle.body} components={ptComponents} />
-                  </div>
+                  <DropCapPortableText body={sanityArticle.body} />
                 ) : (
                   <div className="space-y-6 text-lg leading-[1.85] text-foreground/90">
                     <p className="first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-7xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[hsl(var(--brand-red))]">
@@ -314,15 +362,16 @@ const Article = () => {
                   <ShareButtons url={pageUrl} title={title} />
                 </div>
 
-                {/* References */}
+                {/* References — shown before related articles */}
                 {sanityArticle?.showReferences && sanityArticle?.references && (
                   <ReferencesSection references={sanityArticle.references} />
                 )}
 
-                {/* Related articles */}
+                {/* Related articles carousel — always last */}
                 {category && slug && (
                   <RelatedArticles category={category} currentSlug={slug} />
                 )}
+
               </div>
             </div>
 
