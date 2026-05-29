@@ -32,6 +32,10 @@ const Topics = () => {
   useEffect(() => {
     if (!cat) return;
 
+    // Smoothly scroll to top when category changes
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setLoading(true);
+
     Promise.all([
       client.fetch(`
         *[_type == "article" && category == $cat] | order(publishedAt desc){
@@ -76,88 +80,103 @@ const Topics = () => {
 
   return (
     <Layout>
-      {/* Topic header + carousel */}
+      {/* Premium Topic header */}
       <section className="border-b border-border bg-secondary">
         <div className="container-editorial py-12 lg:py-16">
-          <p className="kicker">Topic</p>
-          <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">{cat}</h1>
-          <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          <span className="inline-block bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white mb-4">
+            Topic Desk
+          </span>
+          <h1 className="font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-foreground">
+            {cat}
+          </h1>
+          <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
             Reporting, analysis, and long-form commentary from across the {cat.toLowerCase()} desk.
           </p>
-          <div className="mt-12 -mx-4 sm:mx-0">
-            <CategoryCarousel topics={carouselData} />
-          </div>
         </div>
       </section>
 
       {/* Articles grid + sidebar */}
-      <section className="container-editorial py-12">
+      <section className="container-editorial py-12 lg:py-16 bg-background">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-8">
             {loading ? (
-              <div className="grid gap-10 sm:grid-cols-2">
+              <div className="grid gap-8 sm:grid-cols-2">
                 {[...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)}
               </div>
             ) : articles.length > 0 ? (
               <div className="grid gap-8 sm:grid-cols-2">
-                {articles.map((a) => (
-                  <article
-                    key={a._id}
-                    className="group border border-border bg-background shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 overflow-hidden"
-                    style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
-                  >
-                    {/* Thumbnail */}
-                    <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
-                      <img
-                        src={a.imageUrl}
-                        alt={a.title}
-                        loading="lazy"
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                    </Link>
+                {articles.map((a) => {
+                  // Safely trim to ensure drop cap doesn't grab a blank space
+                  const cleanExcerpt = a.excerpt?.trim() || "";
+                  const firstChar = cleanExcerpt.charAt(0);
+                  const restExcerpt = cleanExcerpt.slice(1);
 
-                    <div className="p-4">
-                      {/* Category tag */}
-                      <Link
-                        to={`/topics/${slugify(a.category)}`}
-                        className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white"
-                      >
-                        {a.category}
+                  return (
+                    <article
+                      key={a._id}
+                      className="group flex flex-col border border-border bg-background shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300 overflow-hidden"
+                      style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+                    >
+                      {/* Thumbnail */}
+                      <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted aspect-[4/3]">
+                        <img
+                          src={a.imageUrl || heroImg}
+                          alt={a.title}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                        />
                       </Link>
 
-                      {/* Title */}
-                      <Link to={`/article/${a.slug}`}>
-                        <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground hover:text-primary transition-colors line-clamp-2">
-                          {a.title}
-                        </h3>
-                      </Link>
+                      {/* Flex-grow ensures the bottom meta stays pinned to the bottom */}
+                      <div className="flex flex-col flex-grow p-5">
+                        <div className="mb-3">
+                          <Link
+                            to={`/topics/${slugify(a.category)}`}
+                            className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white hover:bg-black transition-colors"
+                          >
+                            {a.category}
+                          </Link>
+                        </div>
 
-                      {/* Excerpt with red drop cap on first letter */}
-                      {a.excerpt && (
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed line-clamp-3">
-                          <span className="float-left mr-1.5 font-serif text-4xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
-                            {a.excerpt.charAt(0)}
-                          </span>
-                          {a.excerpt.slice(1)}
-                        </p>
-                      )}
+                        <Link to={`/article/${a.slug}`} className="flex-grow">
+                          <h3 className="font-serif text-xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3">
+                            {a.title}
+                          </h3>
+                        </Link>
 
-                      {/* Meta */}
-                      <p className="mt-3 text-xs text-muted-foreground clear-both">
-                        {a.author} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-                      </p>
-                    </div>
-                  </article>
-                ))}
+                        {cleanExcerpt && (
+                          <p className="mt-auto text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">
+                            <span className="float-left mr-1.5 font-serif text-4xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
+                              {firstChar}
+                            </span>
+                            {restExcerpt}
+                          </p>
+                        )}
+
+                        {/* Meta metadata perfectly aligned at the bottom */}
+                        <div className="mt-auto pt-4 border-t border-border flex items-center gap-2 text-[11px] text-muted-foreground">
+                          <span className="font-semibold text-foreground uppercase tracking-wider">{a.author}</span>
+                          <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                          <time dateTime={a.publishedAt}>
+                            {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                          </time>
+                        </div>
+                      </div>
+                    </article>
+                  );
+                })}
               </div>
             ) : (
-              <div className="py-20 text-center">
-                <p className="font-serif text-2xl font-bold">No articles yet</p>
-                <p className="mt-2 text-muted-foreground">
-                  Check back soon for coverage from the {cat} desk.
+              <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-border bg-secondary/50 py-24 text-center px-4">
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--brand-red))] text-white mb-4">
+                  <span className="font-serif text-2xl">!</span>
+                </div>
+                <p className="font-serif text-2xl font-bold text-foreground">No articles yet</p>
+                <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+                  Check back soon for coverage from the <span className="font-semibold text-foreground">{cat}</span> desk.
                 </p>
-                <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-primary hover:underline">
-                  ← Back to home
+                <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-colors">
+                  ← Back to Frontpage
                 </Link>
               </div>
             )}
@@ -165,6 +184,21 @@ const Topics = () => {
 
           <div className="lg:col-span-4">
             <TrendingSidebar />
+          </div>
+        </div>
+      </section>
+
+      {/* Signature Blue Divider + Carousel Section */}
+      <section className="border-t-4 border-primary bg-secondary overflow-hidden">
+        <div className="container-editorial py-16 relative">
+          <div className="mb-10 flex items-end justify-between border-b-2 border-foreground pb-3">
+            <div>
+              <p className="kicker text-sm font-bold">Explore More</p>
+              <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">Browse other topics</h2>
+            </div>
+          </div>
+          <div className="-mx-4 sm:mx-0">
+            <CategoryCarousel topics={carouselData} />
           </div>
         </div>
       </section>
