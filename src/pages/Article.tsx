@@ -36,7 +36,7 @@ interface SanityArticle {
   references?: Reference[];
 }
 
-// ── Portable text components ─────────────────────────────
+// ── Portable text base components ────────────────────────
 const ptComponents: PortableTextComponents = {
   block: {
     normal: ({ children }) => (
@@ -55,17 +55,25 @@ const ptComponents: PortableTextComponents = {
     ),
   },
   marks: {
-    strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
+    strong: ({ children }) => (
+      <strong className="font-bold text-foreground">{children}</strong>
+    ),
     em: ({ children }) => <em className="italic">{children}</em>,
-    link: ({ value, children }) => (
-      <a href={value?.href} target="_blank" rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors">
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    link: ({ value, children }: any) => (
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors"
+      >
         {children}
       </a>
     ),
   },
   types: {
-    image: ({ value }) => (
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    image: ({ value }: any) => (
       <figure className="my-10">
         <img
           src={urlFor(value).width(1200).url()}
@@ -82,8 +90,12 @@ const ptComponents: PortableTextComponents = {
     ),
   },
   list: {
-    bullet: ({ children }) => <ul className="mb-6 ml-6 list-disc space-y-2 text-lg leading-relaxed">{children}</ul>,
-    number: ({ children }) => <ol className="mb-6 ml-6 list-decimal space-y-2 text-lg leading-relaxed">{children}</ol>,
+    bullet: ({ children }) => (
+      <ul className="mb-6 ml-6 list-disc space-y-2 text-lg leading-relaxed">{children}</ul>
+    ),
+    number: ({ children }) => (
+      <ol className="mb-6 ml-6 list-decimal space-y-2 text-lg leading-relaxed">{children}</ol>
+    ),
   },
   listItem: {
     bullet: ({ children }) => <li className="text-foreground/90">{children}</li>,
@@ -91,36 +103,53 @@ const ptComponents: PortableTextComponents = {
   },
 };
 
-// ── Drop cap helper ───────────────────────────────────────
-// Finds the FIRST normal paragraph block regardless of position
-// (fixes the bug where images before text prevent drop cap from appearing)
+// ── Drop cap component ────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DropCapPortableText = ({ body }: { body: any[] }) => {
   const firstParaIndex = body.findIndex(
     (b) => b._type === "block" && (!b.style || b.style === "normal")
   );
 
-  const modifiedBody = body.map((block, i) =>
-    i === firstParaIndex ? { ...block, _dropCap: true } : block
-  );
-
   const dropCapComponents: PortableTextComponents = {
     ...ptComponents,
     block: {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      normal: ({ children, value }: any) =>
-        value?._dropCap ? (
-          <p className="mb-6 text-lg leading-[1.85] text-foreground/90 first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-7xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[hsl(var(--brand-red))]">
-            {children}
-          </p>
-        ) : (
+      normal: ({ children, value }: any) => {
+        const isFirst =
+          firstParaIndex >= 0 &&
+          value?._key === body[firstParaIndex]?._key;
+
+        if (isFirst) {
+          const rawText: string = value?.children?.[0]?.text ?? "";
+          const firstChar = rawText.charAt(0);
+          const patchedChildren = (value?.children ?? []).map(
+             
+            (span: Record<string, unknown>, i: number) =>
+              i === 0 ? { ...span, text: rawText.slice(1) } : span
+          );
+
+          return (
+            <p className="mb-6 text-lg leading-[1.85] text-foreground/90">
+              <span className="float-left mr-1.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
+                {firstChar}
+              </span>
+              <PortableText
+                value={[{ ...value, children: patchedChildren }]}
+                components={ptComponents}
+              />
+            </p>
+          );
+        }
+
+        return (
           <p className="mb-6 text-lg leading-[1.85] text-foreground/90">{children}</p>
-        ),
+        );
+      },
       h2: ({ children }) => (
         <h2 className="mb-4 mt-12 font-serif text-3xl font-bold text-foreground">{children}</h2>
       ),
       h3: ({ children }) => (
-        <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
+        <h3 className="mb-3 mt-8 text-2xl font-serif text-foreground">{children}</h3>
       ),
       blockquote: ({ children }) => (
         <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] pl-6 font-serif text-2xl italic leading-snug text-foreground">
@@ -130,7 +159,7 @@ const DropCapPortableText = ({ body }: { body: any[] }) => {
     },
   };
 
-  return <PortableText value={modifiedBody} components={dropCapComponents} />;
+  return <PortableText value={body} components={dropCapComponents} />;
 };
 
 // ── Share buttons ─────────────────────────────────────────
@@ -147,44 +176,65 @@ const ShareButtons = ({ url, title }: { url: string; title: string }) => {
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Share</span>
-      <a href={`https://twitter.com/intent/tweet?url=${encoded}&text=${encodedTitle}`}
-        target="_blank" rel="noopener noreferrer"
+      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+        Share
+      </span>
+      <a
+        href={`https://twitter.com/intent/tweet?url=${encoded}&text=${encodedTitle}`}
+        target="_blank"
+        rel="noopener noreferrer"
         className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-black hover:text-white hover:border-black"
-        aria-label="Share on X">
+        aria-label="Share on X"
+      >
         <Twitter className="h-3.5 w-3.5" />
       </a>
-      <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded}`}
-        target="_blank" rel="noopener noreferrer"
+      <a
+        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded}`}
+        target="_blank"
+        rel="noopener noreferrer"
         className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5]"
-        aria-label="Share on LinkedIn">
+        aria-label="Share on LinkedIn"
+      >
         <Linkedin className="h-3.5 w-3.5" />
       </a>
-      <a href={`https://wa.me/?text=${encodedTitle}%20${encoded}`}
-        target="_blank" rel="noopener noreferrer"
+      <a
+        href={`https://wa.me/?text=${encodedTitle}%20${encoded}`}
+        target="_blank"
+        rel="noopener noreferrer"
         className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-[#25D366] hover:text-white hover:border-[#25D366]"
-        aria-label="Share on WhatsApp">
+        aria-label="Share on WhatsApp"
+      >
         <span className="text-xs font-bold">W</span>
       </a>
-      <button onClick={copy}
+      <button
+        onClick={copy}
         className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-primary hover:text-white hover:border-primary"
-        aria-label="Copy link">
+        aria-label="Copy link"
+      >
         {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
       </button>
     </div>
   );
 };
 
-// ── Related articles carousel ─────────────────────────────
-const RelatedArticles = ({ category, currentSlug }: { category: string; currentSlug: string }) => {
+// ── Related articles ──────────────────────────────────────
+const RelatedArticles = ({
+  category,
+  currentSlug,
+}: {
+  category: string;
+  currentSlug: string;
+}) => {
   const [related, setRelated] = useState<SanityArticle[]>([]);
 
   useEffect(() => {
-    client.fetch(`
-      *[_type in ["article", "coverStory"] && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
-        title, "slug": slug.current, category, author, publishedAt, "imageUrl": mainImage.asset->url
-      }
-    `, { category, slug: currentSlug })
+    client
+      .fetch(
+        `*[_type in ["article", "coverStory"] && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
+          title, "slug": slug.current, category, author, publishedAt, "imageUrl": mainImage.asset->url
+        }`,
+        { category, slug: currentSlug }
+      )
       .then((data) => setRelated(data || []))
       .catch(console.error);
   }, [category, currentSlug]);
@@ -202,14 +252,24 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
       </div>
       <div className="grid gap-8 sm:grid-cols-3">
         {related.map((a) => (
-          <article key={a.slug} className="group border border-border bg-background shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}>
+          <article
+            key={a.slug}
+            className="group border border-border bg-background shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+            style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+          >
             <Link to={`/article/${a.slug}`} className="block overflow-hidden">
-              <img src={a.imageUrl} alt={a.title} loading="lazy"
-                className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img
+                src={a.imageUrl}
+                alt={a.title}
+                loading="lazy"
+                className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </Link>
             <div className="p-4">
-              <Link to={`/topics/${slugify(a.category || "cover-story")}`}
-                className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
+              <Link
+                to={`/topics/${slugify(a.category || "cover-story")}`}
+                className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white"
+              >
                 {a.category || "Cover Story"}
               </Link>
               <Link to={`/article/${a.slug}`}>
@@ -218,7 +278,12 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
                 </h4>
               </Link>
               <p className="mt-2 text-xs text-muted-foreground">
-                {a.author} · {new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
+                {a.author} &middot;{" "}
+                {new Date(a.publishedAt).toLocaleDateString("en-US", {
+                  month: "short",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </p>
             </div>
           </article>
@@ -228,7 +293,7 @@ const RelatedArticles = ({ category, currentSlug }: { category: string; currentS
   );
 };
 
-// ── Main Article component ────────────────────────────────
+// ── Main Article page ─────────────────────────────────────
 const Article = () => {
   const { slug } = useParams();
   const [sanityArticle, setSanityArticle] = useState<SanityArticle | null>(null);
@@ -240,19 +305,23 @@ const Article = () => {
   useEffect(() => {
     if (!slug) return;
     setLoading(true);
-    client.fetch(`
-      *[_type in ["article", "coverStory"] && slug.current == $slug][0]{
-        title, "slug": slug.current, excerpt, category, author, publishedAt,
-        "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription,
-        showReferences,
-        references[]{ text, url, credit }
-      }
-    `, { slug })
+    client
+      .fetch(
+        `*[_type in ["article", "coverStory"] && slug.current == $slug][0]{
+          title, "slug": slug.current, excerpt, category, author, publishedAt,
+          "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription,
+          showReferences,
+          references[]{ text, url, credit }
+        }`,
+        { slug }
+      )
       .then((data) => {
         if (data) setSanityArticle(data);
         else if (!staticArticle) setNotFound(true);
       })
-      .catch(() => { if (!staticArticle) setNotFound(true); })
+      .catch(() => {
+        if (!staticArticle) setNotFound(true);
+      })
       .finally(() => setLoading(false));
   }, [slug, staticArticle]);
 
@@ -264,7 +333,11 @@ const Article = () => {
   const author = sanityArticle?.author ?? staticArticle?.author ?? "";
   const image = sanityArticle?.imageUrl ?? (staticArticle?.image as string) ?? "";
   const date = sanityArticle
-    ? new Date(sanityArticle.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+    ? new Date(sanityArticle.publishedAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
     : staticArticle?.date ?? "";
   const readTime = calcReadTime(sanityArticle?.body ?? []);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -276,7 +349,9 @@ const Article = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container-editorial py-16"><SkeletonCardHero /></div>
+        <div className="container-editorial py-16">
+          <SkeletonCardHero />
+        </div>
       </Layout>
     );
   }
@@ -301,11 +376,15 @@ const Article = () => {
         <div className="border-b border-border bg-background">
           <div className="container-editorial py-10 lg:py-14">
             <div className="mx-auto max-w-3xl">
-              <Link to={`/topics/${slugify(category)}`} className="kicker">{category}</Link>
+              <Link to={`/topics/${slugify(category)}`} className="kicker">
+                {category}
+              </Link>
               <h1 className="mt-4 font-serif text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
                 {title}
               </h1>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl">{excerpt}</p>
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+                {excerpt}
+              </p>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3 text-sm">
                   <span className="font-semibold text-foreground">By {author}</span>
@@ -331,8 +410,11 @@ const Article = () => {
         {image && (
           <div className="container-editorial">
             <div className="-mt-px overflow-hidden bg-muted/50 flex justify-center py-4 sm:py-8">
-              <img src={image} alt={title}
-                className="w-full h-auto max-h-[75vh] object-contain" />
+              <img
+                src={image}
+                alt={title}
+                className="w-full h-auto max-h-[75vh] object-contain"
+              />
             </div>
           </div>
         )}
@@ -343,7 +425,6 @@ const Article = () => {
             <div className="lg:col-span-8">
               <div className="mx-auto max-w-2xl">
 
-                {/* Article body with smart drop cap */}
                 {sanityArticle?.body?.length ? (
                   <DropCapPortableText body={sanityArticle.body} />
                 ) : (
@@ -362,12 +443,12 @@ const Article = () => {
                   <ShareButtons url={pageUrl} title={title} />
                 </div>
 
-                {/* References — shown before related articles */}
+                {/* References */}
                 {sanityArticle?.showReferences && sanityArticle?.references && (
                   <ReferencesSection references={sanityArticle.references} />
                 )}
 
-                {/* Related articles carousel — always last */}
+                {/* Related articles */}
                 {category && slug && (
                   <RelatedArticles category={category} currentSlug={slug} />
                 )}
