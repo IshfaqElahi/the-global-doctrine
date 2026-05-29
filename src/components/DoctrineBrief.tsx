@@ -43,7 +43,7 @@ export const DoctrineBrief = () => {
   }, []);
 
   // Your live Google Apps Script Web App URL
-  const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz9VqnrQSHdrRnp6-otqEpLjjonP2rUWY9arwJ2iH8F00R6JRNHj2umpiaYbbEBr6OT/exec"; 
+  const GOOGLE_SCRIPT_URL = import.meta.env.VITE_GOOGLE_SCRIPT_URL; 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
