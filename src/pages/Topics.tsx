@@ -6,7 +6,7 @@ import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
 import { categories } from "@/data/articles";
 import { client } from "@/lib/sanity";
-import heroImg from "@/assets/hero-summit.jpg";
+import heroImg from "@/assets/hero-summit.webp";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
@@ -32,7 +32,6 @@ const Topics = () => {
   useEffect(() => {
     if (!cat) return;
 
-    // Smoothly scroll to top when category changes
     window.scrollTo({ top: 0, behavior: "smooth" });
     setLoading(true);
 
@@ -63,7 +62,8 @@ const Topics = () => {
             date: match
               ? new Date(match.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
               : "",
-            image: match?.imageUrl || heroImg,
+            // OPTIMIZATION: Request optimized fallback image from Sanity CDN
+            image: match ? `${match.imageUrl}?auto=format&w=600&q=80` : heroImg,
             colorClass: ["Cover Story", "Asia", "Middle East"].includes(c)
               ? "bg-[hsl(var(--brand-red))]"
               : "bg-primary",
@@ -75,12 +75,10 @@ const Topics = () => {
       .finally(() => setLoading(false));
   }, [cat]);
 
-  // Redirect check AFTER all hooks
   if (!cat) return <Navigate to="/" replace />;
 
   return (
     <Layout>
-      {/* Premium Topic header */}
       <section className="border-b border-border bg-secondary">
         <div className="container-editorial py-12 lg:py-16">
           <span className="inline-block bg-[hsl(var(--brand-red))] px-2 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white mb-4">
@@ -95,7 +93,6 @@ const Topics = () => {
         </div>
       </section>
 
-      {/* Articles grid + sidebar */}
       <section className="container-editorial py-12 lg:py-16 bg-background">
         <div className="grid gap-12 lg:grid-cols-12">
           <div className="lg:col-span-8">
@@ -106,7 +103,6 @@ const Topics = () => {
             ) : articles.length > 0 ? (
               <div className="grid gap-8 sm:grid-cols-2">
                 {articles.map((a) => {
-                  // Safely trim to ensure drop cap doesn't grab a blank space
                   const cleanExcerpt = a.excerpt?.trim() || "";
                   const firstChar = cleanExcerpt.charAt(0);
                   const restExcerpt = cleanExcerpt.slice(1);
@@ -117,17 +113,16 @@ const Topics = () => {
                       className="group flex flex-col border border-border bg-background shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300 overflow-hidden"
                       style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
                     >
-                      {/* Thumbnail */}
                       <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted aspect-[4/3]">
+                        {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) */}
                         <img
-                          src={a.imageUrl || heroImg}
+                          src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg}
                           alt={a.title}
                           loading="lazy"
                           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
                         />
                       </Link>
 
-                      {/* Flex-grow ensures the bottom meta stays pinned to the bottom */}
                       <div className="flex flex-col flex-grow p-5">
                         <div className="mb-3">
                           <Link
@@ -153,7 +148,6 @@ const Topics = () => {
                           </p>
                         )}
 
-                        {/* Meta metadata perfectly aligned at the bottom */}
                         <div className="mt-auto pt-4 border-t border-border flex items-center gap-2 text-[11px] text-muted-foreground">
                           <span className="font-semibold text-foreground uppercase tracking-wider">{a.author}</span>
                           <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
@@ -188,7 +182,6 @@ const Topics = () => {
         </div>
       </section>
 
-      {/* Signature Blue Divider + Carousel Section */}
       <section className="border-t-4 border-primary bg-secondary overflow-hidden">
         <div className="container-editorial py-16 relative">
           <div className="mb-10 flex items-end justify-between border-b-2 border-foreground pb-3">
