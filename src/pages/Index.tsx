@@ -47,7 +47,8 @@ import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/c
 import { DoctrineBrief } from "@/components/DoctrineBrief";
 import { categories } from "@/data/articles";
 import { client, urlFor } from "@/lib/sanity";
-import heroImg from "@/assets/hero-summit.jpg";
+// FIXED: Changed .jpg to .webp so the build process doesn't crash
+import heroImg from "@/assets/hero-summit.webp";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
@@ -169,7 +170,7 @@ const Index = () => {
                     alt={coverStory.title}
                     width={1600}
                     height={1024}
-                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-[1.02]"
+                    className="w-full h-auto object-contain transition-transform duration-700 ease-out group-hover:scale-[1.02]"
                   />
                 </div>
               </Link>
@@ -232,9 +233,10 @@ const Index = () => {
                 <motion.div key={mag._id} variants={fadeUpItem}>
                   <Link to="/magazine" className="group block">
                     <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
+                      {/* FIXED: Comment is safely outside the conditional rendering block! */}
                       {mag.coverImage && (
                         <img src={urlFor(mag.coverImage).auto('format').width(600).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
-                          className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                          className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                       )}
                     </div>
                     <h3 className="mt-4 font-serif text-lg font-bold">{mag.issue} — {mag.title}</h3>
@@ -296,11 +298,11 @@ const Index = () => {
                 <motion.article 
                   key={a._id} 
                   variants={fadeUpItem}
-                  className="group bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+                  className="group bg-background border border-border shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-500" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
                 >
                   <Link to={`/article/${a.slug}`} className="block overflow-hidden">
                     <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
-                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                   </Link>
                   <div className="p-4">
                     <Link to={`/topics/${slugify(a.category)}`}
@@ -341,7 +343,7 @@ const Index = () => {
                     src={`${latestInterview.photoUrl}?auto=format&w=800&q=80`}
                     alt={latestInterview.personName}
                     loading="lazy"
-                    className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                   />
                 </Link>
               </div>
