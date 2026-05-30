@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
+import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
 import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
@@ -9,6 +10,21 @@ import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
+
+// --- Framer Motion Animation Variants ---
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUpItem: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+// ----------------------------------------
 
 interface SanityArticle {
   _id: string;
@@ -62,7 +78,6 @@ const Topics = () => {
             date: match
               ? new Date(match.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
               : "",
-            // OPTIMIZATION: Request optimized fallback image from Sanity CDN
             image: match ? `${match.imageUrl}?auto=format&w=600&q=80` : heroImg,
             colorClass: ["Cover Story", "Asia", "Middle East"].includes(c)
               ? "bg-[hsl(var(--brand-red))]"
@@ -101,20 +116,26 @@ const Topics = () => {
                 {[...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)}
               </div>
             ) : articles.length > 0 ? (
-              <div className="grid gap-8 sm:grid-cols-2">
+              <motion.div 
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true, margin: "-50px" }}
+                className="grid gap-8 sm:grid-cols-2"
+              >
                 {articles.map((a) => {
                   const cleanExcerpt = a.excerpt?.trim() || "";
                   const firstChar = cleanExcerpt.charAt(0);
                   const restExcerpt = cleanExcerpt.slice(1);
 
                   return (
-                    <article
+                    <motion.article
                       key={a._id}
+                      variants={fadeUpItem}
                       className="group flex flex-col border border-border bg-background shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300 overflow-hidden"
                       style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
                     >
                       <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted aspect-[4/3]">
-                        {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) */}
                         <img
                           src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg}
                           alt={a.title}
@@ -156,10 +177,10 @@ const Topics = () => {
                           </time>
                         </div>
                       </div>
-                    </article>
+                    </motion.article>
                   );
                 })}
-              </div>
+              </motion.div>
             ) : (
               <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-border bg-secondary/50 py-24 text-center px-4">
                 <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--brand-red))] text-white mb-4">

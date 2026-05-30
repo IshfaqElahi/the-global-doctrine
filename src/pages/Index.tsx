@@ -40,6 +40,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { Helmet } from "react-helmet-async";
+import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
@@ -49,6 +50,21 @@ import { client, urlFor } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.jpg";
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
+
+// --- Framer Motion Animation Variants ---
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUpItem: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+// ----------------------------------------
 
 const Index = () => {
   const [loading, setLoading] = useState(true);
@@ -111,7 +127,6 @@ const Index = () => {
       date: sanityMatch
         ? new Date(sanityMatch.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
         : "",
-      // OPTIMIZATION: Pass optimized URL for fallback images
       image: sanityMatch ? `${sanityMatch.imageUrl}?auto=format&w=600&q=80` : heroImg,
       colorClass: ["Cover Story", "Asia", "Middle East"].includes(cat)
         ? "bg-[hsl(var(--brand-red))]"
@@ -149,7 +164,6 @@ const Index = () => {
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
               <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
                 <div className="overflow-hidden bg-muted w-full">
-                  {/* OPTIMIZATION: Request max 1600px width and auto-format (WebP) */}
                   <img
                     src={`${coverStory.imageUrl}?auto=format&w=1600&q=80`}
                     alt={coverStory.title}
@@ -199,29 +213,39 @@ const Index = () => {
               All Releases →
             </Link>
           </div>
-          <div className="grid gap-8 sm:grid-cols-3">
-            {loading ? (
-              [...Array(3)].map((_, i) => (
+          
+          {loading ? (
+            <div className="grid gap-8 sm:grid-cols-3">
+              {[...Array(3)].map((_, i) => (
                 <div key={i} className="aspect-[4/5] w-full animate-pulse bg-background/20 rounded-sm" />
-              ))
-            ) : magazines.length > 0 ? (
-              magazines.map((mag) => (
-                <Link key={mag._id} to="/magazine" className="group block">
-                  <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
-                    {/* OPTIMIZATION: Use urlFor builder to automatically format and crop magazine covers */}
-                    {mag.coverImage && (
-                      <img src={urlFor(mag.coverImage).auto('format').width(600).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
-                        className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                    )}
-                  </div>
-                  <h3 className="mt-4 font-serif text-lg font-bold">{mag.issue} — {mag.title}</h3>
-                  <p className="text-sm text-background/60">{mag.publishDate}</p>
-                </Link>
-              ))
-            ) : (
-              <p className="text-sm text-background/60 col-span-3">No magazines published yet.</p>
-            )}
-          </div>
+              ))}
+            </div>
+          ) : magazines.length > 0 ? (
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-50px" }}
+              className="grid gap-8 sm:grid-cols-3"
+            >
+              {magazines.map((mag) => (
+                <motion.div key={mag._id} variants={fadeUpItem}>
+                  <Link to="/magazine" className="group block">
+                    <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
+                      {mag.coverImage && (
+                        <img src={urlFor(mag.coverImage).auto('format').width(600).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
+                          className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      )}
+                    </div>
+                    <h3 className="mt-4 font-serif text-lg font-bold">{mag.issue} — {mag.title}</h3>
+                    <p className="text-sm text-background/60">{mag.publishDate}</p>
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          ) : (
+            <p className="text-sm text-background/60 col-span-3">No magazines published yet.</p>
+          )}
         </div>
       </section>
 
@@ -255,39 +279,52 @@ const Index = () => {
               View all →
             </Link>
           </div>
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-            {loading
-              ? [...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)
-              : editorsPicks.length > 0
-                ? editorsPicks.map((a) => (
-                  <article key={a._id} className="group bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}>
-                    <Link to={`/article/${a.slug}`} className="block overflow-hidden">
-                      {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) for grid items */}
-                      <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
-                        className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+          
+          {loading ? (
+            <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              {[...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)}
+            </div>
+          ) : editorsPicks.length > 0 ? (
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, margin: "-50px" }}
+              className="grid gap-8 md:grid-cols-2 lg:grid-cols-4"
+            >
+              {editorsPicks.map((a) => (
+                <motion.article 
+                  key={a._id} 
+                  variants={fadeUpItem}
+                  className="group bg-background border border-border shadow-md hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-300" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+                >
+                  <Link to={`/article/${a.slug}`} className="block overflow-hidden">
+                    <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
+                      className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                  </Link>
+                  <div className="p-4">
+                    <Link to={`/topics/${slugify(a.category)}`}
+                      className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
+                      {a.category}
                     </Link>
-                    <div className="p-4">
-                      <Link to={`/topics/${slugify(a.category)}`}
-                        className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white">
-                        {a.category}
-                      </Link>
-                      <Link to={`/article/${a.slug}`}>
-                        <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                          {a.title}
-                        </h3>
-                      </Link>
-                      <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{a.excerpt}</p>
-                      <div className="mt-3 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border pt-3">
-                        <span className="font-semibold text-foreground">{a.author}</span>
-                        <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
-                        <span>{new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                      </div>
+                    <Link to={`/article/${a.slug}`}>
+                      <h3 className="mt-2 font-serif text-lg font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                        {a.title}
+                      </h3>
+                    </Link>
+                    <p className="mt-2 text-xs text-muted-foreground line-clamp-2">{a.excerpt}</p>
+                    <div className="mt-3 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border pt-3">
+                      <span className="font-semibold text-foreground">{a.author}</span>
+                      <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
+                      <span>{new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
                     </div>
-                  </article>
-                ))
-                : <p className="text-muted-foreground col-span-4">No articles published yet.</p>
-            }
-          </div>
+                  </div>
+                </motion.article>
+              ))}
+            </motion.div>
+          ) : (
+            <p className="text-muted-foreground col-span-4">No articles published yet.</p>
+          )}
         </div>
       </section>
 
@@ -300,7 +337,6 @@ const Index = () => {
               {/* Photo */}
               <div className="lg:col-span-5">
                 <Link to={`/interview/${latestInterview.slug}`} className="group block overflow-hidden bg-muted ring-1 ring-border">
-                  {/* OPTIMIZATION: Request max 800px width and auto-format (WebP) */}
                   <img
                     src={`${latestInterview.photoUrl}?auto=format&w=800&q=80`}
                     alt={latestInterview.personName}
@@ -313,7 +349,6 @@ const Index = () => {
               {/* Content */}
               <div className="flex flex-col justify-center lg:col-span-7">
 
-                {/* Blue filled kicker */}
                 <span className="inline-block self-start bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
                   The Interview
                 </span>
