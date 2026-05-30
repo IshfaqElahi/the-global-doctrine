@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
 import { client, urlFor } from "@/lib/sanity";
@@ -12,6 +13,21 @@ interface MagazineIssue {
   coverImage: any;
   pdfUrl: string;
 }
+
+// --- Framer Motion Animation Variants ---
+const staggerContainer: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const fadeUpItem: Variants = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+};
+// ----------------------------------------
 
 const SkeletonMagazineCard = () => (
   <div className="animate-pulse">
@@ -63,54 +79,65 @@ const Magazine = () => {
 
   return (
     <Layout>
-      <section className="border-b border-border">
+      <section className="border-b border-border bg-secondary">
         <div className="container-editorial py-12 lg:py-16">
           <p className="kicker">Print & Digital</p>
-          <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl">
+          <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-foreground">
             The Magazine
           </h1>
-          <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
             A quarterly print edition and rolling digital archive. Browse past issues, download covers, or subscribe to receive future editions.
           </p>
         </div>
       </section>
 
-      <section className="container-editorial py-14">
+      <section className="container-editorial py-16">
         {isLoading ? (
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
             {[...Array(3)].map((_, i) => <SkeletonMagazineCard key={i} />)}
           </div>
         ) : issues.length === 0 ? (
-          <div className="py-20 text-center">
+          <div className="flex flex-col items-center justify-center rounded-sm border border-dashed border-border bg-secondary/50 py-24 text-center px-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[hsl(var(--brand-red))] text-white mb-4">
+              <span className="font-serif text-2xl">!</span>
+            </div>
             <p className="font-serif text-2xl font-bold text-foreground">No issues published yet.</p>
-            <p className="mt-2 text-muted-foreground">Check back soon for our latest edition.</p>
+            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">Check back soon for our latest edition.</p>
           </div>
         ) : (
-          <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+          <motion.div 
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-50px" }}
+            className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3"
+          >
             {issues.map((m) => (
-              <article
+              <motion.article
                 key={m._id}
-                className="group border border-border bg-background shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                variants={fadeUpItem}
+                className="group flex flex-col border border-border bg-background shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 overflow-hidden"
                 style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
               >
                 <div className="overflow-hidden bg-muted">
                   {m.coverImage && (
                     <img
-                      src={urlFor(m.coverImage).url()}
+                      src={urlFor(m.coverImage).auto('format').width(800).url()}
                       alt={`${m.issue} — ${m.title}`}
                       loading="lazy"
-                      className="aspect-[4/5] w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                     />
                   )}
                 </div>
-                <div className="p-5">
+                <div className="flex flex-col flex-grow p-6">
                   <p className="kicker">
                     {m.issue}{m.publishDate ? ` · ${m.publishDate}` : ""}
                   </p>
-                  <h3 className="mt-1 font-serif text-2xl font-bold leading-tight text-foreground">
+                  <h3 className="mt-2 font-serif text-2xl font-bold leading-tight text-foreground flex-grow">
                     {m.title}
                   </h3>
-                  <div className="mt-4 flex flex-wrap items-center gap-2">
+                  
+                  <div className="mt-6 pt-5 border-t border-border flex flex-wrap items-center gap-3">
                     <Button
                       variant="default"
                       size="sm"
@@ -139,15 +166,15 @@ const Magazine = () => {
                         </Button>
                       </>
                     ) : (
-                      <span className="text-sm italic text-muted-foreground">
+                      <span className="text-[13px] italic text-muted-foreground">
                         Digital copy coming soon
                       </span>
                     )}
                   </div>
                 </div>
-              </article>
+              </motion.article>
             ))}
-          </div>
+          </motion.div>
         )}
       </section>
     </Layout>
