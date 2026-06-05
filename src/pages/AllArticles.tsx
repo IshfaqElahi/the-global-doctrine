@@ -40,8 +40,9 @@ const AllArticles = () => {
 
   useEffect(() => {
     client.fetch(`
-      *[_type == "article"] | order(publishedAt desc){
-        _id, title, "slug": slug.current, excerpt, category,
+      *[_type in ["article", "coverStory"]] | order(publishedAt desc){
+        _id, title, "slug": slug.current, excerpt, 
+        "category": coalesce(category, "Cover Story"),
         author, publishedAt, "imageUrl": mainImage.asset->url
       }
     `)

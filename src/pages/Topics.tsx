@@ -53,14 +53,19 @@ const Topics = () => {
 
     Promise.all([
       client.fetch(`
-        *[_type == "article" && category == $cat] | order(publishedAt desc){
-          _id, title, "slug": slug.current, excerpt, category,
+        *[
+          (_type == "article" && category == $cat) || 
+          (_type == "coverStory" && $cat == "Cover Story")
+        ] | order(publishedAt desc){
+          _id, title, "slug": slug.current, excerpt, 
+          "category": coalesce(category, "Cover Story"),
           author, publishedAt, "imageUrl": mainImage.asset->url
         }
       `, { cat }),
       client.fetch(`
-        *[_type == "article"] | order(publishedAt desc){
-          _id, title, "slug": slug.current, category,
+        *[_type in ["article", "coverStory"]] | order(publishedAt desc){
+          _id, title, "slug": slug.current, 
+          "category": coalesce(category, "Cover Story"),
           author, publishedAt, "imageUrl": mainImage.asset->url
         }
       `),
@@ -140,7 +145,7 @@ const Topics = () => {
                           src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg}
                           alt={a.title}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
                         />
                       </Link>
 

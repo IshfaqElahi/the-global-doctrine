@@ -44,10 +44,11 @@ const Search = () => {
     if (!query.trim()) return;
     setLoading(true);
     client.fetch(`
-      *[_type == "article" && (
-        title match $q || excerpt match $q || category match $q || author match $q
+      *[_type in ["article", "coverStory"] && (
+        title match $q || excerpt match $q || category match $q || author match $q || (_type == "coverStory" && "cover story" match $q)
       )] | order(publishedAt desc)[0...20]{
-        _id, title, "slug": slug.current, excerpt, category,
+        _id, title, "slug": slug.current, excerpt, 
+        "category": coalesce(category, "Cover Story"),
         author, publishedAt, "imageUrl": mainImage.asset->url
       }
     `, { q: `*${query}*` })
