@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+Math&family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -41,7 +41,7 @@
   }
   @keyframes pulseSoft {
     0%, 100% { opacity: 1; }
-    50%       { opacity: 0.55; }
+    50%       { opacity: 0.45; }
   }
   @keyframes revealLeft {
     from { clip-path: inset(0 100% 0 0); }
@@ -52,7 +52,7 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* ── CSS Variables ────────────────────────────────── */
+  /* ── CSS Variables (Exact Brand Palette) ──────────── */
   :root {
     --background: 210 17% 95%;
     --foreground: 0 0% 7%;
@@ -122,23 +122,19 @@
 
 /* ── Dark/light mode transition ──────────────────────── */
 html {
+  scroll-behavior: smooth;
   transition: background-color 0.4s var(--ease-expo);
 }
 
 @layer base {
   * {
     @apply border-border;
-    transition:
-      background-color 0.35s ease,
-      color 0.25s ease,
-      border-color 0.25s ease,
-      box-shadow 0.25s ease,
-      opacity 0.2s ease;
   }
 
   body {
-    @apply bg-background text-foreground font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-white;
     font-feature-settings: "ss01", "cv11";
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5 { @apply font-serif tracking-tight; }
@@ -155,7 +151,7 @@ html {
   .container-editorial { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
 
   .kicker {
-    @apply inline-block text-sm font-bold uppercase tracking-[0.18em] text-[hsl(var(--brand-red))];
+    @apply inline-flex items-center gap-2 text-xs sm:text-sm font-bold uppercase tracking-[0.18em] text-[hsl(var(--brand-red))];
   }
   .kicker-blue {
     @apply inline-block text-[11px] font-bold uppercase tracking-[0.18em] text-primary;
@@ -166,6 +162,21 @@ html {
     width: 2.5rem;
     background: hsl(var(--brand-red));
     animation: redLineGrow 0.5s var(--ease-expo) both;
+  }
+
+  /* Editorial grid background pattern */
+  .editorial-grid-bg {
+    background-image:
+      linear-gradient(to right, hsl(var(--border) / 0.45) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--border) / 0.45) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .editorial-dark-grid {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
 
   /* Animated underline */
@@ -186,26 +197,40 @@ html {
 
   /* Article title with animated underline on hover */
   .article-title {
-    @apply font-serif font-bold leading-[1.1] text-foreground;
-    transition: color 0.2s ease;
+    @apply font-serif font-bold leading-[1.15] text-foreground;
     background-image: linear-gradient(hsl(var(--primary)), hsl(var(--primary)));
     background-repeat: no-repeat;
     background-size: 0% 1.5px;
     background-position: left bottom;
-    transition: color 0.2s ease, background-size 0.35s var(--ease-expo);
+    transition: color 0.25s ease, background-size 0.4s var(--ease-expo);
   }
-  .article-title:hover {
+  .article-title:hover,
+  .group:hover .article-title,
+  .group\/card:hover .article-title {
     @apply text-primary;
     background-size: 100% 1.5px;
   }
 
   /* Card hover lift — reusable */
   .card-lift {
-    transition: transform 0.3s var(--ease-expo), box-shadow 0.3s var(--ease-expo), border-color 0.25s ease;
+    transition: transform 0.4s var(--ease-expo), box-shadow 0.4s var(--ease-expo), border-color 0.25s ease;
   }
   .card-lift:hover {
     transform: translateY(-6px);
-    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.14);
+    box-shadow: 0 24px 48px -12px rgba(0,0,0,0.16);
+  }
+
+  /* Editorial card with left brand-red accent */
+  .editorial-card {
+    @apply relative flex flex-col overflow-hidden border border-border bg-card text-card-foreground shadow-sm;
+    border-left: 3px solid hsl(var(--brand-red));
+    transition: transform 0.45s var(--ease-expo), box-shadow 0.45s var(--ease-expo), border-color 0.3s ease;
+  }
+  .editorial-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 44px -12px rgba(0, 0, 0, 0.16);
+    border-color: hsl(var(--primary) / 0.45);
+    border-left-color: hsl(var(--brand-red));
   }
 
   /* Shimmer skeleton */
@@ -224,10 +249,15 @@ html {
   /* Image zoom container */
   .img-zoom { overflow: hidden; }
   .img-zoom img {
-    transition: transform 0.65s var(--ease-expo);
+    transition: transform 0.7s var(--ease-expo);
     will-change: transform;
   }
-  .img-zoom:hover img { transform: scale(1.06); }
+  .img-zoom:hover img,
+  .group:hover .img-zoom img { transform: scale(1.05); }
+
+  /* Hide scrollbar for clean horizontal pill strips */
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
   /* Fade-up entrance */
   .fade-up {
@@ -268,23 +298,5 @@ html {
   /* Red bar entrance */
   .red-bar-enter {
     animation: revealLeft 0.5s var(--ease-expo) both;
-  }
-
-  /* Section stagger */
-  .stagger-children > *:nth-child(1) { animation-delay: 0ms; }
-  .stagger-children > *:nth-child(2) { animation-delay: 80ms; }
-  .stagger-children > *:nth-child(3) { animation-delay: 160ms; }
-  .stagger-children > *:nth-child(4) { animation-delay: 240ms; }
-  .stagger-children > *:nth-child(5) { animation-delay: 320ms; }
-  .stagger-children > *:nth-child(6) { animation-delay: 400ms; }
-
-  /* Mobile menu animations */
-  @keyframes slideInRight {
-    from { transform: translateX(100%); opacity: 0; }
-    to   { transform: translateX(0);    opacity: 1; }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to   { opacity: 1; }
   }
 }

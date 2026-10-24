@@ -100,7 +100,7 @@ export const DoctrineBrief = () => {
             <h2 className="text-[hsl(var(--brand-red))] font-bold uppercase tracking-[0.15em] text-sm sm:text-base mb-4">
               The Doctrine Brief
             </h2>
-            <p className="font-serif text-[1.15rem] sm:text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight whitespace-nowrap text-background mb-4">
+            <p className="font-serif text-[1.15rem] sm:text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight sm:whitespace-nowrap text-background mb-4">
               GEOPOLITICS WITHOUT GATEKEEPING
             </p>
             <p className="text-background/70 text-base sm:text-lg">

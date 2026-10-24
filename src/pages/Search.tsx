@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { motion, Variants } from "framer-motion";
+import { Search as SearchIcon, ArrowUpRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
+import { EditorialImage } from "@/components/EditorialImage";
 import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
 
@@ -20,43 +22,55 @@ interface SearchResult {
 
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
-// --- Framer Motion Animation Variants ---
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: { staggerChildren: 0.15 },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const fadeUpItem: Variants = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
 };
-// ----------------------------------------
 
 const Search = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get("q") || "";
+  const [inputVal, setInputVal] = useState(query);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!query.trim()) return;
+    setInputVal(query);
+    if (!query.trim()) {
+      setResults([]);
+      return;
+    }
     setLoading(true);
-    client.fetch(`
-      *[_type in ["article", "coverStory"] && (
+    client
+      .fetch(
+        `*[_type in ["article", "coverStory"] && (
         title match $q || excerpt match $q || category match $q || author match $q || (_type == "coverStory" && "cover story" match $q)
       )] | order(publishedAt desc)[0...20]{
         _id, title, "slug": slug.current, excerpt, 
         "category": coalesce(category, "Cover Story"),
         author, publishedAt, "imageUrl": mainImage.asset->url
-      }
-    `, { q: `*${query}*` })
+      }`,
+        { q: `*${query}*` }
+      )
       .then((data) => setResults(data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [query]);
+
+  const handleRefine = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputVal.trim()) {
+      setSearchParams({ q: inputVal.trim() });
+    }
+  };
 
   return (
     <Layout>
@@ -64,66 +78,95 @@ const Search = () => {
         <title>Search: {query} — The Global Doctrine</title>
       </Helmet>
 
-      <section className="border-b border-border bg-secondary">
+      <section className="border-b border-border bg-secondary editorial-grid-bg">
         <div className="container-editorial py-12 lg:py-16">
-          <p className="kicker">Search results</p>
+          <p className="kicker">Archive Search</p>
           <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-foreground">
-            "{query}"
+            {query ? `"${query}"` : "Search Dispatches"}
           </h1>
-          {!loading && (
-            <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
+          {!loading && query && (
+            <p className="mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
               {results.length} {results.length === 1 ? "result" : "results"} found
             </p>
           )}
+
+          <form onSubmit={handleRefine} className="mt-6 flex max-w-xl gap-2">
+            <div className="relative flex-1">
+              <SearchIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                value={inputVal}
+                onChange={(e) => setInputVal(e.target.value)}
+                placeholder="Search by topic, region, headline, or author..."
+                className="w-full border border-border bg-background pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              className="bg-[hsl(var(--brand-red))] px-5 py-2.5 text-xs font-bold uppercase tracking-widest text-white hover:bg-primary transition-colors"
+            >
+              Search
+            </button>
+          </form>
         </div>
       </section>
 
       <section className="container-editorial py-16">
         {loading ? (
-          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
-            {[...Array(4)].map((_, i) => <SkeletonCardCompact key={i} />)}
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+            {[...Array(4)].map((_, i) => (
+              <SkeletonCardCompact key={i} />
+            ))}
           </div>
         ) : results.length > 0 ? (
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-50px" }}
-            className="grid gap-10 md:grid-cols-2 lg:grid-cols-4"
+            animate="show"
+            className="grid gap-8 md:grid-cols-2 lg:grid-cols-4"
           >
             {results.map((a) => (
-              <motion.article 
-                key={a._id} 
+              <motion.article
+                key={a._id}
                 variants={fadeUpItem}
-                className="group flex flex-col bg-background border border-border hover:border-primary/40 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 overflow-hidden"
+                className="group editorial-card flex flex-col overflow-hidden"
+                style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
               >
                 <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
-                  <img 
-                    src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg} 
-                    alt={a.title} 
-                    loading="lazy"
-                    className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" 
+                  <EditorialImage
+                    src={a.imageUrl || heroImg}
+                    alt={a.title}
+                    variant="card"
                   />
                 </Link>
                 <div className="flex flex-col flex-grow p-5">
-                  <div className="mb-3">
-                    <Link 
+                  <div className="mb-3 flex items-center justify-between gap-2">
+                    <Link
                       to={`/topics/${slugify(a.category)}`}
-                      className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white hover:bg-black transition-colors"
+                      className="inline-block px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white hover:bg-[hsl(var(--brand-red))] transition-colors"
                     >
                       {a.category}
                     </Link>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-primary transition-all" />
                   </div>
                   <Link to={`/article/${a.slug}`} className="flex-grow">
-                    <h3 className="font-serif text-lg font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3">
+                    <h3 className="font-serif text-lg font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3">
                       {a.title}
                     </h3>
                   </Link>
-                  
+
                   <div className="mt-auto pt-4 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border">
-                    <span className="font-semibold text-foreground uppercase tracking-wider">{a.author}</span>
-                    <span className="h-1 w-1 rounded-full bg-muted-foreground/50" />
-                    <span>{new Date(a.publishedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    <span className="font-semibold text-foreground uppercase tracking-wider truncate">
+                      {a.author}
+                    </span>
+                    <span className="h-1 w-1 rounded-full bg-muted-foreground/50 shrink-0" />
+                    <span className="shrink-0">
+                      {new Date(a.publishedAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })}
+                    </span>
                   </div>
                 </div>
               </motion.article>
@@ -135,8 +178,13 @@ const Search = () => {
               <span className="font-serif text-2xl">!</span>
             </div>
             <p className="font-serif text-2xl font-bold text-foreground">No results found</p>
-            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">Try searching for a different topic, region, or author.</p>
-            <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-colors">
+            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+              Try searching for a different topic, region, or author.
+            </p>
+            <Link
+              to="/"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-colors"
+            >
               ← Back to Frontpage
             </Link>
           </div>

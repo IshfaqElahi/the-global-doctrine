@@ -4,6 +4,7 @@ import { Helmet } from "react-helmet-async";
 import { ArrowRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
+import { EditorialImage } from "@/components/EditorialImage";
 import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
 
@@ -18,7 +19,6 @@ interface SanityInterview {
   photoUrl: string;
 }
 
-// --- Framer Motion Animation Variants ---
 const staggerContainer: Variants = {
   hidden: { opacity: 0 },
   show: {
@@ -28,10 +28,9 @@ const staggerContainer: Variants = {
 };
 
 const fadeUpItem: Variants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 0, y: 28 },
   show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 };
-// ----------------------------------------
 
 const SkeletonInterviewCard = () => (
   <div className="animate-pulse grid gap-5 sm:grid-cols-[1fr_1.4fr] border border-border bg-background p-4">
@@ -52,7 +51,8 @@ const Interview = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    client.fetch(`
+    client
+      .fetch(`
       *[_type == "interview"] | order(publishedAt desc){
         _id,
         title,
@@ -73,19 +73,31 @@ const Interview = () => {
     <Layout>
       <Helmet>
         <title>Interview — The Global Doctrine</title>
-        <meta name="description" content="Long-form conversations with the diplomats, scholars, and practitioners shaping the world from inside the room." />
+        <meta
+          name="description"
+          content="Long-form conversations with the diplomats, scholars, and practitioners shaping the world from inside the room."
+        />
       </Helmet>
 
       {/* Header */}
-      <section className="border-b border-border bg-secondary">
+      <section className="border-b border-border bg-secondary editorial-grid-bg">
         <div className="container-editorial py-12 lg:py-16">
-          <p className="kicker">In Conversation</p>
-          <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-foreground">
-            The Interview
-          </h1>
-          <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
-            Long-form conversations with the diplomats, scholars, and practitioners shaping the world from inside the room.
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <p className="kicker inline-flex items-center gap-2">
+              <span className="h-[2px] w-6 bg-[hsl(var(--brand-red))]" />
+              In Conversation
+            </p>
+            <h1 className="mt-3 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-foreground">
+              The Interview
+            </h1>
+            <p className="mt-5 max-w-2xl text-base text-muted-foreground sm:text-lg border-l-2 border-primary pl-4">
+              Long-form conversations with the diplomats, scholars, and practitioners shaping the world from inside the room.
+            </p>
+          </motion.div>
         </div>
       </section>
 
@@ -93,10 +105,12 @@ const Interview = () => {
       <section className="container-editorial py-16">
         {loading ? (
           <div className="grid gap-12">
-            {[...Array(3)].map((_, i) => <SkeletonInterviewCard key={i} />)}
+            {[...Array(3)].map((_, i) => (
+              <SkeletonInterviewCard key={i} />
+            ))}
           </div>
         ) : interviews.length > 0 ? (
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="show"
@@ -107,21 +121,28 @@ const Interview = () => {
               <motion.article
                 key={interview._id}
                 variants={fadeUpItem}
-                className="group grid gap-6 sm:grid-cols-[1fr_1.4fr] border border-border bg-background shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 overflow-hidden"
-                style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
+                className="group editorial-card grid gap-6 sm:grid-cols-[1fr_1.45fr] overflow-hidden"
+                style={{ borderLeft: "4px solid hsl(var(--brand-red))" }}
               >
                 {/* Photo */}
-                <div className="overflow-hidden bg-muted">
-                  <img
-                    src={interview.photoUrl ? `${interview.photoUrl}?auto=format&w=800&q=80` : heroImg}
+                <Link to={`/interview/${interview.slug}`} className="block overflow-hidden bg-muted">
+                  <EditorialImage
+                    src={interview.photoUrl || heroImg}
                     alt={interview.personName}
-                    loading={idx === 0 ? "eager" : "lazy"}
-                    className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+                    variant="portrait"
+                    priority={idx === 0}
                   />
-                </div>
+                </Link>
 
                 {/* Content */}
-                <div className="flex flex-col justify-center p-6 lg:p-8">
+                <div className="relative flex flex-col justify-center p-6 lg:p-10">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none select-none absolute top-4 right-6 font-serif text-8xl font-bold leading-none text-primary/10"
+                  >
+                    &rdquo;
+                  </span>
+
                   <p className="kicker">
                     {new Date(interview.publishedAt).toLocaleDateString("en-US", {
                       month: "long",
@@ -130,9 +151,11 @@ const Interview = () => {
                     })}
                   </p>
 
-                  <h2 className="mt-3 font-serif text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors lg:text-4xl">
-                    "{interview.title}"
-                  </h2>
+                  <Link to={`/interview/${interview.slug}`} className="mt-3 block">
+                    <h2 className="font-serif text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors lg:text-4xl">
+                      &ldquo;{interview.title}&rdquo;
+                    </h2>
+                  </Link>
 
                   {interview.excerpt && (
                     <p className="mt-5 text-sm leading-relaxed text-muted-foreground line-clamp-3 sm:text-base">
@@ -140,21 +163,24 @@ const Interview = () => {
                     </p>
                   )}
 
-                  <div className="mt-6 flex items-center gap-3">
+                  <div className="mt-6 flex items-center gap-3.5">
                     <div className="h-10 w-[3px] bg-[hsl(var(--brand-red))]" />
                     <div>
                       <p className="text-sm font-bold uppercase tracking-wider text-foreground">
                         {interview.personName}
                       </p>
-                      <p className="text-sm text-muted-foreground italic mt-0.5">{interview.personRole}</p>
+                      <p className="text-sm text-muted-foreground italic mt-0.5">
+                        {interview.personRole}
+                      </p>
                     </div>
                   </div>
 
                   <Link
                     to={`/interview/${interview.slug}`}
-                    className="mt-8 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-xs font-bold uppercase tracking-widest text-primary hover:gap-3 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-all duration-300"
+                    className="group/btn mt-8 inline-flex items-center gap-2 self-start border-b-2 border-primary pb-1 text-xs font-bold uppercase tracking-widest text-primary hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-all duration-300"
                   >
-                    Read Interview <ArrowRight className="h-3.5 w-3.5" />
+                    Read Interview
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1" />
                   </Link>
                 </div>
               </motion.article>
@@ -166,8 +192,13 @@ const Interview = () => {
               <span className="font-serif text-2xl">!</span>
             </div>
             <p className="font-serif text-2xl font-bold text-foreground">No interviews yet.</p>
-            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">Check back soon for long-form conversations.</p>
-            <Link to="/" className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-colors">
+            <p className="mt-2 text-muted-foreground max-w-sm mx-auto">
+              Check back soon for long-form conversations.
+            </p>
+            <Link
+              to="/"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-primary border-b-2 border-primary pb-1 hover:text-[hsl(var(--brand-red))] hover:border-[hsl(var(--brand-red))] transition-colors"
+            >
               ← Back to Frontpage
             </Link>
           </div>

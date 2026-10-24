@@ -3,10 +3,12 @@ import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { Clock, ArrowRight } from "lucide-react";
+import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReferencesSection } from "@/components/ReferencesSection";
+import { EditorialImage } from "@/components/EditorialImage";
 import { client, urlFor } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
 
@@ -42,28 +44,36 @@ const ptComponents: PortableTextComponents = {
       <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] pl-6 font-serif text-2xl italic leading-snug text-foreground">
+      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
         {children}
       </blockquote>
     ),
   },
   marks: {
-    strong: ({ children }) => <strong className="font-bold">{children}</strong>,
+    strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
     em: ({ children }) => <em className="italic">{children}</em>,
     link: ({ value, children }) => (
-      <a href={value?.href} target="_blank" rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors">
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors"
+      >
         {children}
       </a>
     ),
   },
   types: {
     image: ({ value }) => (
-      <figure className="my-10">
-        <img src={urlFor(value).width(1200).url()} alt={value.alt || ""}
-          className="w-full object-cover" loading="lazy" />
+      <figure className="my-10 overflow-hidden border border-border bg-muted/30">
+        <img
+          src={urlFor(value).width(1200).auto("format").url()}
+          alt={value.alt || ""}
+          className="w-full max-h-[640px] object-contain mx-auto"
+          loading="lazy"
+        />
         {value.alt && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+          <figcaption className="border-t border-border bg-secondary/50 px-4 py-2.5 text-center text-xs text-muted-foreground italic">
             {value.alt}
           </figcaption>
         )}
@@ -80,15 +90,20 @@ const InterviewArticle = () => {
 
   useEffect(() => {
     if (!slug) return;
-    client.fetch(`
-      *[_type == "interview" && slug.current == $slug][0]{
+    client
+      .fetch(
+        `*[_type == "interview" && slug.current == $slug][0]{
         title, "slug": slug.current, personName, personRole,
         publishedAt, excerpt, "photoUrl": photo.asset->url, body,
         showReferences,
         references[]{ text, url, credit }
-      }
-    `, { slug })
-      .then((data) => { if (data) setInterview(data); else setNotFound(true); })
+      }`,
+        { slug }
+      )
+      .then((data) => {
+        if (data) setInterview(data);
+        else setNotFound(true);
+      })
       .catch(() => setNotFound(true))
       .finally(() => setLoading(false));
   }, [slug]);
@@ -101,7 +116,9 @@ const InterviewArticle = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="container-editorial py-16"><SkeletonCardHero /></div>
+        <div className="container-editorial py-16">
+          <SkeletonCardHero />
+        </div>
       </Layout>
     );
   }
@@ -122,54 +139,81 @@ const InterviewArticle = () => {
       </Helmet>
 
       {/* Header */}
-      <div className="border-b border-border bg-background">
+      <div className="border-b border-border bg-secondary/40 editorial-grid-bg">
         <div className="container-editorial py-10 lg:py-14">
-          <div className="mx-auto max-w-3xl">
-            <Link to="/interview" className="kicker inline-flex items-center gap-1 hover:gap-2 transition-all">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55 }}
+            className="mx-auto max-w-3xl"
+          >
+            <Link
+              to="/interview"
+              className="kicker inline-flex items-center gap-1.5 hover:gap-2.5 transition-all"
+            >
               ← In Conversation
             </Link>
-            <h1 className="mt-4 font-serif text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
-              "{interview.title}"
+            <h1 className="mt-4 font-serif text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
+              &ldquo;{interview.title}&rdquo;
             </h1>
             {interview.excerpt && (
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground">{interview.excerpt}</p>
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground border-l-2 border-primary pl-4">
+                {interview.excerpt}
+              </p>
             )}
-            <div className="mt-6 flex flex-wrap items-center gap-4">
+            <div className="mt-7 pt-5 border-t border-border flex flex-wrap items-center justify-between gap-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-[2px] bg-[hsl(var(--brand-red))]" />
+                <div className="h-10 w-[3px] bg-[hsl(var(--brand-red))]" />
                 <div>
-                  <p className="font-semibold text-foreground">{interview.personName}</p>
-                  <p className="text-xs text-muted-foreground">{interview.personRole}</p>
+                  <p className="font-bold uppercase tracking-wider text-sm text-foreground">
+                    {interview.personName}
+                  </p>
+                  <p className="text-xs text-muted-foreground italic">{interview.personRole}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                <span>{new Date(interview.publishedAt).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}</span>
+              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                <span>
+                  {new Date(interview.publishedAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
                 {readTime > 0 && (
                   <>
                     <span className="h-1 w-1 rounded-full bg-muted-foreground" />
                     <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5" /> {readTime} min read
+                      <Clock className="h-3.5 w-3.5 text-[hsl(var(--brand-red))]" /> {readTime} min read
                     </span>
                   </>
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
-      {/* Photo */}
+      {/* Photo (Uncropped Adaptive Framing) */}
       {interview.photoUrl && (
-        <div className="container-editorial">
-          <div className="overflow-hidden bg-muted">
-            <img src={interview.photoUrl} alt={interview.personName}
-              className="aspect-[16/9] w-full object-cover object-top" />
-          </div>
+        <div className="container-editorial mt-8">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.99 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="mx-auto max-w-4xl overflow-hidden border border-border bg-muted shadow-lg"
+          >
+            <EditorialImage
+              src={interview.photoUrl}
+              alt={interview.personName}
+              variant="feature"
+              priority
+            />
+          </motion.div>
         </div>
       )}
 
       {/* Body */}
-      <div className="container-editorial py-12">
+      <div className="container-editorial py-12 lg:py-16">
         <div className="mx-auto max-w-2xl">
           {interview.body?.length ? (
             <div className="[&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:font-serif [&>p:first-child]:first-letter:text-7xl [&>p:first-child]:first-letter:font-bold [&>p:first-child]:first-letter:leading-[0.85] [&>p:first-child]:first-letter:text-[hsl(var(--brand-red))]">
@@ -185,8 +229,10 @@ const InterviewArticle = () => {
           )}
 
           <div className="mt-12 border-t border-border pt-8">
-            <Link to="/interview"
-              className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary hover:gap-3 hover:text-[hsl(var(--brand-red))] transition-all duration-300">
+            <Link
+              to="/interview"
+              className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary hover:gap-3 hover:text-[hsl(var(--brand-red))] transition-all duration-300"
+            >
               ← More Interviews <ArrowRight className="h-4 w-4" />
             </Link>
           </div>

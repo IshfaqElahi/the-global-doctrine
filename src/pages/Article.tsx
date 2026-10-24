@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { PortableText, PortableTextComponents } from "@portabletext/react";
-import { Twitter, Linkedin, Share2, Check, Clock } from "lucide-react";
+import { Twitter, Linkedin, Share2, Check, Clock, ArrowLeft } from "lucide-react";
+import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { ReferencesSection } from "@/components/ReferencesSection";
+import { EditorialImage } from "@/components/EditorialImage";
 import { client, urlFor } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
 import { articles } from "@/data/articles";
@@ -49,7 +51,7 @@ const ptComponents: PortableTextComponents = {
       <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
     ),
     blockquote: ({ children }) => (
-      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] pl-6 font-serif text-2xl italic leading-snug text-foreground">
+      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
         {children}
       </blockquote>
     ),
@@ -74,15 +76,15 @@ const ptComponents: PortableTextComponents = {
   types: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     image: ({ value }: any) => (
-      <figure className="my-10">
+      <figure className="my-10 overflow-hidden border border-border bg-muted/30">
         <img
-          src={urlFor(value).width(1200).url()}
+          src={urlFor(value).width(1200).auto("format").url()}
           alt={value.alt || ""}
-          className="w-full object-cover"
+          className="w-full max-h-[640px] object-contain mx-auto"
           loading="lazy"
         />
         {value.alt && (
-          <figcaption className="mt-2 text-center text-sm text-muted-foreground italic">
+          <figcaption className="border-t border-border bg-secondary/50 px-4 py-2.5 text-center text-xs text-muted-foreground italic">
             {value.alt}
           </figcaption>
         )}
@@ -106,10 +108,8 @@ const ptComponents: PortableTextComponents = {
 // ── Drop cap component ────────────────────────────────────
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const DropCapPortableText = ({ body }: { body: any[] }) => {
-  // BUGFIX: Skip empty blocks/paragraphs created in Sanity and find the first real text
   const firstParaIndex = body.findIndex((b) => {
     if (b._type !== "block" || (b.style && b.style !== "normal")) return false;
-    // REPLACED `any` WITH `{ text?: string }` TO FIX ESLINT ERROR
     const textContent = b.children?.map((c: { text?: string }) => c.text || "").join("").trim();
     return textContent && textContent.length > 0;
   });
@@ -124,25 +124,22 @@ const DropCapPortableText = ({ body }: { body: any[] }) => {
           value?._key === body[firstParaIndex]?._key;
 
         if (isFirst) {
-          // REPLACED `any` WITH `{ text?: string }` TO FIX ESLINT ERROR
           const firstSpanIdx = value?.children?.findIndex((c: { text?: string }) => c.text && c.text.trim().length > 0);
 
           if (firstSpanIdx >= 0) {
             const rawText: string = value.children[firstSpanIdx].text;
-            // Find the index of the first actual non-whitespace letter
-            const charIdx = rawText.search(/\S/); 
+            const charIdx = rawText.search(/\S/);
             const firstChar = rawText[charIdx];
 
-            // Reconstruct the text block minus that first character
             const patchedChildren = [...value.children];
             patchedChildren[firstSpanIdx] = {
               ...patchedChildren[firstSpanIdx],
-              text: rawText.slice(0, charIdx) + rawText.slice(charIdx + 1)
+              text: rawText.slice(0, charIdx) + rawText.slice(charIdx + 1),
             };
 
             return (
               <p className="mb-6 text-lg leading-[1.85] text-foreground/90">
-                <span className="float-left mr-1.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
+                <span className="float-left mr-2.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
                   {firstChar}
                 </span>
                 <PortableText
@@ -165,7 +162,7 @@ const DropCapPortableText = ({ body }: { body: any[] }) => {
         <h3 className="mb-3 mt-8 text-2xl font-serif text-foreground">{children}</h3>
       ),
       blockquote: ({ children }) => (
-        <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] pl-6 font-serif text-2xl italic leading-snug text-foreground">
+        <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
           {children}
         </blockquote>
       ),
@@ -188,8 +185,8 @@ const ShareButtons = ({ url, title }: { url: string; title: string }) => {
   };
 
   return (
-    <div className="flex items-center gap-3">
-      <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+    <div className="flex items-center gap-2.5">
+      <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
         Share
       </span>
       <a
@@ -261,36 +258,35 @@ const RelatedArticles = ({
           <span className="h-[2px] w-6 bg-[hsl(var(--brand-red))]" />
           <p className="kicker">More from {category}</p>
         </span>
-        <h3 className="mt-2 font-serif text-2xl font-bold">Related Articles</h3>
+        <h3 className="mt-2 font-serif text-2xl font-bold">Related Dispatches</h3>
       </div>
-      <div className="grid gap-8 sm:grid-cols-3">
+      <div className="grid gap-6 sm:grid-cols-3">
         {related.map((a) => (
           <article
             key={a.slug}
-            className="group border border-border bg-background shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300"
+            className="group editorial-card flex flex-col overflow-hidden"
             style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
           >
             <Link to={`/article/${a.slug}`} className="block overflow-hidden">
-              <img
+              <EditorialImage
                 src={a.imageUrl}
                 alt={a.title}
-                loading="lazy"
-                className="aspect-[16/10] w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                variant="card"
               />
             </Link>
-            <div className="p-4">
+            <div className="flex flex-col flex-grow p-4">
               <Link
                 to={`/topics/${slugify(a.category || "cover-story")}`}
-                className="inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white"
+                className="inline-block self-start px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-primary text-white"
               >
                 {a.category || "Cover Story"}
               </Link>
-              <Link to={`/article/${a.slug}`}>
-                <h4 className="mt-2 font-serif text-base font-bold leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-2">
+              <Link to={`/article/${a.slug}`} className="mt-2 flex-grow">
+                <h4 className="font-serif text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
                   {a.title}
                 </h4>
               </Link>
-              <p className="mt-2 text-xs text-muted-foreground">
+              <p className="mt-3 pt-2.5 border-t border-border text-[11px] text-muted-foreground">
                 {a.author} &middot;{" "}
                 {new Date(a.publishedAt).toLocaleDateString("en-US", {
                   month: "short",
@@ -386,28 +382,46 @@ const Article = () => {
 
       <article>
         {/* Header */}
-        <div className="border-b border-border bg-background">
+        <div className="border-b border-border bg-secondary/40 editorial-grid-bg">
           <div className="container-editorial py-10 lg:py-14">
-            <div className="mx-auto max-w-3xl">
-              <Link to={`/topics/${slugify(category)}`} className="kicker">
-                {category}
-              </Link>
-              <h1 className="mt-4 font-serif text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.55 }}
+              className="mx-auto max-w-3xl"
+            >
+              <div className="flex items-center gap-3">
+                <Link
+                  to={`/topics/${slugify(category)}`}
+                  className="inline-block bg-[hsl(var(--brand-red))] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-white hover:bg-primary transition-colors"
+                >
+                  {category}
+                </Link>
+                <Link
+                  to="/all-articles"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <ArrowLeft className="h-3 w-3" /> Archive
+                </Link>
+              </div>
+              <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
                 {title}
               </h1>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl">
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl border-l-2 border-primary pl-4">
                 {excerpt}
               </p>
-              <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+              <div className="mt-7 pt-5 border-t border-border flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3 text-sm">
-                  <span className="font-semibold text-foreground">By {author}</span>
+                  <span className="font-bold uppercase tracking-wider text-xs text-foreground">
+                    By {author}
+                  </span>
                   <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                  <span className="text-muted-foreground">{date}</span>
+                  <span className="text-muted-foreground text-xs uppercase tracking-wider">{date}</span>
                   {readTime > 0 && (
                     <>
                       <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                      <span className="inline-flex items-center gap-1 text-muted-foreground">
-                        <Clock className="h-3.5 w-3.5" />
+                      <span className="inline-flex items-center gap-1 text-xs uppercase tracking-wider text-muted-foreground">
+                        <Clock className="h-3.5 w-3.5 text-[hsl(var(--brand-red))]" />
                         {readTime} min read
                       </span>
                     </>
@@ -415,29 +429,34 @@ const Article = () => {
                 </div>
                 <ShareButtons url={pageUrl} title={title} />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
 
         {/* Hero image */}
         {image && (
-          <div className="container-editorial">
-            <div className="-mt-px overflow-hidden bg-muted/50 flex justify-center py-4 sm:py-8">
-              <img
+          <div className="container-editorial mt-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.99 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.6 }}
+              className="mx-auto max-w-4xl overflow-hidden border border-border bg-muted shadow-lg"
+            >
+              <EditorialImage
                 src={image}
                 alt={title}
-                className="w-full h-auto max-h-[75vh] object-contain"
+                variant="feature"
+                priority
               />
-            </div>
+            </motion.div>
           </div>
         )}
 
         {/* Body */}
-        <div className="container-editorial py-12">
+        <div className="container-editorial py-12 lg:py-16">
           <div className="grid gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">
               <div className="mx-auto max-w-2xl">
-
                 {sanityArticle?.body?.length ? (
                   <DropCapPortableText body={sanityArticle.body} />
                 ) : (
@@ -452,8 +471,14 @@ const Article = () => {
                 )}
 
                 {/* Bottom share */}
-                <div className="mt-12 border-t border-border pt-6">
+                <div className="mt-12 border-t border-border pt-6 flex items-center justify-between flex-wrap gap-4">
                   <ShareButtons url={pageUrl} title={title} />
+                  <Link
+                    to="/all-articles"
+                    className="text-xs font-bold uppercase tracking-widest text-primary hover:text-[hsl(var(--brand-red))] transition-colors"
+                  >
+                    ← Back to All Dispatches
+                  </Link>
                 </div>
 
                 {/* References */}
@@ -465,7 +490,6 @@ const Article = () => {
                 {category && slug && (
                   <RelatedArticles category={category} currentSlug={slug} />
                 )}
-
               </div>
             </div>
 
