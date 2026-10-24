@@ -206,7 +206,7 @@ const About = () => {
             {/* Founded note */}
             <div className="p-6" style={{ borderLeft: "3px solid hsl(var(--brand-red))", backgroundColor: "hsl(var(--secondary))" }}>
               <p className="text-xs font-bold uppercase tracking-widest text-[hsl(var(--brand-red))] mb-2">
-                Independent · Student-run · Since 2024
+                Independent · Student-run · Since 2026
               </p>
               <p className="text-sm text-muted-foreground leading-relaxed">
                 Founded and run by International Relations students committed to independent, people-first geopolitical reporting.

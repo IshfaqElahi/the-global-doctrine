@@ -243,8 +243,8 @@ const RelatedArticles = ({
   useEffect(() => {
     client
       .fetch(
-        `*[_type in ["article", "coverStory"] && category == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
-          title, "slug": slug.current, category, author, publishedAt, "imageUrl": mainImage.asset->url
+        `*[_type in ["article", "coverStory"] && coalesce(category, "Cover Story") == $category && slug.current != $slug] | order(publishedAt desc)[0...3]{
+          title, "slug": slug.current, "category": coalesce(category, "Cover Story"), author, publishedAt, "imageUrl": mainImage.asset->url
         }`,
         { category, slug: currentSlug }
       )
@@ -321,7 +321,7 @@ const Article = () => {
     client
       .fetch(
         `*[_type in ["article", "coverStory"] && slug.current == $slug][0]{
-          title, "slug": slug.current, excerpt, category, author, publishedAt,
+          title, "slug": slug.current, excerpt, "category": coalesce(category, "Cover Story"), author, publishedAt,
           "imageUrl": mainImage.asset->url, body, seoTitle, seoDescription,
           showReferences,
           references[]{ text, url, credit }

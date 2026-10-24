@@ -121,7 +121,7 @@ export default defineType({
               title: "Reference Text / Title",
               type: "string",
               description: "The name or title of the source (e.g. 'Reuters — Cuba Energy Report 2026')",
-              validation: (R: any) => R.required(),
+              validation: (R) => R.required(),
             },
             {
               name: "url",

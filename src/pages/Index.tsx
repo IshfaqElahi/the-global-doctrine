@@ -1,3 +1,16 @@
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { Helmet } from "react-helmet-async";
+import { motion, Variants } from "framer-motion";
+import { Layout } from "@/components/Layout";
+import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
+import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
+import { DoctrineBrief } from "@/components/DoctrineBrief";
+import { categories } from "@/data/articles";
+import { client, urlFor } from "@/lib/sanity";
+import heroImg from "@/assets/hero-summit.webp";
+
 interface CoverStory {
   title: string;
   slug: string;
@@ -36,20 +49,6 @@ interface LatestInterview {
   photoUrl: string;
 }
 
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { Helmet } from "react-helmet-async";
-import { motion, Variants } from "framer-motion";
-import { Layout } from "@/components/Layout";
-import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
-import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
-import { DoctrineBrief } from "@/components/DoctrineBrief";
-import { categories } from "@/data/articles";
-import { client, urlFor } from "@/lib/sanity";
-// FIXED: Changed .jpg to .webp so the build process doesn't crash
-import heroImg from "@/assets/hero-summit.webp";
-
 const slugify = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
 // --- Framer Motion Animation Variants ---
@@ -73,8 +72,6 @@ const Index = () => {
   const [latestArticles, setLatestArticles] = useState<SanityArticle[]>([]);
   const [magazines, setMagazines] = useState<MagazineIssue[]>([]);
   const [latestInterview, setLatestInterview] = useState<LatestInterview | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,7 +90,7 @@ const Index = () => {
             }
           `),
           client.fetch(`
-            *[_type == "magazineIssue"] | order(publishedAt desc)[0...3]{
+            *[_type == "magazineIssue"] | order(_createdAt desc)[0...3]{
               _id, title, issue, publishDate, coverImage
             }
           `),
@@ -118,7 +115,11 @@ const Index = () => {
   }, []);
 
   const topicCardsData: TopicCardData[] = categories.map((cat, idx) => {
-    const sanityMatch = latestArticles.find((a) => a.category === cat);
+    const sanityMatch =
+      latestArticles.find((a) => a.category === cat) ||
+      (cat === "Cover Story" && coverStory
+        ? { ...coverStory, _id: "cover", category: "Cover Story" }
+        : undefined);
     return {
       id: `topic-${idx}`,
       category: cat,
@@ -128,7 +129,7 @@ const Index = () => {
       date: sanityMatch
         ? new Date(sanityMatch.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
         : "",
-      image: sanityMatch ? `${sanityMatch.imageUrl}?auto=format&w=600&q=80` : heroImg,
+      image: sanityMatch?.imageUrl ? `${sanityMatch.imageUrl}?auto=format&w=600&q=80` : heroImg,
       colorClass: ["Cover Story", "Asia", "Middle East"].includes(cat)
         ? "bg-[hsl(var(--brand-red))]"
         : "bg-primary",
@@ -136,13 +137,6 @@ const Index = () => {
   });
 
   const editorsPicks = latestArticles.slice(0, 4);
-
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
-      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
-    }
-  };
 
   return (
     <Layout>
@@ -166,7 +160,7 @@ const Index = () => {
               <Link to={`/article/${coverStory.slug}`} className="group block lg:col-span-7">
                 <div className="overflow-hidden bg-muted w-full">
                   <img
-                    src={`${coverStory.imageUrl}?auto=format&w=1600&q=80`}
+                    src={coverStory.imageUrl ? `${coverStory.imageUrl}?auto=format&w=1600&q=80` : heroImg}
                     alt={coverStory.title}
                     width={1600}
                     height={1024}
@@ -233,7 +227,6 @@ const Index = () => {
                 <motion.div key={mag._id} variants={fadeUpItem}>
                   <Link to="/magazine" className="group block">
                     <div className="overflow-hidden bg-background/10 ring-1 ring-background/10">
-                      {/* FIXED: Comment is safely outside the conditional rendering block! */}
                       {mag.coverImage && (
                         <img src={urlFor(mag.coverImage).auto('format').width(600).url()} alt={`${mag.issue} — ${mag.title}`} loading="lazy"
                           className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
@@ -301,7 +294,7 @@ const Index = () => {
                   className="group bg-background border border-border shadow-sm hover:shadow-xl hover:-translate-y-1.5 hover:border-primary/50 transition-all duration-500" style={{ borderLeft: "3px solid hsl(var(--brand-red))" }}
                 >
                   <Link to={`/article/${a.slug}`} className="block overflow-hidden">
-                    <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
+                    <img src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg} alt={a.title} loading="lazy"
                       className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                   </Link>
                   <div className="p-4">
@@ -340,7 +333,7 @@ const Index = () => {
               <div className="lg:col-span-5">
                 <Link to={`/interview/${latestInterview.slug}`} className="group block overflow-hidden bg-muted ring-1 ring-border">
                   <img
-                    src={`${latestInterview.photoUrl}?auto=format&w=800&q=80`}
+                    src={latestInterview.photoUrl ? `${latestInterview.photoUrl}?auto=format&w=800&q=80` : heroImg}
                     alt={latestInterview.personName}
                     loading="lazy"
                     className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"

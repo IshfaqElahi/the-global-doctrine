@@ -16,11 +16,7 @@ import Magazine from "./pages/Magazine.tsx";
 import Social from "./pages/Social.tsx";
 import Article from "./pages/Article.tsx";
 import Search from "./pages/Search.tsx";
-// import at top with other pages
 import InterviewArticle from "./pages/InterviewArticle.tsx";
-
-// inside <Routes> before the * catch-all
-<Route path="/interview/:slug" element={<InterviewArticle />} />
 
 const queryClient = new QueryClient();
 
@@ -34,6 +30,7 @@ const AppRoutes = () => {
           <Route path="/topics/:category" element={<Topics />} />
           <Route path="/all-articles" element={<AllArticles />} />
           <Route path="/interview" element={<Interview />} />
+          <Route path="/interview/:slug" element={<InterviewArticle />} />
           <Route path="/about/:section" element={<About />} />
           <Route path="/magazine" element={<Magazine />} />
           <Route path="/social" element={<Social />} />

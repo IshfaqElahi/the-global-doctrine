@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Linkedin, MessageCircle, ExternalLink } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 import { Layout } from "@/components/Layout";
 
 const channels = [

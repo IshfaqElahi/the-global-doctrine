@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { Button } from "@/components/ui/button";
@@ -52,12 +53,12 @@ const Magazine = () => {
   useEffect(() => {
     const fetchIssues = async () => {
       try {
-        const query = `*[_type == "magazineIssue"] | order(publishedAt desc) {
+        const query = `*[_type == "magazineIssue"] | order(_createdAt desc) {
           _id, title, issue, publishDate, coverImage,
           "pdfUrl": pdfFile.asset->url
         }`;
         const data = await client.fetch(query);
-        setIssues(data);
+        setIssues(data || []);
       } catch (error) {
         console.error("Error fetching magazines:", error);
       } finally {
@@ -79,6 +80,11 @@ const Magazine = () => {
 
   return (
     <Layout>
+      <Helmet>
+        <title>The Magazine — The Global Doctrine</title>
+        <meta name="description" content="A quarterly print edition and rolling digital archive of The Global Doctrine." />
+      </Helmet>
+
       <section className="border-b border-border bg-secondary">
         <div className="container-editorial py-12 lg:py-16">
           <p className="kicker">Print & Digital</p>

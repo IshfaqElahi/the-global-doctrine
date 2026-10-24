@@ -5,6 +5,7 @@ import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
 import { client } from "@/lib/sanity";
+import heroImg from "@/assets/hero-summit.webp";
 
 interface SearchResult {
   _id: string;
@@ -98,7 +99,7 @@ const Search = () => {
               >
                 <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
                   <img 
-                    src={`${a.imageUrl}?auto=format&w=800&q=80`} 
+                    src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg} 
                     alt={a.title} 
                     loading="lazy"
                     className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" 

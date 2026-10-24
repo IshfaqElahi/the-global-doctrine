@@ -1,16 +1,18 @@
-export default {
+import { defineField, defineType } from 'sanity'
+
+export default defineType({
   name: 'aboutPage',
   title: 'About Page Sections',
   type: 'document',
   fields: [
-    {
+    defineField({
       name: 'title',
       title: 'Page Title',
       type: 'string',
       description: 'e.g., "Who We Are" or "Editorial Policy"',
-      validation: (Rule: any) => Rule.required(),
-    },
-    {
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'section',
       title: 'Section Identifier',
       type: 'string',
@@ -22,26 +24,26 @@ export default {
         ],
         layout: 'radio',
       },
-      validation: (Rule: any) => Rule.required(),
-    },
-    {
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
       name: 'body',
       title: 'Body Content',
       type: 'array',
       of: [{ type: 'block' }],
       description: 'The main text content for this section.',
-    },
+    }),
   ],
   preview: {
     select: {
       title: 'title',
       subtitle: 'section',
     },
-    prepare({ title, subtitle }: { title: string, subtitle: string }) {
+    prepare({ title, subtitle }: { title: string; subtitle: string }) {
       return {
         title: title,
-        subtitle: `Section: ${subtitle === 'who-we-are' ? 'Who We Are' : 'Editorial Policy'}`
+        subtitle: `Section: ${subtitle === 'who-we-are' ? 'Who We Are' : 'Editorial Policy'}`,
       }
-    }
+    },
   },
-}
+})

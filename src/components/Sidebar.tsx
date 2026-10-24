@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { client } from "@/lib/sanity";
+import heroImg from "@/assets/hero-summit.webp";
 
 interface TrendingArticle {
   _id: string;
@@ -70,7 +71,7 @@ export const TrendingSidebar = () => {
                 </span>
                 <div className="flex flex-1 gap-3">
                   <Link to={`/article/${a.slug}`} className="shrink-0 img-zoom">
-                    <img src={a.imageUrl} alt={a.title}
+                    <img src={a.imageUrl || heroImg} alt={a.title}
                       className="h-16 w-16 object-cover" />
                   </Link>
                   <div>

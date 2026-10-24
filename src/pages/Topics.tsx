@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
@@ -83,7 +84,7 @@ const Topics = () => {
             date: match
               ? new Date(match.publishedAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
               : "",
-            image: match ? `${match.imageUrl}?auto=format&w=600&q=80` : heroImg,
+            image: match?.imageUrl ? `${match.imageUrl}?auto=format&w=600&q=80` : heroImg,
             colorClass: ["Cover Story", "Asia", "Middle East"].includes(c)
               ? "bg-[hsl(var(--brand-red))]"
               : "bg-primary",

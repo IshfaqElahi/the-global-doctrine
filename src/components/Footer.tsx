@@ -6,9 +6,9 @@ import { categories } from "@/data/articles";
 const slug = (c: string) => c.toLowerCase().replace(/\s+/g, "-");
 
 const socials = [
-  { Icon: Facebook, label: "Facebook", href: "https://facebook.com/theglobaldoctrine" },
-  { Icon: Instagram, label: "Instagram", href: "https://instagram.com/the_global_doctrine" },
-  { Icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/company/theglobaldoctrine" },
+  { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com/people/The-Global-Doctrine/61577469676531/" },
+  { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com/the_global_doctrine/" },
+  { Icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/the-global-doctrine/" },
   { Icon: MessageCircle, label: "WhatsApp", href: "https://wa.me/8801612970419" }, // Uses Bangladesh +880 country code
   { Icon: Mail, label: "Email", href: "mailto:theglobaldoctrine.mag@gmail.com" },
 ];

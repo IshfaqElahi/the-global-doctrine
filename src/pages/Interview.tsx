@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { client } from "@/lib/sanity";
+import heroImg from "@/assets/hero-summit.webp";
 
 interface SanityInterview {
   _id: string;
@@ -112,7 +113,7 @@ const Interview = () => {
                 {/* Photo */}
                 <div className="overflow-hidden bg-muted">
                   <img
-                    src={`${interview.photoUrl}?auto=format&w=800&q=80`}
+                    src={interview.photoUrl ? `${interview.photoUrl}?auto=format&w=800&q=80` : heroImg}
                     alt={interview.personName}
                     loading={idx === 0 ? "eager" : "lazy"}
                     className="aspect-[4/5] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"

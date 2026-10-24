@@ -56,8 +56,8 @@ export default defineType({
       ],
       validation: (Rule) => Rule.required(),
     }),
-    
-    // --- NEW: THE FULL ARTICLE BODY ---
+
+    // --- THE FULL ARTICLE BODY ---
     defineField({
       name: 'body',
       title: 'Article Body',
@@ -65,19 +65,19 @@ export default defineType({
       type: 'array',
       of: [
         { type: 'block' },
-        { 
-          type: 'image', 
+        {
+          type: 'image',
           options: { hotspot: true },
           fields: [
             { name: 'alt', type: 'string', title: 'Alternative Text', description: 'Important for SEO.' },
-            { name: 'caption', type: 'string', title: 'Image Caption' }
-          ]
-        }
+            { name: 'caption', type: 'string', title: 'Image Caption' },
+          ],
+        },
       ],
       validation: (Rule) => Rule.required(),
     }),
 
-    // --- NEW: SEO SETTINGS ---
+    // --- SEO SETTINGS ---
     defineField({
       name: 'seoTitle',
       title: 'SEO Title (Optional)',
@@ -90,6 +90,52 @@ export default defineType({
       description: 'A 150-160 character summary that appears under the blue link in Google search results.',
       type: 'text',
       validation: (Rule) => Rule.max(160).warning('Keep under 160 characters for best Google ranking.'),
+    }),
+
+    // --- REFERENCES / CREDITS ---
+    defineField({
+      name: 'showReferences',
+      title: 'Show References / Credits Section',
+      description: 'Toggle ON to display a references section at the bottom of this cover story.',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'references',
+      title: 'References & Credits',
+      description: 'Add source links, citations, and image credits. Only shown if the toggle above is ON.',
+      type: 'array',
+      hidden: ({ document }) => !document?.showReferences,
+      of: [
+        {
+          type: 'object',
+          title: 'Reference',
+          fields: [
+            defineField({
+              name: 'text',
+              title: 'Reference Text / Title',
+              type: 'string',
+              description: "The name or title of the source (e.g. 'Reuters — Cuba Energy Report 2026')",
+              validation: (R) => R.required(),
+            }),
+            defineField({
+              name: 'url',
+              title: 'URL / Link',
+              type: 'url',
+              description: 'The full URL of the source (must start with https://)',
+            }),
+            defineField({
+              name: 'credit',
+              title: 'Image / Source Credit (optional)',
+              type: 'string',
+              description: "e.g. 'Photo: AP Images' or 'Data: World Bank 2025'",
+            }),
+          ],
+          preview: {
+            select: { title: 'text', subtitle: 'url' },
+          },
+        },
+      ],
     }),
   ],
   preview: {

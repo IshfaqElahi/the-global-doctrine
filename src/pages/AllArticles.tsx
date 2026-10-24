@@ -5,6 +5,7 @@ import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
 import { client } from "@/lib/sanity";
+import heroImg from "@/assets/hero-summit.webp";
 
 interface SanityArticle {
   _id: string;
@@ -89,7 +90,7 @@ const AllArticles = () => {
                 className="group flex flex-col bg-background border border-border hover:border-primary/40 hover:shadow-xl hover:-translate-y-1.5 transition-all duration-500 overflow-hidden"
               >
                 <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
-                  <img src={`${a.imageUrl}?auto=format&w=800&q=80`} alt={a.title} loading="lazy"
+                  <img src={a.imageUrl ? `${a.imageUrl}?auto=format&w=800&q=80` : heroImg} alt={a.title} loading="lazy"
                     className="aspect-[4/3] w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]" />
                 </Link>
                 <div className="flex flex-col flex-grow p-5">
