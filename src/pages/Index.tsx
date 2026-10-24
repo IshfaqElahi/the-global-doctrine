@@ -368,7 +368,7 @@ const Index = () => {
       {/* TOPICS CAROUSEL */}
       <section className="border-b border-border bg-secondary editorial-grid-bg overflow-hidden">
         <div className="container-editorial py-14 lg:py-16 relative">
-          <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="mb-10 flex items-end justify-between border-b-2 border-foreground pb-3">
             <div>
               <p className="kicker text-xs font-bold inline-flex items-center gap-2">
                 <span className="h-[2px] w-6 bg-[hsl(var(--brand-red))]" />
@@ -376,9 +376,6 @@ const Index = () => {
               </p>
               <h2 className="mt-2 font-serif text-3xl font-bold sm:text-4xl">All Categories</h2>
             </div>
-            <p className="text-xs text-muted-foreground max-w-xs">
-              Swipe or use the arrows to explore dispatches across all {categories.length} editorial desks.
-            </p>
           </div>
           {loading ? (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -514,13 +511,6 @@ const Index = () => {
 
               {/* Content */}
               <div className="relative flex flex-col justify-center lg:col-span-7">
-                <span
-                  aria-hidden="true"
-                  className="pointer-events-none select-none absolute -top-10 -left-4 font-serif text-9xl font-bold leading-none text-primary/10"
-                >
-                  &ldquo;
-                </span>
-
                 <div className="flex items-center gap-3 self-start">
                   <span className="inline-block bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-white">
                     The Interview
@@ -531,8 +521,8 @@ const Index = () => {
                 </div>
 
                 <Link to={`/interview/${latestInterview.slug}`} className="group mt-5 block">
-                  <h2 className="font-serif text-3xl font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-4xl lg:text-5xl">
-                    &ldquo;{latestInterview.title}&rdquo;
+                  <h2 className="font-serif text-3xl font-bold leading-tight text-foreground transition-colors duration-300 group-hover:text-primary sm:text-4xl lg:text-5xl text-balance">
+                    {cleanText(latestInterview.title)}
                   </h2>
                 </Link>
 

@@ -37,7 +37,7 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
   return (
     <div className={cn("relative w-full", className)}>
       {/* Navigation */}
-      <div className="absolute right-0 -top-14 hidden gap-2.5 sm:flex z-10">
+      <div className="absolute right-0 -top-[4.5rem] hidden gap-2.5 sm:flex z-10">
         <motion.button
           ref={prevRef}
           whileHover={{ scale: 1.08 }}

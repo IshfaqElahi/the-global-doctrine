@@ -108,7 +108,7 @@ const InterviewArticle = () => {
               ← In Conversation
             </Link>
             <h1 className="mt-4 font-serif text-3xl font-bold leading-[1.12] sm:text-5xl lg:text-6xl text-balance">
-              &ldquo;{cleanTitle}&rdquo;
+              {cleanTitle}
             </h1>
             {isValidExcerpt(cleanExcerpt) && (
               <p className="mt-5 text-lg leading-relaxed text-muted-foreground border-l-2 border-primary pl-4 text-pretty">

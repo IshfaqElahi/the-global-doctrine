@@ -137,13 +137,6 @@ const Interview = () => {
 
                 {/* Content */}
                 <div className="relative flex flex-col justify-center p-6 lg:p-10">
-                  <span
-                    aria-hidden="true"
-                    className="pointer-events-none select-none absolute top-4 right-6 font-serif text-8xl font-bold leading-none text-primary/10"
-                  >
-                    &rdquo;
-                  </span>
-
                   <p className="kicker">
                     {new Date(interview.publishedAt).toLocaleDateString("en-US", {
                       month: "long",
@@ -153,8 +146,8 @@ const Interview = () => {
                   </p>
 
                   <Link to={`/interview/${interview.slug}`} className="mt-3 block">
-                    <h2 className="font-serif text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors lg:text-4xl">
-                      &ldquo;{cleanText(interview.title)}&rdquo;
+                    <h2 className="font-serif text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors lg:text-4xl text-balance">
+                      {cleanText(interview.title)}
                     </h2>
                   </Link>
 
