@@ -5,6 +5,7 @@ import { ArrowRight } from "lucide-react";
 import { motion, Variants } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { EditorialImage } from "@/components/EditorialImage";
+import { cleanText, isValidExcerpt } from "@/lib/editorialText";
 import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
 
@@ -153,13 +154,13 @@ const Interview = () => {
 
                   <Link to={`/interview/${interview.slug}`} className="mt-3 block">
                     <h2 className="font-serif text-2xl font-bold leading-tight text-foreground group-hover:text-primary transition-colors lg:text-4xl">
-                      &ldquo;{interview.title}&rdquo;
+                      &ldquo;{cleanText(interview.title)}&rdquo;
                     </h2>
                   </Link>
 
-                  {interview.excerpt && (
+                  {isValidExcerpt(interview.excerpt) && (
                     <p className="mt-5 text-sm leading-relaxed text-muted-foreground line-clamp-3 sm:text-base">
-                      {interview.excerpt}
+                      {cleanText(interview.excerpt)}
                     </p>
                   )}
 

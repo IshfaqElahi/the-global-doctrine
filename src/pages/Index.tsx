@@ -8,6 +8,7 @@ import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardHero, SkeletonCardCompact, SkeletonCarouselCard } from "@/components/SkeletonCard";
 import { DoctrineBrief } from "@/components/DoctrineBrief";
 import { EditorialImage } from "@/components/EditorialImage";
+import { cleanText, isValidExcerpt } from "@/lib/editorialText";
 import { categories } from "@/data/articles";
 import { client, urlFor } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
@@ -204,7 +205,7 @@ const Index = () => {
                 >
                   <EditorialImage
                     src={coverStory.imageUrl || heroImg}
-                    alt={coverStory.title}
+                    alt={cleanText(coverStory.title)}
                     variant="hero"
                     priority
                   />
@@ -237,7 +238,7 @@ const Index = () => {
 
                 <motion.h1
                   variants={heroTextItem}
-                  className="mt-5 font-serif text-4xl font-bold leading-[1.06] tracking-tight sm:text-5xl lg:text-[3.35rem]"
+                  className="mt-5 font-serif text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.25rem] text-balance"
                 >
                   <Link
                     to={`/article/${coverStory.slug}`}
@@ -249,9 +250,9 @@ const Index = () => {
 
                 <motion.p
                   variants={heroTextItem}
-                  className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg border-l-2 border-[hsl(var(--brand-red))] pl-4"
+                  className="mt-5 text-base leading-relaxed text-muted-foreground sm:text-lg border-l-2 border-[hsl(var(--brand-red))] pl-4 text-pretty"
                 >
-                  {coverStory.excerpt}
+                  {cleanText(coverStory.excerpt)}
                 </motion.p>
 
                 <motion.div
@@ -434,7 +435,7 @@ const Index = () => {
                   <Link to={`/article/${a.slug}`} className="block overflow-hidden">
                     <EditorialImage
                       src={a.imageUrl || heroImg}
-                      alt={a.title}
+                      alt={cleanText(a.title)}
                       variant="card"
                     />
                   </Link>
@@ -449,12 +450,12 @@ const Index = () => {
                       <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
                     <Link to={`/article/${a.slug}`} className="mt-3 block">
-                      <h3 className="font-serif text-lg font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                      <h3 className="font-serif text-lg font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2 text-balance">
                         {a.title}
                       </h3>
                     </Link>
-                    <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground line-clamp-2 flex-grow">
-                      {a.excerpt}
+                    <p className="mt-2.5 text-xs leading-relaxed text-muted-foreground line-clamp-2 flex-grow text-pretty">
+                      {cleanText(a.excerpt)}
                     </p>
                     <div className="mt-4 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border pt-3">
                       <span className="font-semibold text-foreground truncate">{a.author}</span>
@@ -535,10 +536,10 @@ const Index = () => {
                   </h2>
                 </Link>
 
-                {latestInterview.excerpt && (
+                {isValidExcerpt(latestInterview.excerpt) && (
                   <Link to={`/interview/${latestInterview.slug}`} className="group mt-5 block">
                     <p className="text-base sm:text-lg leading-relaxed text-muted-foreground transition-colors duration-300 group-hover:text-foreground">
-                      {latestInterview.excerpt}
+                      {cleanText(latestInterview.excerpt)}
                     </p>
                   </Link>
                 )}

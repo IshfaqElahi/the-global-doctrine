@@ -295,6 +295,39 @@ html {
   .nav-link:hover::after,
   .nav-link.active::after { width: 100%; }
 
+
+  /* ── Editorial Long-Form Typography & Drop Cap ────── */
+  .editorial-prose {
+    @apply text-foreground/90 antialiased;
+    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  .editorial-dropcap::first-letter {
+    float: left;
+    font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    font-size: 3.75rem;
+    font-weight: 800;
+    line-height: 0.82;
+    margin-right: 0.65rem;
+    margin-top: 0.14rem;
+    margin-bottom: 0.05rem;
+    color: hsl(var(--brand-red));
+  }
+
+  @media (min-width: 640px) {
+    .editorial-dropcap::first-letter {
+      font-size: 4.25rem;
+      margin-right: 0.75rem;
+    }
+  }
+
+  /* Prevent double underline when link and underline marks combine */
+  .editorial-prose a u,
+  .editorial-prose a .underline-mark {
+    text-decoration: none;
+  }
+
   /* Red bar entrance */
   .red-bar-enter {
     animation: revealLeft 0.5s var(--ease-expo) both;

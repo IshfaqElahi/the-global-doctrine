@@ -8,6 +8,7 @@ import { TrendingSidebar } from "@/components/Sidebar";
 import { CategoryCarousel, TopicCardData } from "@/components/CategoryCarousel";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
 import { EditorialImage } from "@/components/EditorialImage";
+import { cleanText, isValidExcerpt } from "@/lib/editorialText";
 import { categories } from "@/data/articles";
 import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
@@ -167,9 +168,7 @@ const Topics = () => {
                 className="grid gap-8 sm:grid-cols-2"
               >
                 {articles.map((a) => {
-                  const cleanExcerpt = a.excerpt?.trim() || "";
-                  const firstChar = cleanExcerpt.charAt(0);
-                  const restExcerpt = cleanExcerpt.slice(1);
+                  const cleanExcerpt = cleanText(a.excerpt);
 
                   return (
                     <motion.article
@@ -198,17 +197,14 @@ const Topics = () => {
                         </div>
 
                         <Link to={`/article/${a.slug}`} className="flex-grow">
-                          <h3 className="font-serif text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3">
-                            {a.title}
+                          <h3 className="font-serif text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3 text-balance">
+                            {cleanText(a.title)}
                           </h3>
                         </Link>
 
-                        {cleanExcerpt && (
-                          <p className="mt-auto text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4">
-                            <span className="float-left mr-1.5 font-serif text-4xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
-                              {firstChar}
-                            </span>
-                            {restExcerpt}
+                        {isValidExcerpt(cleanExcerpt) && (
+                          <p className="mt-auto text-sm text-muted-foreground leading-relaxed line-clamp-3 mb-4 text-pretty">
+                            {cleanExcerpt}
                           </p>
                         )}
 

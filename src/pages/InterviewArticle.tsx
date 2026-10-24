@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { Clock, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
@@ -9,7 +8,9 @@ import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReferencesSection } from "@/components/ReferencesSection";
 import { EditorialImage } from "@/components/EditorialImage";
-import { client, urlFor } from "@/lib/sanity";
+import { EditorialPortableText } from "@/components/EditorialPortableText";
+import { cleanText, isValidExcerpt } from "@/lib/editorialText";
+import { client } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
 
 interface Reference {
@@ -31,56 +32,6 @@ interface SanityInterview {
   showReferences?: boolean;
   references?: Reference[];
 }
-
-const ptComponents: PortableTextComponents = {
-  block: {
-    normal: ({ children }) => (
-      <p className="mb-6 text-lg leading-[1.85] text-foreground/90">{children}</p>
-    ),
-    h2: ({ children }) => (
-      <h2 className="mb-4 mt-12 font-serif text-3xl font-bold text-foreground">{children}</h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
-        {children}
-      </blockquote>
-    ),
-  },
-  marks: {
-    strong: ({ children }) => <strong className="font-bold text-foreground">{children}</strong>,
-    em: ({ children }) => <em className="italic">{children}</em>,
-    link: ({ value, children }) => (
-      <a
-        href={value?.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors"
-      >
-        {children}
-      </a>
-    ),
-  },
-  types: {
-    image: ({ value }) => (
-      <figure className="my-10 overflow-hidden border border-border bg-muted/30">
-        <img
-          src={urlFor(value).width(1200).auto("format").url()}
-          alt={value.alt || ""}
-          className="w-full max-h-[640px] object-contain mx-auto"
-          loading="lazy"
-        />
-        {value.alt && (
-          <figcaption className="border-t border-border bg-secondary/50 px-4 py-2.5 text-center text-xs text-muted-foreground italic">
-            {value.alt}
-          </figcaption>
-        )}
-      </figure>
-    ),
-  },
-};
 
 const InterviewArticle = () => {
   const { slug } = useParams();
@@ -125,15 +76,18 @@ const InterviewArticle = () => {
 
   if (!interview) return null;
 
+  const cleanTitle = cleanText(interview.title);
+  const cleanExcerpt = cleanText(interview.excerpt);
+
   return (
     <Layout>
       <ReadingProgressBar />
 
       <Helmet>
         <title>{interview.personName} — The Global Doctrine Interview</title>
-        <meta name="description" content={interview.excerpt} />
-        <meta property="og:title" content={`"${interview.title}" — ${interview.personName}`} />
-        <meta property="og:description" content={interview.excerpt} />
+        <meta name="description" content={isValidExcerpt(cleanExcerpt) ? cleanExcerpt : `Interview with ${interview.personName}`} />
+        <meta property="og:title" content={`"${cleanTitle}" — ${interview.personName}`} />
+        <meta property="og:description" content={isValidExcerpt(cleanExcerpt) ? cleanExcerpt : `Interview with ${interview.personName}`} />
         <meta property="og:image" content={interview.photoUrl} />
         <meta property="og:url" content={pageUrl} />
       </Helmet>
@@ -153,12 +107,12 @@ const InterviewArticle = () => {
             >
               ← In Conversation
             </Link>
-            <h1 className="mt-4 font-serif text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
-              &ldquo;{interview.title}&rdquo;
+            <h1 className="mt-4 font-serif text-3xl font-bold leading-[1.12] sm:text-5xl lg:text-6xl text-balance">
+              &ldquo;{cleanTitle}&rdquo;
             </h1>
-            {interview.excerpt && (
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground border-l-2 border-primary pl-4">
-                {interview.excerpt}
+            {isValidExcerpt(cleanExcerpt) && (
+              <p className="mt-5 text-lg leading-relaxed text-muted-foreground border-l-2 border-primary pl-4 text-pretty">
+                {cleanExcerpt}
               </p>
             )}
             <div className="mt-7 pt-5 border-t border-border flex flex-wrap items-center justify-between gap-4">
@@ -166,9 +120,11 @@ const InterviewArticle = () => {
                 <div className="h-10 w-[3px] bg-[hsl(var(--brand-red))]" />
                 <div>
                   <p className="font-bold uppercase tracking-wider text-sm text-foreground">
-                    {interview.personName}
+                    {cleanText(interview.personName)}
                   </p>
-                  <p className="text-xs text-muted-foreground italic">{interview.personRole}</p>
+                  <p className="text-xs text-muted-foreground italic">
+                    {cleanText(interview.personRole)}
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
@@ -216,9 +172,7 @@ const InterviewArticle = () => {
       <div className="container-editorial py-12 lg:py-16">
         <div className="mx-auto max-w-2xl">
           {interview.body?.length ? (
-            <div className="[&>p:first-child]:first-letter:float-left [&>p:first-child]:first-letter:mr-3 [&>p:first-child]:first-letter:font-serif [&>p:first-child]:first-letter:text-7xl [&>p:first-child]:first-letter:font-bold [&>p:first-child]:first-letter:leading-[0.85] [&>p:first-child]:first-letter:text-[hsl(var(--brand-red))]">
-              <PortableText value={interview.body} components={ptComponents} />
-            </div>
+            <EditorialPortableText value={interview.body} />
           ) : (
             <p className="text-muted-foreground italic">Full interview content coming soon.</p>
           )}

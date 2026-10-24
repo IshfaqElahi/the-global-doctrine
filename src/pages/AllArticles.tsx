@@ -6,6 +6,7 @@ import { ArrowUpRight } from "lucide-react";
 import { Layout } from "@/components/Layout";
 import { SkeletonCardCompact } from "@/components/SkeletonCard";
 import { EditorialImage } from "@/components/EditorialImage";
+import { cleanText } from "@/lib/editorialText";
 import { client } from "@/lib/sanity";
 import heroImg from "@/assets/hero-summit.webp";
 
@@ -147,7 +148,7 @@ const AllArticles = () => {
                   <Link to={`/article/${a.slug}`} className="block overflow-hidden bg-muted">
                     <EditorialImage
                       src={a.imageUrl || heroImg}
-                      alt={a.title}
+                      alt={cleanText(a.title)}
                       variant="card"
                     />
                   </Link>
@@ -162,12 +163,12 @@ const AllArticles = () => {
                       <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground/50 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
                     </div>
                     <Link to={`/article/${a.slug}`} className="flex-grow">
-                      <h3 className="font-serif text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3">
+                      <h3 className="font-serif text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-3 mb-3 text-balance">
                         {a.title}
                       </h3>
                     </Link>
-                    <p className="mt-auto text-sm text-muted-foreground line-clamp-2 mb-4">
-                      {a.excerpt}
+                    <p className="mt-auto text-sm text-muted-foreground line-clamp-2 mb-4 text-pretty">
+                      {cleanText(a.excerpt)}
                     </p>
 
                     <div className="mt-auto pt-4 flex items-center gap-2 text-[11px] text-muted-foreground border-t border-border">

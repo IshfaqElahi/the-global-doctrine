@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { PortableText, PortableTextComponents } from "@portabletext/react";
 import { Twitter, Linkedin, Share2, Check, Clock, ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
@@ -10,7 +9,9 @@ import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { ReferencesSection } from "@/components/ReferencesSection";
 import { EditorialImage } from "@/components/EditorialImage";
-import { client, urlFor } from "@/lib/sanity";
+import { EditorialPortableText } from "@/components/EditorialPortableText";
+import { cleanText, isValidExcerpt } from "@/lib/editorialText";
+import { client } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
 import { articles } from "@/data/articles";
 
@@ -37,140 +38,6 @@ interface SanityArticle {
   showReferences?: boolean;
   references?: Reference[];
 }
-
-// ── Portable text base components ────────────────────────
-const ptComponents: PortableTextComponents = {
-  block: {
-    normal: ({ children }) => (
-      <p className="mb-6 text-lg leading-[1.85] text-foreground/90">{children}</p>
-    ),
-    h2: ({ children }) => (
-      <h2 className="mb-4 mt-12 font-serif text-3xl font-bold text-foreground">{children}</h2>
-    ),
-    h3: ({ children }) => (
-      <h3 className="mb-3 mt-8 font-serif text-2xl font-bold text-foreground">{children}</h3>
-    ),
-    blockquote: ({ children }) => (
-      <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
-        {children}
-      </blockquote>
-    ),
-  },
-  marks: {
-    strong: ({ children }) => (
-      <strong className="font-bold text-foreground">{children}</strong>
-    ),
-    em: ({ children }) => <em className="italic">{children}</em>,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    link: ({ value, children }: any) => (
-      <a
-        href={value?.href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-primary underline underline-offset-2 hover:text-[hsl(var(--brand-red))] transition-colors"
-      >
-        {children}
-      </a>
-    ),
-  },
-  types: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    image: ({ value }: any) => (
-      <figure className="my-10 overflow-hidden border border-border bg-muted/30">
-        <img
-          src={urlFor(value).width(1200).auto("format").url()}
-          alt={value.alt || ""}
-          className="w-full max-h-[640px] object-contain mx-auto"
-          loading="lazy"
-        />
-        {value.alt && (
-          <figcaption className="border-t border-border bg-secondary/50 px-4 py-2.5 text-center text-xs text-muted-foreground italic">
-            {value.alt}
-          </figcaption>
-        )}
-      </figure>
-    ),
-  },
-  list: {
-    bullet: ({ children }) => (
-      <ul className="mb-6 ml-6 list-disc space-y-2 text-lg leading-relaxed">{children}</ul>
-    ),
-    number: ({ children }) => (
-      <ol className="mb-6 ml-6 list-decimal space-y-2 text-lg leading-relaxed">{children}</ol>
-    ),
-  },
-  listItem: {
-    bullet: ({ children }) => <li className="text-foreground/90">{children}</li>,
-    number: ({ children }) => <li className="text-foreground/90">{children}</li>,
-  },
-};
-
-// ── Drop cap component ────────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const DropCapPortableText = ({ body }: { body: any[] }) => {
-  const firstParaIndex = body.findIndex((b) => {
-    if (b._type !== "block" || (b.style && b.style !== "normal")) return false;
-    const textContent = b.children?.map((c: { text?: string }) => c.text || "").join("").trim();
-    return textContent && textContent.length > 0;
-  });
-
-  const dropCapComponents: PortableTextComponents = {
-    ...ptComponents,
-    block: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      normal: ({ children, value }: any) => {
-        const isFirst =
-          firstParaIndex >= 0 &&
-          value?._key === body[firstParaIndex]?._key;
-
-        if (isFirst) {
-          const firstSpanIdx = value?.children?.findIndex((c: { text?: string }) => c.text && c.text.trim().length > 0);
-
-          if (firstSpanIdx >= 0) {
-            const rawText: string = value.children[firstSpanIdx].text;
-            const charIdx = rawText.search(/\S/);
-            const firstChar = rawText[charIdx];
-
-            const patchedChildren = [...value.children];
-            patchedChildren[firstSpanIdx] = {
-              ...patchedChildren[firstSpanIdx],
-              text: rawText.slice(0, charIdx) + rawText.slice(charIdx + 1),
-            };
-
-            return (
-              <p className="mb-6 text-lg leading-[1.85] text-foreground/90">
-                <span className="float-left mr-2.5 font-serif text-7xl font-bold leading-[0.8] text-[hsl(var(--brand-red))] select-none">
-                  {firstChar}
-                </span>
-                <PortableText
-                  value={[{ ...value, children: patchedChildren }]}
-                  components={ptComponents}
-                />
-              </p>
-            );
-          }
-        }
-
-        return (
-          <p className="mb-6 text-lg leading-[1.85] text-foreground/90">{children}</p>
-        );
-      },
-      h2: ({ children }) => (
-        <h2 className="mb-4 mt-12 font-serif text-3xl font-bold text-foreground">{children}</h2>
-      ),
-      h3: ({ children }) => (
-        <h3 className="mb-3 mt-8 text-2xl font-serif text-foreground">{children}</h3>
-      ),
-      blockquote: ({ children }) => (
-        <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/40 py-3 pl-6 pr-4 font-serif text-2xl italic leading-snug text-foreground">
-          {children}
-        </blockquote>
-      ),
-    },
-  };
-
-  return <PortableText value={body} components={dropCapComponents} />;
-};
 
 // ── Share buttons ─────────────────────────────────────────
 const ShareButtons = ({ url, title }: { url: string; title: string }) => {
@@ -270,7 +137,7 @@ const RelatedArticles = ({
             <Link to={`/article/${a.slug}`} className="block overflow-hidden">
               <EditorialImage
                 src={a.imageUrl}
-                alt={a.title}
+                alt={cleanText(a.title)}
                 variant="card"
               />
             </Link>
@@ -282,8 +149,8 @@ const RelatedArticles = ({
                 {a.category || "Cover Story"}
               </Link>
               <Link to={`/article/${a.slug}`} className="mt-2 flex-grow">
-                <h4 className="font-serif text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
-                  {a.title}
+                <h4 className="font-serif text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2 text-balance">
+                  {cleanText(a.title)}
                 </h4>
               </Link>
               <p className="mt-3 pt-2.5 border-t border-border text-[11px] text-muted-foreground">
@@ -336,10 +203,10 @@ const Article = () => {
 
   if (notFound) return <Navigate to="/" replace />;
 
-  const title = sanityArticle?.title ?? staticArticle?.title ?? "";
-  const excerpt = sanityArticle?.excerpt ?? staticArticle?.excerpt ?? "";
+  const title = cleanText(sanityArticle?.title ?? staticArticle?.title ?? "");
+  const excerpt = cleanText(sanityArticle?.excerpt ?? staticArticle?.excerpt ?? "");
   const category = sanityArticle?.category ?? staticArticle?.category ?? "Cover Story";
-  const author = sanityArticle?.author ?? staticArticle?.author ?? "";
+  const author = cleanText(sanityArticle?.author ?? staticArticle?.author ?? "");
   const image = sanityArticle?.imageUrl ?? (staticArticle?.image as string) ?? "";
   const date = sanityArticle
     ? new Date(sanityArticle.publishedAt).toLocaleDateString("en-US", {
@@ -351,9 +218,9 @@ const Article = () => {
   const readTime = calcReadTime(sanityArticle?.body ?? []);
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
   const metaTitle = sanityArticle?.seoTitle
-    ? `${sanityArticle.seoTitle} — The Global Doctrine`
+    ? `${cleanText(sanityArticle.seoTitle)} — The Global Doctrine`
     : `${title} — The Global Doctrine`;
-  const metaDescription = sanityArticle?.seoDescription || excerpt;
+  const metaDescription = cleanText(sanityArticle?.seoDescription) || excerpt;
 
   if (loading) {
     return (
@@ -404,12 +271,14 @@ const Article = () => {
                   <ArrowLeft className="h-3 w-3" /> Archive
                 </Link>
               </div>
-              <h1 className="mt-5 font-serif text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
+              <h1 className="mt-5 font-serif text-3xl font-bold leading-[1.12] tracking-tight sm:text-5xl lg:text-[3.35rem] text-balance">
                 {title}
               </h1>
-              <p className="mt-5 text-lg leading-relaxed text-muted-foreground sm:text-xl border-l-2 border-primary pl-4">
-                {excerpt}
-              </p>
+              {isValidExcerpt(excerpt) && (
+                <p className="mt-5 text-base sm:text-xl leading-relaxed text-muted-foreground border-l-2 border-primary pl-4 text-pretty">
+                  {excerpt}
+                </p>
+              )}
               <div className="mt-7 pt-5 border-t border-border flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3 text-sm">
                   <span className="font-bold uppercase tracking-wider text-xs text-foreground">
@@ -458,12 +327,12 @@ const Article = () => {
             <div className="lg:col-span-8">
               <div className="mx-auto max-w-2xl">
                 {sanityArticle?.body?.length ? (
-                  <DropCapPortableText body={sanityArticle.body} />
+                  <EditorialPortableText value={sanityArticle.body} />
                 ) : (
                   <div className="space-y-6 text-lg leading-[1.85] text-foreground/90">
-                    <p className="first-letter:float-left first-letter:mr-3 first-letter:font-serif first-letter:text-7xl first-letter:font-bold first-letter:leading-[0.85] first-letter:text-[hsl(var(--brand-red))]">
-                      {excerpt}
-                    </p>
+                    {isValidExcerpt(excerpt) && (
+                      <p className="editorial-dropcap text-pretty">{excerpt}</p>
+                    )}
                     <p className="text-muted-foreground italic border-l-4 border-border pl-4">
                       Full article content coming soon.
                     </p>
