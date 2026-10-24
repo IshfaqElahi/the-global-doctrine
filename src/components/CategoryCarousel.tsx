@@ -36,7 +36,7 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
 
   return (
     <div className={cn("relative w-full", className)}>
-      {/* Navigation */}
+      {/* Desktop Navigation (aligned in top-right of section header) */}
       <div className="absolute right-0 -top-[4.5rem] hidden gap-2.5 sm:flex z-10">
         <motion.button
           ref={prevRef}
@@ -148,6 +148,31 @@ export const CategoryCarousel = ({ topics, className }: CategoryCarouselProps) =
           </SwiperSlide>
         ))}
       </Swiper>
+
+      {/* Mobile navigation row */}
+      <div className="mt-3 flex items-center justify-between sm:hidden">
+        <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          {topics.length} Editorial Desks
+        </span>
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => prevRef.current?.click()}
+            className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground active:bg-primary active:text-white"
+            aria-label="Previous category"
+          >
+            <ChevronLeft className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => nextRef.current?.click()}
+            className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground active:bg-primary active:text-white"
+            aria-label="Next category"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

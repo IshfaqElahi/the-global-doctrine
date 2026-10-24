@@ -152,6 +152,7 @@ const Index = () => {
   });
 
   const editorsPicks = latestArticles.slice(0, 4);
+  const moreDispatches = latestArticles.slice(4, 8);
 
   return (
     <Layout>
@@ -471,6 +472,60 @@ const Index = () => {
             </motion.div>
           ) : (
             <p className="text-muted-foreground col-span-4">No articles published yet.</p>
+          )}
+
+          {/* Secondary Dispatches Row (Articles 05 - 08) */}
+          {!loading && moreDispatches.length > 0 && (
+            <div className="mt-12 pt-10 border-t border-border">
+              <div className="mb-6 flex items-center justify-between">
+                <p className="text-xs font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                  More Dispatches from the Desks
+                </p>
+                <Link
+                  to="/all-articles"
+                  className="text-xs font-bold uppercase tracking-widest text-primary hover:text-[hsl(var(--brand-red))] transition-colors"
+                >
+                  Full Archive →
+                </Link>
+              </div>
+              <div className="grid gap-6 md:grid-cols-2">
+                {moreDispatches.map((a, idx) => (
+                  <Link
+                    key={a._id}
+                    to={`/article/${a.slug}`}
+                    className="group editorial-card flex items-center gap-4 p-4"
+                  >
+                    <span className="font-serif text-2xl font-bold text-[hsl(var(--brand-red))]/80 tabular-nums shrink-0 w-7">
+                      {String(idx + 5).padStart(2, "0")}
+                    </span>
+                    <div className="h-20 w-24 shrink-0 overflow-hidden bg-muted">
+                      <EditorialImage
+                        src={a.imageUrl || heroImg}
+                        alt={cleanText(a.title)}
+                        aspectClassName="h-20 w-24"
+                        width={240}
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                        {a.category}
+                      </span>
+                      <h4 className="mt-0.5 font-serif text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2 text-balance">
+                        {cleanText(a.title)}
+                      </h4>
+                      <p className="mt-1 text-[11px] text-muted-foreground truncate">
+                        {a.author} ·{" "}
+                        {new Date(a.publishedAt).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        })}
+                      </p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
           )}
 
           <div className="mt-8 sm:hidden">

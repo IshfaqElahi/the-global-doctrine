@@ -3,6 +3,8 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { Menu, Search, X, ChevronDown, Sun, Moon, ArrowUpRight, Globe } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { categories } from "@/data/articles";
+import { client } from "@/lib/sanity";
+import { cleanText } from "@/lib/editorialText";
 import { cn } from "@/lib/utils";
 import { useTheme } from "@/context/ThemeContext";
 
@@ -13,6 +15,8 @@ export const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [tickerItems, setTickerItems] = useState<{ title: string; slug: string; category: string }[]>([]);
+  const [tickerIndex, setTickerIndex] = useState(0);
   const location = useLocation();
   const { theme, toggle } = useTheme();
   const navigate = useNavigate();

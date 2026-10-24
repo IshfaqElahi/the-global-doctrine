@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, BookOpen } from "lucide-react";
+import { cleanText } from "@/lib/editorialText";
 import { client } from "@/lib/sanity";
 import { EditorialImage } from "@/components/EditorialImage";
 import heroImg from "@/assets/hero-summit.webp";
@@ -83,7 +84,7 @@ export const TrendingSidebar = () => {
                   <Link to={`/article/${a.slug}`} className="shrink-0 w-16 h-16 overflow-hidden">
                     <EditorialImage
                       src={a.imageUrl || heroImg}
-                      alt={a.title}
+                      alt={cleanText(a.title)}
                       aspectClassName="aspect-square h-16 w-16"
                       width={200}
                     />
@@ -125,6 +126,26 @@ export const TrendingSidebar = () => {
             <ArrowUpRight className="h-3.5 w-3.5" />
           </Link>
         </div>
+      </div>
+
+      {/* Quarterly Magazine Promo Box */}
+      <div className="border border-border bg-foreground text-background p-6 editorial-dark-grid shadow-sm">
+        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[hsl(var(--brand-red))]">
+          <BookOpen className="h-3.5 w-3.5" />
+          Print & Digital
+        </div>
+        <h4 className="mt-2 font-serif text-xl font-bold text-background">
+          The Global Doctrine Magazine
+        </h4>
+        <p className="mt-2 text-xs leading-relaxed text-background/70 text-pretty">
+          Explore our quarterly print editions and rolling digital issues covering international relations and human-centered geopolitics.
+        </p>
+        <Link
+          to="/magazine"
+          className="mt-4 inline-flex items-center gap-2 border border-background/30 px-4 py-2 text-[11px] font-bold uppercase tracking-widest text-background hover:bg-background hover:text-foreground transition-colors"
+        >
+          Browse Issues <ArrowUpRight className="h-3.5 w-3.5" />
+        </Link>
       </div>
     </aside>
   );

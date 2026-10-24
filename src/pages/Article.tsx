@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Twitter, Linkedin, Share2, Check, Clock, ArrowLeft } from "lucide-react";
-import { motion } from "framer-motion";
+import { Twitter, Linkedin, Share2, Check, Clock, ArrowLeft, Maximize2, X, Type } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
 import { SkeletonCardHero } from "@/components/SkeletonCard";
@@ -175,6 +175,8 @@ const Article = () => {
   const [sanityArticle, setSanityArticle] = useState<SanityArticle | null>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [textScale, setTextScale] = useState<"normal" | "large">("normal");
 
   const staticArticle = articles.find((a) => a.slug === slug);
 
@@ -296,20 +298,36 @@ const Article = () => {
                     </>
                   )}
                 </div>
-                <ShareButtons url={pageUrl} title={title} />
+                <div className="flex items-center gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setTextScale((prev) => (prev === "normal" ? "large" : "normal"))}
+                    className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                      textScale === "large"
+                        ? "border-primary bg-primary text-white"
+                        : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground"
+                    }`}
+                    title="Toggle reading font size"
+                  >
+                    <Type className="h-3.5 w-3.5" />
+                    {textScale === "large" ? "Text: Large" : "Text: Standard"}
+                  </button>
+                  <ShareButtons url={pageUrl} title={title} />
+                </div>
               </div>
             </motion.div>
           </div>
         </div>
 
-        {/* Hero image */}
+        {/* Hero image with Click-to-Expand Lightbox */}
         {image && (
           <div className="container-editorial mt-8">
             <motion.div
               initial={{ opacity: 0, scale: 0.99 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.6 }}
-              className="mx-auto max-w-4xl overflow-hidden border border-border bg-muted shadow-lg"
+              onClick={() => setLightboxOpen(true)}
+              className="group relative mx-auto max-w-4xl cursor-zoom-in overflow-hidden border border-border bg-muted shadow-lg"
             >
               <EditorialImage
                 src={image}
@@ -317,15 +335,55 @@ const Article = () => {
                 variant="feature"
                 priority
               />
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxOpen(true);
+                }}
+                className="absolute bottom-3 right-3 z-30 inline-flex items-center gap-1.5 bg-black/70 backdrop-blur-xs border border-white/20 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white opacity-80 group-hover:opacity-100 hover:bg-[hsl(var(--brand-red))] transition-all"
+              >
+                <Maximize2 className="h-3 w-3" />
+                Expand Graphic
+              </button>
             </motion.div>
           </div>
         )}
+
+        {/* Full-Screen Lightbox Modal */}
+        <AnimatePresence>
+          {lightboxOpen && image && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setLightboxOpen(false)}
+              className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md p-4 sm:p-8 cursor-zoom-out"
+            >
+              <button
+                type="button"
+                onClick={() => setLightboxOpen(false)}
+                className="fixed top-5 right-5 z-[110] flex h-10 w-10 items-center justify-center border border-white/20 bg-black/60 text-white hover:bg-[hsl(var(--brand-red))] transition-colors"
+                aria-label="Close full screen image"
+              >
+                <X className="h-5 w-5" />
+              </button>
+              <img
+                src={image}
+                alt={title}
+                className="max-h-[90vh] max-w-[92vw] object-contain shadow-2xl"
+                onClick={(e) => e.stopPropagation()}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Body */}
         <div className="container-editorial py-12 lg:py-16">
           <div className="grid gap-12 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <div className="mx-auto max-w-2xl">
+              <div className={`mx-auto max-w-2xl transition-all duration-200 ${textScale === "large" ? "[&_p]:!text-xl [&_p]:!leading-[1.95] [&_li]:!text-xl" : ""}`}>
                 {sanityArticle?.body?.length ? (
                   <EditorialPortableText value={sanityArticle.body} />
                 ) : (
