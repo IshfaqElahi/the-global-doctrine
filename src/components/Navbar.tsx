@@ -28,6 +28,25 @@ export const Navbar = () => {
   }, [location.pathname]);
 
   useEffect(() => {
+    client
+      .fetch(`*[_type in ["coverStory", "article"]] | order(publishedAt desc)[0...6]{
+        title, "slug": slug.current, "category": coalesce(category, "Cover Story")
+      }`)
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) setTickerItems(data);
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (tickerItems.length <= 1) return;
+    const interval = setInterval(() => {
+      setTickerIndex((prev) => (prev + 1) % tickerItems.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [tickerItems.length]);
+
+  useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -87,17 +106,42 @@ export const Navbar = () => {
       >
         {/* Top Geopolitical Dateline Strip */}
         <div className="hidden border-b border-background/15 md:block">
-          <div className="container-editorial flex h-8 items-center justify-between text-[11px] text-background/70">
-            <div className="flex items-center gap-2.5">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[hsl(var(--brand-red))] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[hsl(var(--brand-red))]" />
+          <div className="container-editorial flex h-8 items-center justify-between gap-4 text-[11px] text-background/70">
+            <div className="flex items-center gap-2.5 min-w-0 flex-1">
+              <span className="inline-flex items-center gap-1.5 shrink-0 bg-[hsl(var(--brand-red))] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white">
+                <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
+                Dispatch
               </span>
-              <span className="uppercase tracking-[0.2em] font-medium">
-                Independent · Geopolitical · Since 2026
-              </span>
+              {tickerItems.length > 0 ? (
+                <div className="min-w-0 flex-1 overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={tickerItems[tickerIndex]?.slug || tickerIndex}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.25 }}
+                      className="flex items-center gap-2 truncate"
+                    >
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-primary shrink-0">
+                        {tickerItems[tickerIndex]?.category}:
+                      </span>
+                      <Link
+                        to={`/article/${tickerItems[tickerIndex]?.slug}`}
+                        className="truncate font-medium text-background/85 hover:text-primary transition-colors"
+                      >
+                        {cleanText(tickerItems[tickerIndex]?.title)}
+                      </Link>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <span className="uppercase tracking-[0.2em] font-medium truncate">
+                  Independent · Geopolitical · Since 2026
+                </span>
+              )}
             </div>
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 shrink-0">
               <span className="inline-flex items-center gap-1.5 text-background/60">
                 <Globe className="h-3 w-3 text-primary" />
                 {new Date().toLocaleDateString("en-US", {

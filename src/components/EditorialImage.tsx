@@ -30,6 +30,7 @@ const parseSanityAspectRatio = (url?: string | null): number | null => {
 /**
  * Appends Sanity CDN transformation params cleanly if it's a Sanity CDN URL
  */
+// eslint-disable-next-line react-refresh/only-export-components
 export const optimizeSanityUrl = (url?: string | null, width = 900, quality = 82): string => {
   if (!url) return heroImg;
   if (!url.includes("cdn.sanity.io")) return url;
