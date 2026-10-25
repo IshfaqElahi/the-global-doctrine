@@ -1,100 +1,165 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
   <url>
     <loc>https://theglobaldoctrine.online/</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/all-articles</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/interview</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/magazine</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/social</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/cover-story</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/international</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/europe</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/asia</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/africa</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/middle-east</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/diplomacy</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/america</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/topics/economics</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/about/who-we-are</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
   <url>
     <loc>https://theglobaldoctrine.online/about/policy</loc>
+    <lastmod>2026-10-25</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
-
+  <url>
+    <loc>https://theglobaldoctrine.online/article/o-captain-my-captain-from-sahelian-dust-to-new-horizons-of-pan-africanism</loc>
+    <lastmod>2026-07-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/beyond-the-beautiful-game-why-football-is-never-just-football</loc>
+    <lastmod>2026-07-21</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/the-war-yemen-doesn-t-see-inside-the-houthis-battle-for-the-mind</loc>
+    <lastmod>2026-07-13</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/xi-pulls-the-strings-world-dances</loc>
+    <lastmod>2026-06-05</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/the-splinternet-and-fractured-digital-world-implications-for-state-sovereignty-and-security</loc>
+    <lastmod>2026-06-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/the-bleeding-alliance-war-before-the-missiles</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/bangladesh-and-the-rise-of-the-arakan-army-implications-for-rohingya-repatriation</loc>
+    <lastmod>2026-05-27</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/trump-demands-regional-recognition-of-israel-as-price-for-iran-peace-deal</loc>
+    <lastmod>2026-05-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/value-voice-and-veto</loc>
+    <lastmod>2026-05-08</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/article/cover-story</loc>
+    <lastmod>2026-03-26</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://theglobaldoctrine.online/interview/coming-soon</loc>
+    <lastmod>2026-05-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
