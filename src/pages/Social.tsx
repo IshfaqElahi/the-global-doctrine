@@ -1,4 +1,4 @@
-import { Facebook, Instagram, Linkedin, MessageCircle, ExternalLink } from "lucide-react";
+import { Facebook, Instagram, Linkedin, MessageCircle, Youtube, ExternalLink } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
@@ -8,29 +8,36 @@ const channels = [
     Icon: Facebook,
     name: "Facebook",
     handle: "The Global Doctrine",
-    href: "https://www.facebook.com/people/The-Global-Doctrine/61577469676531/",
-    desc: "Daily article shares and live coverage threads.",
+    href: "https://www.facebook.com/p/The-Global-Doctrine-61577469676531/",
+    desc: "Daily article shares, geopolitical dispatches, and live coverage threads.",
   },
   {
     Icon: Instagram,
     name: "Instagram",
     handle: "@the_global_doctrine",
-    href: "https://www.instagram.com/the_global_doctrine/",
-    desc: "Field photography, magazine covers, and visual essays.",
+    href: "https://www.instagram.com/the_global_doctrine",
+    desc: "Field photography, magazine covers, and visual geopolitical essays.",
+  },
+  {
+    Icon: Youtube,
+    name: "YouTube",
+    handle: "@TheGlobalDoctrine-p8v",
+    href: "https://www.youtube.com/@TheGlobalDoctrine-p8v",
+    desc: "Video dispatches, briefings, and long-form geopolitical discussions.",
+  },
+  {
+    Icon: MessageCircle,
+    name: "WhatsApp",
+    handle: "01612-970419",
+    href: "https://wa.me/8801612970419",
+    desc: "Direct line to our newsroom inbox and print edition orders.",
   },
   {
     Icon: Linkedin,
     name: "LinkedIn",
     handle: "The Global Doctrine",
     href: "https://www.linkedin.com/company/the-global-doctrine/",
-    desc: "Professional network, recruitment, and organizational updates.",
-  },
-  {
-    Icon: MessageCircle,
-    name: "WhatsApp",
-    handle: "+880 1612 970419",
-    href: "https://wa.me/8801612970419",
-    desc: "Direct line to our newsroom inbox.",
+    desc: "Professional network, contributor calls, and organizational updates.",
   },
 ];
 
@@ -38,7 +45,7 @@ const Social = () => (
   <Layout>
     <Helmet>
       <title>Social Media — The Global Doctrine</title>
-      <meta name="description" content="Connect with The Global Doctrine across social platforms or reach our newsroom directly." />
+      <meta name="description" content="Connect with The Global Doctrine across Facebook, Instagram, YouTube, WhatsApp, and LinkedIn." />
     </Helmet>
 
     <section className="border-b border-border bg-secondary editorial-grid-bg">
@@ -79,14 +86,14 @@ const Social = () => (
             <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center bg-primary text-primary-foreground transition-colors duration-300 group-hover:bg-[hsl(var(--brand-red))]">
               <Icon className="h-6 w-6" />
             </div>
-            <div className="flex-1">
+            <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between">
                 <h3 className="font-serif text-xl font-bold group-hover:text-primary transition-colors">
                   {name}
                 </h3>
-                <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+                <ExternalLink className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all shrink-0" />
               </div>
-              <p className="mt-1 text-sm font-semibold text-primary">{handle}</p>
+              <p className="mt-1 text-sm font-semibold text-primary truncate">{handle}</p>
               <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{desc}</p>
             </div>
           </motion.a>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Twitter, Linkedin, Share2, Check, Clock, ArrowLeft, Maximize2, X, Type } from "lucide-react";
+import { Clock, ArrowLeft, Maximize2, X, Type } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { TrendingSidebar } from "@/components/Sidebar";
@@ -10,6 +10,7 @@ import { ReadingProgressBar } from "@/components/ReadingProgressBar";
 import { ReferencesSection } from "@/components/ReferencesSection";
 import { EditorialImage } from "@/components/EditorialImage";
 import { EditorialPortableText } from "@/components/EditorialPortableText";
+import { ShareButtons } from "@/components/ShareButtons";
 import { cleanText, isValidExcerpt } from "@/lib/editorialText";
 import { client } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
@@ -38,61 +39,6 @@ interface SanityArticle {
   showReferences?: boolean;
   references?: Reference[];
 }
-
-// ── Share buttons ─────────────────────────────────────────
-const ShareButtons = ({ url, title }: { url: string; title: string }) => {
-  const [copied, setCopied] = useState(false);
-  const encoded = encodeURIComponent(url);
-  const encodedTitle = encodeURIComponent(title);
-
-  const copy = async () => {
-    await navigator.clipboard.writeText(url);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  return (
-    <div className="flex items-center gap-2.5">
-      <span className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-        Share
-      </span>
-      <a
-        href={`https://twitter.com/intent/tweet?url=${encoded}&text=${encodedTitle}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-black hover:text-white hover:border-black"
-        aria-label="Share on X"
-      >
-        <Twitter className="h-3.5 w-3.5" />
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encoded}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-[#0077b5] hover:text-white hover:border-[#0077b5]"
-        aria-label="Share on LinkedIn"
-      >
-        <Linkedin className="h-3.5 w-3.5" />
-      </a>
-      <a
-        href={`https://wa.me/?text=${encodedTitle}%20${encoded}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-[#25D366] hover:text-white hover:border-[#25D366]"
-        aria-label="Share on WhatsApp"
-      >
-        <span className="text-xs font-bold">W</span>
-      </a>
-      <button
-        onClick={copy}
-        className="flex h-8 w-8 items-center justify-center border border-border bg-background text-foreground transition-all hover:bg-primary hover:text-white hover:border-primary"
-        aria-label="Copy link"
-      >
-        {copied ? <Check className="h-3.5 w-3.5" /> : <Share2 className="h-3.5 w-3.5" />}
-      </button>
-    </div>
-  );
-};
 
 // ── Related articles ──────────────────────────────────────
 const RelatedArticles = ({
@@ -298,11 +244,11 @@ const Article = () => {
                     </>
                   )}
                 </div>
-                <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t border-border/50 sm:border-t-0">
+                <div className="flex w-full sm:w-auto flex-wrap items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t border-border/50 sm:border-t-0">
                   <button
                     type="button"
                     onClick={() => setTextScale((prev) => (prev === "normal" ? "large" : "normal"))}
-                    className={`inline-flex items-center gap-1.5 border px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider transition-colors ${
+                    className={`inline-flex h-8 items-center gap-1.5 border px-2.5 text-[11px] font-bold uppercase tracking-wider transition-colors ${
                       textScale === "large"
                         ? "border-primary bg-primary text-white"
                         : "border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground"

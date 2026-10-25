@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Navigate, Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { Mail, Instagram, Twitter, Youtube, ArrowRight } from "lucide-react";
+import { Mail, Instagram, Facebook, Youtube, MessageCircle, Linkedin, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/Layout";
 import { EditorialPortableText } from "@/components/EditorialPortableText";
@@ -232,7 +232,7 @@ const About = () => {
                   </p>
                   <a
                     href="mailto:theglobaldoctrine.mag@gmail.com"
-                    className="inline-flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors break-all"
                   >
                     <Mail className="h-3.5 w-3.5 shrink-0" />
                     theglobaldoctrine.mag@gmail.com
@@ -246,9 +246,10 @@ const About = () => {
                     href="https://wa.me/8801612970419"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-foreground hover:text-primary transition-colors"
+                    className="inline-flex items-center gap-2 text-sm text-foreground hover:text-primary transition-colors"
                   >
-                    +880 1612 970419
+                    <MessageCircle className="h-3.5 w-3.5 shrink-0" />
+                    01612-970419
                   </a>
                 </div>
               </div>
@@ -262,9 +263,11 @@ const About = () => {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { Icon: Twitter, label: "Twitter/X", href: "https://twitter.com/theglobaldoctrine" },
-                  { Icon: Instagram, label: "Instagram", href: "https://instagram.com/the_global_doctrine" },
-                  { Icon: Youtube, label: "YouTube", href: "https://youtube.com/@theglobaldoctrine" },
+                  { Icon: Facebook, label: "Facebook", href: "https://www.facebook.com/p/The-Global-Doctrine-61577469676531/" },
+                  { Icon: Instagram, label: "Instagram", href: "https://www.instagram.com/the_global_doctrine" },
+                  { Icon: Youtube, label: "YouTube", href: "https://www.youtube.com/@TheGlobalDoctrine-p8v" },
+                  { Icon: MessageCircle, label: "WhatsApp", href: "https://wa.me/8801612970419" },
+                  { Icon: Linkedin, label: "LinkedIn", href: "https://www.linkedin.com/company/the-global-doctrine/" },
                   { Icon: Mail, label: "Email Us", href: "mailto:theglobaldoctrine.mag@gmail.com" },
                 ].map(({ Icon, label, href }) => (
                   <a
@@ -274,8 +277,8 @@ const About = () => {
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 border border-border px-3 py-2.5 text-xs font-medium text-foreground transition-all hover:border-primary hover:text-primary"
                   >
-                    <Icon className="h-3.5 w-3.5" />
-                    {label}
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
+                    <span className="truncate">{label}</span>
                   </a>
                 ))}
               </div>

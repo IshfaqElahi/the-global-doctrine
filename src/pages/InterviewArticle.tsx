@@ -9,6 +9,7 @@ import { SkeletonCardHero } from "@/components/SkeletonCard";
 import { ReferencesSection } from "@/components/ReferencesSection";
 import { EditorialImage } from "@/components/EditorialImage";
 import { EditorialPortableText } from "@/components/EditorialPortableText";
+import { ShareButtons } from "@/components/ShareButtons";
 import { cleanText, isValidExcerpt } from "@/lib/editorialText";
 import { client } from "@/lib/sanity";
 import { calcReadTime } from "@/lib/readTime";
@@ -127,22 +128,25 @@ const InterviewArticle = () => {
                   </p>
                 </div>
               </div>
-              <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
-                <span>
-                  {new Date(interview.publishedAt).toLocaleDateString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })}
-                </span>
-                {readTime > 0 && (
-                  <>
-                    <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                    <span className="inline-flex items-center gap-1">
-                      <Clock className="h-3.5 w-3.5 text-[hsl(var(--brand-red))]" /> {readTime} min read
-                    </span>
-                  </>
-                )}
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
+                  <span>
+                    {new Date(interview.publishedAt).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </span>
+                  {readTime > 0 && (
+                    <>
+                      <span className="h-1 w-1 rounded-full bg-muted-foreground" />
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5 text-[hsl(var(--brand-red))]" /> {readTime} min read
+                      </span>
+                    </>
+                  )}
+                </div>
+                <ShareButtons url={pageUrl} title={cleanTitle} />
               </div>
             </div>
           </motion.div>
@@ -182,10 +186,11 @@ const InterviewArticle = () => {
             <ReferencesSection references={interview.references} />
           )}
 
-          <div className="mt-12 border-t border-border pt-8">
+          <div className="mt-12 border-t border-border pt-6 flex items-center justify-between flex-wrap gap-4">
+            <ShareButtons url={pageUrl} title={cleanTitle} />
             <Link
               to="/interview"
-              className="inline-flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-primary hover:gap-3 hover:text-[hsl(var(--brand-red))] transition-all duration-300"
+              className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary hover:gap-3 hover:text-[hsl(var(--brand-red))] transition-all duration-300"
             >
               ← More Interviews <ArrowRight className="h-4 w-4" />
             </Link>
