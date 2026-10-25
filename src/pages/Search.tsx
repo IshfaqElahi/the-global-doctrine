@@ -98,7 +98,7 @@ const Search = () => {
                 value={inputVal}
                 onChange={(e) => setInputVal(e.target.value)}
                 placeholder="Search by topic, region, headline, or author..."
-                className="w-full border border-border bg-background pl-10 pr-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
+                className="w-full border border-border bg-background pl-10 pr-4 py-2.5 text-base sm:text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none"
               />
             </div>
             <button

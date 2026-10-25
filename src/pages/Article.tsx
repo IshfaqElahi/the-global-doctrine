@@ -298,7 +298,7 @@ const Article = () => {
                     </>
                   )}
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="flex w-full sm:w-auto items-center justify-between sm:justify-end gap-3 pt-3 sm:pt-0 border-t border-border/50 sm:border-t-0">
                   <button
                     type="button"
                     onClick={() => setTextScale((prev) => (prev === "normal" ? "large" : "normal"))}
@@ -341,7 +341,7 @@ const Article = () => {
                   e.stopPropagation();
                   setLightboxOpen(true);
                 }}
-                className="absolute bottom-3 right-3 z-30 inline-flex items-center gap-1.5 bg-black/70 backdrop-blur-xs border border-white/20 px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white opacity-80 group-hover:opacity-100 hover:bg-[hsl(var(--brand-red))] transition-all"
+                className="absolute bottom-2.5 right-2.5 sm:bottom-3 sm:right-3 z-30 inline-flex items-center gap-1.5 bg-black/75 backdrop-blur-xs border border-white/20 px-2.5 py-1 sm:px-3 sm:py-1.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white opacity-90 sm:opacity-80 group-hover:opacity-100 hover:bg-[hsl(var(--brand-red))] transition-all"
               >
                 <Maximize2 className="h-3 w-3" />
                 Expand Graphic

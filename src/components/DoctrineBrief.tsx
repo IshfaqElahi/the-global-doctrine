@@ -90,7 +90,7 @@ export const DoctrineBrief = () => {
       <div className="container-editorial">
         {/* INVERTED FORM WRAPPER */}
         <div 
-          className={`mx-auto max-w-3xl rounded-2xl bg-foreground text-background p-8 sm:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.07)] border border-foreground/10 transition-all duration-1000 ease-out transform ${
+          className={`mx-auto max-w-3xl rounded-xl sm:rounded-2xl bg-foreground text-background p-5 sm:p-8 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.12)] dark:shadow-[0_8px_30px_rgb(255,255,255,0.07)] border border-foreground/10 transition-all duration-1000 ease-out transform ${
             isMounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
           }`}
         >
@@ -100,7 +100,7 @@ export const DoctrineBrief = () => {
             <h2 className="text-[hsl(var(--brand-red))] font-bold uppercase tracking-[0.15em] text-sm sm:text-base mb-4">
               The Doctrine Brief
             </h2>
-            <p className="font-serif text-[1.15rem] sm:text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight sm:whitespace-nowrap text-background mb-4">
+            <p className="font-serif text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold uppercase tracking-tight lg:whitespace-nowrap text-balance text-background mb-3 sm:mb-4">
               GEOPOLITICS WITHOUT GATEKEEPING
             </p>
             <p className="text-background/70 text-base sm:text-lg">
@@ -142,7 +142,7 @@ export const DoctrineBrief = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="How should we credit you?"
-                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-md bg-transparent border border-background/20 px-3.5 py-2.5 sm:px-4 sm:py-3 text-base text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
 
@@ -157,7 +157,7 @@ export const DoctrineBrief = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@email.com"
-                  className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full rounded-md bg-transparent border border-background/20 px-3.5 py-2.5 sm:px-4 sm:py-3 text-base text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 />
               </div>
             </div>
@@ -221,7 +221,7 @@ export const DoctrineBrief = () => {
                 value={formData.brief}
                 onChange={handleChange}
                 placeholder="Share your analysis, intelligence, or opinion..."
-                className="w-full rounded-md bg-transparent border border-background/20 px-4 py-3 text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-y disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full rounded-md bg-transparent border border-background/20 px-3.5 py-2.5 sm:px-4 sm:py-3 text-base text-background placeholder:text-background/40 focus:border-primary focus:bg-background/5 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all duration-300 resize-y disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
 

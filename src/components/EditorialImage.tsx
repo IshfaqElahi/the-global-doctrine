@@ -83,13 +83,19 @@ export const EditorialImage = ({
     return ratio < 1.18 || ratio > 1.98;
   }, [ratio, variant]);
 
+  const isVerticalOrSquare = ratio !== null && ratio < 1.08;
+
   const defaultAspect =
     variant === "hero"
-      ? "aspect-[4/3] sm:aspect-[16/11] lg:aspect-[5/4] max-h-[580px]"
+      ? isVerticalOrSquare
+        ? "aspect-[4/5] sm:aspect-[16/11] lg:aspect-[5/4] max-h-[580px]"
+        : "aspect-[16/10] sm:aspect-[16/11] lg:aspect-[5/4] max-h-[580px]"
       : variant === "portrait"
       ? "aspect-[4/5]"
       : variant === "feature"
-      ? "aspect-[4/3] sm:aspect-[16/9] max-h-[640px]"
+      ? isVerticalOrSquare
+        ? "aspect-[4/5] sm:aspect-[16/9] max-h-[640px]"
+        : "aspect-[16/10] sm:aspect-[16/9] max-h-[640px]"
       : "aspect-[16/10]";
 
   return (

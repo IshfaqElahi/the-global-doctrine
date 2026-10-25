@@ -189,11 +189,11 @@ const Index = () => {
 
       {/* HERO (Same 12-Column Split Layout, Upgraded Framing & Motion) */}
       <section className="border-b border-border relative overflow-hidden">
-        <div className="container-editorial py-10 lg:py-16">
+        <div className="container-editorial py-6 sm:py-10 lg:py-16">
           {loading || !coverStory ? (
             <SkeletonCardHero />
           ) : (
-            <div className="grid gap-10 lg:grid-cols-12 lg:gap-12 items-center">
+            <div className="grid gap-6 sm:gap-10 lg:grid-cols-12 lg:gap-12 items-center">
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -239,7 +239,7 @@ const Index = () => {
 
                 <motion.h1
                   variants={heroTextItem}
-                  className="mt-5 font-serif text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-[3.25rem] text-balance"
+                  className="mt-4 sm:mt-5 font-serif text-3xl font-bold leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.25rem] text-balance"
                 >
                   <Link
                     to={`/article/${coverStory.slug}`}
@@ -319,10 +319,14 @@ const Index = () => {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, margin: "-50px" }}
-              className="grid gap-8 sm:grid-cols-3"
+              className="flex sm:grid overflow-x-auto sm:overflow-visible snap-x snap-mandatory gap-5 sm:gap-8 sm:grid-cols-3 no-scrollbar pb-2 -mx-4 px-4 sm:mx-0 sm:px-0"
             >
               {magazines.map((mag) => (
-                <motion.div key={mag._id} variants={fadeUpItem}>
+                <motion.div
+                  key={mag._id}
+                  variants={fadeUpItem}
+                  className="w-[78vw] max-w-[300px] sm:w-auto sm:max-w-none shrink-0 snap-center"
+                >
                   <Link to="/magazine" className="group block">
                     <div className="relative overflow-hidden bg-background/10 ring-1 ring-background/15 shadow-[0_15px_35px_rgba(0,0,0,0.45)] transition-all duration-500 group-hover:-translate-y-2 group-hover:ring-primary/60 before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:w-2 before:bg-gradient-to-r before:from-white/25 before:to-transparent before:z-30">
                       {mag.coverImage && (
@@ -488,21 +492,21 @@ const Index = () => {
                   Full Archive →
                 </Link>
               </div>
-              <div className="grid gap-6 md:grid-cols-2">
+              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                 {moreDispatches.map((a, idx) => (
                   <Link
                     key={a._id}
                     to={`/article/${a.slug}`}
-                    className="group editorial-card flex items-center gap-4 p-4"
+                    className="group editorial-card flex items-center gap-3 sm:gap-4 p-3 sm:p-4"
                   >
-                    <span className="font-serif text-2xl font-bold text-[hsl(var(--brand-red))]/80 tabular-nums shrink-0 w-7">
+                    <span className="font-serif text-lg sm:text-2xl font-bold text-[hsl(var(--brand-red))]/80 tabular-nums shrink-0 w-5 sm:w-7">
                       {String(idx + 5).padStart(2, "0")}
                     </span>
-                    <div className="h-20 w-24 shrink-0 overflow-hidden bg-muted">
+                    <div className="h-16 w-20 sm:h-20 sm:w-24 shrink-0 overflow-hidden bg-muted">
                       <EditorialImage
                         src={a.imageUrl || heroImg}
                         alt={cleanText(a.title)}
-                        aspectClassName="h-20 w-24"
+                        aspectClassName="h-16 w-20 sm:h-20 sm:w-24"
                         width={240}
                       />
                     </div>

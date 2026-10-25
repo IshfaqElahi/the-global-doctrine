@@ -104,9 +104,9 @@ export const Navbar = () => {
           scrolled && "shadow-[0_10px_30px_-10px_rgba(0,0,0,0.35)]"
         )}
       >
-        {/* Top Geopolitical Dateline Strip */}
-        <div className="hidden border-b border-background/15 md:block">
-          <div className="container-editorial flex h-8 items-center justify-between gap-4 text-[11px] text-background/70">
+        {/* Top Geopolitical Dateline Strip (Visible on Mobile & Desktop) */}
+        <div className="border-b border-background/15">
+          <div className="container-editorial flex h-7 sm:h-8 items-center justify-between gap-3 text-[10px] sm:text-[11px] text-background/70">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <span className="inline-flex items-center gap-1.5 shrink-0 bg-[hsl(var(--brand-red))] px-2 py-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" />
@@ -141,7 +141,7 @@ export const Navbar = () => {
                 </span>
               )}
             </div>
-            <div className="flex items-center gap-5 shrink-0">
+            <div className="hidden md:flex items-center gap-5 shrink-0">
               <span className="inline-flex items-center gap-1.5 text-background/60">
                 <Globe className="h-3 w-3 text-primary" />
                 {new Date().toLocaleDateString("en-US", {
@@ -164,22 +164,22 @@ export const Navbar = () => {
 
         <div
           className={cn(
-            "container-editorial flex items-center justify-between gap-4 transition-all duration-300",
-            scrolled ? "h-16" : "h-20"
+            "container-editorial flex items-center justify-between gap-2 sm:gap-4 transition-all duration-300",
+            scrolled ? "h-14 sm:h-16" : "h-16 sm:h-20"
           )}
         >
           {/* Logo */}
           <Link
             to="/"
-            className="group inline-flex items-center gap-2.5"
+            className="group inline-flex items-center gap-2 min-w-0"
             aria-label="The Global Doctrine — Home"
           >
             <img
               src="/logo.svg"
               alt="The Global Doctrine Logo"
-              className="h-10 w-10 object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+              className="h-8 w-8 sm:h-10 sm:w-10 shrink-0 object-contain transition-transform duration-500 ease-out group-hover:scale-105"
             />
-            <span className="font-serif text-xl sm:text-2xl font-bold tracking-tight transition-all duration-300 group-hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.3)]">
+            <span className="font-serif text-lg sm:text-2xl font-bold tracking-tight truncate transition-all duration-300 group-hover:[text-shadow:0_0_12px_hsl(var(--primary)/0.3)]">
               <span className="text-background transition-colors group-hover:text-primary">
                 The Global{" "}
               </span>
@@ -410,7 +410,7 @@ export const Navbar = () => {
               className="absolute right-0 top-0 bottom-0 w-[min(330px,86vw)] bg-background border-l border-border flex flex-col overflow-y-auto shadow-2xl"
             >
               {/* Panel header */}
-              <div className="flex items-center justify-between border-b border-border px-6 py-5">
+              <div className="flex items-center justify-between border-b border-border px-5 py-4">
                 <span className="font-serif text-lg font-bold text-foreground">
                   Navigation
                 </span>
@@ -421,6 +421,30 @@ export const Navbar = () => {
                 >
                   <X className="h-5 w-5" />
                 </button>
+              </div>
+
+              {/* Mobile quick search inside drawer */}
+              <div className="border-b border-border px-5 py-3.5 bg-secondary/40">
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (searchQuery.trim()) {
+                      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+                      setOpen(false);
+                      setSearchQuery("");
+                    }
+                  }}
+                  className="flex items-center gap-2 border border-border bg-background px-3 py-2"
+                >
+                  <Search className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search dispatches..."
+                    className="w-full bg-transparent text-base text-foreground outline-none placeholder:text-muted-foreground"
+                  />
+                </form>
               </div>
 
               {/* Links */}

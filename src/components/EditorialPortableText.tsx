@@ -113,7 +113,7 @@ export const EditorialPortableText = ({
           return (
             <h2
               id={id}
-              className="mt-12 mb-5 scroll-mt-28 font-serif text-2xl sm:text-[1.7rem] font-bold leading-[1.22] tracking-tight text-foreground text-balance border-l-4 border-[hsl(var(--brand-red))] pl-4 py-0.5"
+              className="mt-9 sm:mt-12 mb-4 sm:mb-5 scroll-mt-24 font-serif text-xl sm:text-[1.7rem] font-bold leading-[1.22] tracking-tight text-foreground text-balance border-l-4 border-[hsl(var(--brand-red))] pl-3.5 sm:pl-4 py-0.5"
             >
               {children}
             </h2>
@@ -126,7 +126,7 @@ export const EditorialPortableText = ({
           </h3>
         ),
         blockquote: ({ children }) => (
-          <blockquote className="my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/50 py-4 pl-6 pr-5 font-serif text-xl sm:text-2xl italic leading-snug text-foreground text-pretty">
+          <blockquote className="my-6 sm:my-8 border-l-4 border-[hsl(var(--brand-red))] bg-secondary/50 py-3.5 sm:py-4 pl-4 sm:pl-6 pr-4 sm:pr-5 font-serif text-lg sm:text-2xl italic leading-snug text-foreground text-pretty">
             {children}
           </blockquote>
         ),
